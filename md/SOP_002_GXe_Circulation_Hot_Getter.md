@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 7 August 2026
 location: Nikhef - XAMS
 status: Updated release
-output: GXe_Circulation_Hot_Getter_SOP_002_Rev_C.pdf
 ---
 
 > [!NOTE]

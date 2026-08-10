@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 1 January 2026
 location: Nikhef - XAMS
 status: Initial release
-output: Short_Procedure_Name_SOP_0XX_Rev_A.pdf
 ---
 
 > [!NOTE]

@@ -6,13 +6,19 @@ The markdown files in [`md/`](md) are the source of truth. The PDFs are
 generated from them and are never edited by hand: edit the markdown, rebuild,
 and every document keeps the same house style.
 
-    md/*.md  ->  tools/build.py  ->  XAMS_Operations_Manual_<date>/*.pdf
+    md/SOP_004_LXe_Filling_Procedure.md
+      ->  tools/build.py
+      ->  XAMS_Operations_Manual_<date>/SOP_004_LXe_Filling_Procedure_Rev_E.pdf
+
+Source files carry **no revision in their name**; the revision lives in the
+frontmatter and is stamped onto the PDF automatically. Issuing a new revision is
+therefore a one-line edit, not a rename.
 
 ## Layout
 
 | Path | Contents |
 | --- | --- |
-| `md/` | one markdown file per SOP, plus the hand-written index and `figs/` |
+| `md/` | one markdown file per SOP, plus the hand-written index, `figs/` and `assets/` |
 | `tools/` | the renderer, validator and build script |
 | `XAMS_Operations_Manual_<date>/` | generated output, not tracked in git |
 | `old/` | superseded PDFs, kept for reference only |
@@ -54,13 +60,16 @@ gone. `--clean` removes only `*.pdf` from the output directory, nothing else.
 
 Render a single document while editing:
 
-    tools/.venv/bin/python tools/md_to_pdf.py md/LXe_Filling_Procedure_SOP_004_Rev_E_9A.md -o /tmp/preview.pdf
+    tools/.venv/bin/python tools/md_to_pdf.py md/SOP_004_LXe_Filling_Procedure.md -o /tmp/preview.pdf
 
 ## Writing a new SOP
 
+Name the file `SOP_<nnn>_<Short_Name>.md` - number first, so `md/` and the built
+manual both sort in procedure order, and no revision in the name.
+
 Copy [`tools/TEMPLATE.md`](tools/TEMPLATE.md) into `md/`, or paste
 [`tools/PROMPT.md`](tools/PROMPT.md) into ChatGPT along with a description of the
-procedure and save the reply as `md/<Name>_SOP_<nnn>_Rev_<X>.md`. Ask a model for
+procedure and save the reply under that name. Ask a model for
 markdown, never for a PDF - layout comes from the renderer, so the document
 cannot drift out of house style.
 
@@ -84,13 +93,39 @@ Standard GitHub-flavored markdown, so the sources preview correctly in VS Code.
 Not supported: links, code fences, raw HTML, headings beyond `###`.
 `check_md.py` flags all of these.
 
-`md/.passthrough` lists files copied into the build unchanged - currently the
-P&ID drawing, which has no markdown source.
+`md/.passthrough` lists files copied into the build unchanged, one path per line
+relative to `md/`. Currently it holds the P&ID drawing, which has no markdown
+source; it lives in `md/assets/` so that it is tracked in git rather than only
+existing inside a generated manual folder.
 
-`XAMS_Operations_Manual_Index_Rev_D.md` is written by hand rather than imported:
+`XAMS_Operations_Manual_Index.md` is written by hand rather than imported:
 the index is a summary document, not a procedure, so it uses tables and bullets
 instead of ACTION/VERIFY rows. Update it whenever an SOP is added or its
-revision changes.
+revision changes - `check_md.py` compares its register against the frontmatter of
+every SOP and reports anything that has drifted.
+
+## Consistency checks
+
+Run over the whole directory, `check_md.py` also checks the manual as a whole:
+
+- two files claiming the same SOP number **and** revision - an error, since only
+  one can be current
+- several revisions of one SOP - a warning naming the one it treats as current;
+  superseded revisions belong in `old/`
+- an SOP missing from the index register, or a register entry with no file
+- a register revision that disagrees with the file's frontmatter
+- a revision left in a source filename, or a stale `output:` override
+
+`build.py` runs all of this first and refuses to render if anything is an error.
+
+When you bump a revision in an SOP, update the register with:
+
+    tools/.venv/bin/python tools/check_md.py md --fix
+
+That rewrites only the register's revision column, from the frontmatter of each
+SOP. Procedure names and descriptions are never touched - those are editorial,
+the revision is not. The build never edits your sources; run `--fix` yourself so
+the change shows up in a diff.
 
 ## Tools
 

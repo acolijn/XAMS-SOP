@@ -15,7 +15,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from check_md import check_file
+from check_md import check_collection, check_file
 from md_to_pdf import render
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -47,8 +47,9 @@ def main():
     ap.add_argument("--refdir", default=None, help="PDFs to compare against")
     ap.add_argument("--force", action="store_true",
                     help="render even if check_md reports errors")
-    ap.add_argument("--clean", action="store_true",
-                    help="delete the PDFs already in --outdir before rendering")
+    ap.add_argument("--clean", action=argparse.BooleanOptionalAction, default=True,
+                    help="delete the PDFs already in --outdir first (default: on); "
+                         "--no-clean keeps them and overwrites in place")
     args = ap.parse_args()
 
     srcdir = Path(args.srcdir)
@@ -57,26 +58,36 @@ def main():
     outdir.mkdir(parents=True, exist_ok=True)
 
     if args.clean:
-        for stale in sorted(outdir.glob("*.pdf")):
-            stale.unlink()
-        print(f"cleaned {outdir}")
+        # only ever *.pdf, never recursive: the output directory is disposable,
+        # but it is not this script's business to remove anything else
+        stale = sorted(outdir.glob("*.pdf"))
+        for pdf in stale:
+            pdf.unlink()
+        if stale:
+            print(f"cleaned {len(stale)} PDF(s) from {outdir}")
 
     passthrough = srcdir / ".passthrough"
     if passthrough.exists():
         for line in passthrough.read_text().splitlines():
-            name = line.strip()
-            if not name or name.startswith("#"):
+            entry = line.strip()
+            if not entry or entry.startswith("#"):
                 continue
-            # never pick up a copy this build (or an earlier one) already made
-            src = next((p for p in sorted(ROOT.rglob(name))
-                        if p.is_file() and outdir.resolve() not in p.resolve().parents), None)
+            src = srcdir / entry
+            if not src.is_file():
+                # fall back to a project-wide search, never picking up a copy
+                # this build (or an earlier one) already made
+                src = next((p for p in sorted(ROOT.rglob(Path(entry).name))
+                            if p.is_file()
+                            and outdir.resolve() not in p.resolve().parents), None)
             if src is None:
-                print(f"MISSING passthrough file: {name}", file=sys.stderr)
-            elif src.resolve() == (outdir / name).resolve():
-                print(f"kept    {name}")
+                print(f"MISSING passthrough file: {entry}", file=sys.stderr)
+                continue
+            target = outdir / Path(entry).name
+            if src.resolve() == target.resolve():
+                print(f"kept    {target.name}")
             else:
-                shutil.copy2(src, outdir / name)
-                print(f"copied  {name}")
+                shutil.copy2(src, target)
+                print(f"copied  {target.name}")
 
     sources = sorted(srcdir.glob("*.md"))
 
@@ -87,9 +98,14 @@ def main():
             print(f"ERROR   {md.name} line {line_no}: {message}", file=sys.stderr)
         if errors:
             broken.append(md)
-    if broken and not args.force:
-        print(f"\n{len(broken)} file(s) failed validation; fix them or pass --force.",
-              file=sys.stderr)
+
+    across, _ = check_collection(sources)
+    for message in across:
+        print(f"ERROR   {message}", file=sys.stderr)
+
+    if (broken or across) and not args.force:
+        print(f"\n{len(broken) + len(across)} problem(s) found; "
+              f"fix them, or pass --force to build anyway.", file=sys.stderr)
         return 1
 
     failures = 0

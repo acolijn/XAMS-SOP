@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 7 August 2026
 location: Nikhef - XAMS
 status: Layout update
-output: PMT_Gain_Calibration_SOP_104_Rev_B.pdf
 ---
 
 > **NOTE** — Source basis: XAMS wiki procedure “Gain Calibration for PMTs”, last

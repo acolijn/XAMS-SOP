@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 7 August 2026
 location: Nikhef - XAMS
 status: Updated release
-output: Xenon_Recovery_Procedure_SOP_006_Rev_C.pdf
 ---
 
 > [!NOTE]

@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 7 August 2026
 location: Nikhef - XAMS
 status: Updated release
-output: Cooling_Preparation_PTR_Start_SOP_003_Rev_D.pdf
 ---
 
 > [!NOTE]

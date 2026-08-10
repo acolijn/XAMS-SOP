@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 7 August 2026
 location: Nikhef - XAMS
 status: Added detector operations
-output: XAMS_Operations_Manual_Index_Rev_D.pdf
 ---
 
 > [!NOTE]
@@ -38,31 +37,31 @@ Run these procedures in the order listed.
 
 | SOP | Procedure | Status |
 | --- | --- | --- |
-| SOP-101 | PMT Power On / Off | DRAFT |
+| SOP-101 | PMT Power On / Off | Released |
 | SOP-102 | SiPM Bias On / Off | DRAFT |
 | SOP-103 | TPC Voltages On / Off | DRAFT |
 | SOP-104 | PMT Gain Calibration | Released |
 
 > [!WARNING]
-> SOP-101, SOP-102 and SOP-103 are placeholders. Do not use them to energise
-> detector hardware until the detector experts have approved all settings.
+> SOP-102 and SOP-103 are placeholders. Do not use them to energise detector
+> hardware until the detector experts have approved all settings.
 
 ## 4. SOP register
 
-| SOP | Procedure | Use |
-| --- | --- | --- |
-| 001 | GXe Filling Procedure | Initial gaseous-xenon fill |
-| 002 | GXe Circulation Through Hot Getter | Purification for at least 7 effective days |
-| 003 | Cooling Preparation and PTR Start | Prepare cooling and start PTR |
-| 004 | LXe Filling Procedure | Fill detector with liquid xenon |
-| 005 | Normal LXe Operation | Normal circulation and measurement operation |
-| 006 | Xenon Recovery Procedure | Planned xenon recovery |
-| 007 | Emergency Xenon Recovery | Emergency response |
-| 008 | Main LN2 Supply Dewar Refill | Cryotrans refill procedure |
-| 101 | PMT Power On / Off | Detector operation - DRAFT |
-| 102 | SiPM Bias On / Off | Detector operation - DRAFT |
-| 103 | TPC Voltages On / Off | Detector operation - DRAFT |
-| 104 | PMT Gain Calibration | PMT LED gain calibration |
+| SOP | Rev. | Procedure | Use |
+| --- | --- | --- | --- |
+| 001 | D | GXe Filling Procedure | Initial gaseous-xenon fill |
+| 002 | C | GXe Circulation Through Hot Getter | Purification for at least 7 effective days |
+| 003 | D | Cooling Preparation and PTR Start | Prepare cooling and start PTR |
+| 004 | E | LXe Filling Procedure | Fill detector with liquid xenon |
+| 005 | A | Normal LXe Operation | Normal circulation and measurement operation |
+| 006 | C | Xenon Recovery Procedure | Planned xenon recovery |
+| 007 | B | Emergency Xenon Recovery | Emergency response |
+| 008 | A | Main LN2 Supply Dewar Refill | Cryotrans refill procedure |
+| 101 | A | PMT Power On / Off | Detector operation |
+| 102 | A | SiPM Bias On / Off | Detector operation - DRAFT |
+| 103 | A | TPC Voltages On / Off | Detector operation - DRAFT |
+| 104 | B | PMT Gain Calibration | PMT LED gain calibration |
 
 ## 5. Before starting any SOP
 

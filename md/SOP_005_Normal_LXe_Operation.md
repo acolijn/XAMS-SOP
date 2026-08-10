@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 7 August 2026
 location: Nikhef - XAMS
 status: Initial release
-output: Normal_LXe_Operation_SOP_005_Rev_A.pdf
 ---
 
 > [!NOTE]

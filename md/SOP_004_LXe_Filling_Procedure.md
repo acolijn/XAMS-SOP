@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 
 location: Nikhef - XAMS
 status: Updated release
-output: LXe_Filling_Procedure_SOP_004_Rev_E_9A.pdf
 ---
 
 > [!NOTE]

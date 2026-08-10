@@ -5,7 +5,8 @@ description of the procedure. The model writes only content; all layout,
 colours, fonts, page breaks and footers come from the renderer, so never ask
 for a PDF, a Word file, or any styling.
 
-Save the reply as `md/<Name>_SOP_<nnn>_Rev_<X>.md`, then run:
+Save the reply as `md/SOP_<nnn>_<Short_Name>.md` - number first, and **no
+revision in the filename** - then run:
 
     tools/.venv/bin/python tools/check_md.py md
     tools/.venv/bin/python tools/build.py
@@ -19,7 +20,9 @@ code fence around the whole file.
 Use exactly this syntax. Anything outside it is dropped when the document is
 rendered.
 
-**Frontmatter** - first block of the file, between `---` lines, all keys required:
+**Frontmatter** - first block of the file, between `---` lines, all keys
+required. Do not add an `output:` key: the PDF name is derived from the source
+filename plus the revision.
 
     ---
     sop: SOP-009
@@ -30,7 +33,6 @@ rendered.
     date: 7 August 2026
     location: Nikhef - XAMS
     status: Initial release
-    output: Short_Procedure_Name_SOP_009_Rev_A.pdf
     ---
 
 **Structure**
@@ -86,3 +88,79 @@ raw HTML, and headings other than `##` and `###` are not supported.
 instruments exactly as the site does (V1-V14, PT101, TT203, E030-1). Write
 `TBD - ...` wherever a value must be supplied by a detector expert rather than
 inventing numbers, and set `status: Draft placeholder` for such documents.
+
+---
+
+## Worked example
+
+A complete, valid document. Follow this shape.
+
+    ---
+    sop: SOP-009
+    title: Cold Trap Regeneration
+    subtitle: STANDARD OPERATING PROCEDURE - regenerate the cold trap after recovery
+    revision: Rev. A
+    author: Auke-Pieter Colijn
+    date: 7 August 2026
+    location: Nikhef - XAMS
+    status: Initial release
+    ---
+
+    > [!NOTE]
+    > **Work discipline:** Record every valve operation, pressure and temperature
+    > in the electronic LogIt logbook.
+
+    ## A. Preconditions
+
+    ### 1. Confirm the system is isolated
+
+    > **ACTION** — Confirm SOP-006 has completed and the storage bottle is
+    > isolated. Close V12 and confirm V7 and V8 are closed.
+
+    > **VERIFY** — PT201 is stable and no active transfer is in progress.
+
+    > **STOP** — Do not start regeneration while xenon is being transferred.
+
+    ### 2. Set the valve configuration
+
+    > **ACTION** — Set the valves as listed below.
+
+    | Valve / item | Required state |
+    | --- | --- |
+    | V7, V8 | CLOSED |
+    | V12 | CLOSED |
+    | Trap heater | OFF |
+
+    ## B. Regeneration
+
+    ### 3. Warm the trap
+
+    > **ACTION** — Switch the trap heater ON and raise the setpoint to TBD °C at
+    > no more than TBD °C/min.
+
+    > **VERIFY** — TT301 rises smoothly and pressure stays below TBD bar.
+
+    > [!TIP]
+    > **OPERATOR CUE**
+    >
+    > | | |
+    > | --- | --- |
+    > | **Indication** | Rapid PT201 rise |
+    > | **Immediate response** | Switch the heater OFF and wait |
+
+    > **STOP** — If pressure exceeds TBD bar, stop heating and close V12.
+
+    ## C. Completion
+
+    > **ACTION** — Switch the heater OFF and allow the trap to return to ambient
+    > temperature.
+
+    > **NOTE** — Record final pressure, final valve state and total heating time
+    > in LogIt.
+
+    ## FINAL SAFE-STATE CHECK
+
+    > [!TIP]
+    > - Trap heater OFF
+    > - V7, V8 and V12 closed
+    > - Final pressure and valve state recorded in LogIt

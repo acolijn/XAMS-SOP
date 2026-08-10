@@ -1,34 +1,39 @@
 """Parser for the XAMS SOP markdown dialect.
 
-A document is:
+The dialect is GitHub-flavored markdown, so sources preview correctly in an
+editor and render to the house PDF style. A document looks like:
 
     ---
     sop: SOP-101
     title: PMT Power On / Off
-    subtitle: detector operations placeholder
+    subtitle: STANDARD OPERATING PROCEDURE - detector operations
     revision: Rev. A
     author: Auke-Pieter Colijn
     date: 7 August 2026
     location: Nikhef - XAMS
     status: Draft placeholder
-    output: PMT_Power_On_Off_SOP_101_Rev_A_DRAFT.pdf
     ---
 
-    !!! warning
-    DRAFT / PLACEHOLDER - NOT FOR OPERATION
-    !!!
+    > [!WARNING]
+    > DRAFT / PLACEHOLDER - NOT FOR OPERATION
 
     ## A. Purpose and prerequisites
 
     ### 1. Confirm the approved procedure is available
 
-    ACTION: Do the thing.
-        Continuation lines are indented.
-    VERIFY: The thing happened.
-    STOP: Do not do the other thing.
+    > **ACTION** — Do the thing. Long text simply wraps onto
+    > further quoted lines.
 
-Also supported: bullet lists (`- `), pipe tables, `![caption](fig.png){width=60%}`,
-plain paragraphs, and `\\newpage`.
+    > **VERIFY** — The thing happened.
+
+    > **STOP** — Do not do the other thing.
+
+Also supported: bullet lists, pipe tables, `![caption](fig.png){width=60%}`,
+plain paragraphs, and `\\newpage`. The `!!!`/`:::` forms are legacy syntax from
+the original PDF import and are still accepted.
+
+Source files are named `SOP_<nnn>_<Short_Name>.md` and carry no revision; the
+PDF name is derived from the source name plus the revision in the frontmatter.
 """
 
 import html
@@ -64,10 +69,25 @@ class SopDoc:
         return " | ".join(p for p in parts if p)
 
     @property
+    def revision_slug(self):
+        """'Rev. B' -> 'Rev_B'; empty when the document carries no revision."""
+        revision = self.meta.get("revision", "").strip()
+        return re.sub(r"[^\w]+", "_", revision).strip("_")
+
+    @property
     def output_name(self):
+        """PDF filename: the source name plus the revision from the frontmatter.
+
+        Source files deliberately carry no revision, so a new revision means
+        editing one line rather than renaming a file. The PDF does carry it,
+        because printed and emailed copies must say which revision they are.
+        `output:` in the frontmatter overrides this, but is rarely needed.
+        """
         if self.meta.get("output"):
             return self.meta["output"]
-        return (Path(self.source).stem if self.source else "document") + ".pdf"
+        stem = Path(self.source).stem if self.source else "document"
+        suffix = f"_{self.revision_slug}" if self.revision_slug else ""
+        return f"{stem}{suffix}.pdf"
 
 
 def parse_frontmatter(lines):

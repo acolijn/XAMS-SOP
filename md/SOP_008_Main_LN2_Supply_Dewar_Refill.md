@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 7 August 2026
 location: Nikhef - XAMS
 status: Initial release
-output: Main_LN2_Supply_Dewar_Refill_SOP_008_Rev_A.pdf
 ---
 
 > [!NOTE]

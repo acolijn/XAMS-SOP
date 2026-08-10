@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 
 location: Nikhef - XAMS
 status: Initial release
-output: Emergency_Xenon_Recuperation_SOP_007_Rev_B.pdf
 ---
 
 ## CALL BEFORE YOU ACT

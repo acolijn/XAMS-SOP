@@ -7,7 +7,6 @@ author: Auke-Pieter Colijn
 date: 7 August 2026
 location: Nikhef - XAMS
 status: Draft placeholder
-output: TPC_Voltages_On_Off_SOP_103_Rev_A_DRAFT.pdf
 ---
 
 > [!WARNING]

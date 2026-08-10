@@ -18,6 +18,8 @@ from pathlib import Path
 from sop_doc import ALERT_RE, QUOTE_ROW_RE, load
 
 REQUIRED_META = ("sop", "title", "revision", "author", "date", "location", "status")
+SOP_RE = re.compile(r"SOP[-_ ]?(\d+)", re.I)
+INDEX_STEM = "XAMS_Operations_Manual_Index"
 ROW_LABELS = ("ACTION", "VERIFY", "STOP", "NOTE")
 ALERT_TYPES = ("NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION")
 
@@ -48,8 +50,12 @@ def check_file(path):
             error(1, f"frontmatter is missing '{key}:'")
         elif not doc.meta[key].strip():
             warn(1, f"frontmatter '{key}:' is empty")
-    if not doc.meta.get("output", "").endswith(".pdf"):
-        warn(1, "frontmatter 'output:' should name the PDF file to write")
+    if doc.meta.get("output"):
+        warn(1, "frontmatter 'output:' overrides the derived PDF name; "
+                "remove it unless the override is deliberate")
+    if re.search(r"_Rev[_ ]", path.stem, re.I):
+        warn(1, "the source filename should not carry a revision - "
+                "the revision lives in the frontmatter and only the PDF is stamped")
 
     in_frontmatter = raw[0].strip() == "---"
     in_quote = False
@@ -102,9 +108,151 @@ def check_file(path):
     return errors, warnings
 
 
+def _sop_number(text):
+    """'SOP-004', 'SOP_004_LXe_...' and a bare '004' all mean SOP-004."""
+    text = (text or "").strip()
+    match = SOP_RE.search(text) or re.fullmatch(r"(\d{1,3})", text)
+    return match.group(1).lstrip("0").zfill(3) if match else None
+
+
+def _register_rows(doc):
+    """Rows of the SOP register table in the index document."""
+    for block in doc.blocks:
+        if block["type"] != "table":
+            continue
+        header = [h.lower().strip() for h in (block.get("header") or [])]
+        if header[:1] == ["sop"] and "procedure" in header:
+            columns = {name: i for i, name in enumerate(header)}
+            if "rev." in columns or "rev" in columns:
+                yield block, columns
+                return
+
+
+def check_collection(paths):
+    """Checks that only make sense across the whole manual."""
+    errors, warnings = [], []
+    docs = {path: load(path) for path in paths}
+
+    by_number = {}
+    for path, doc in docs.items():
+        if path.stem == INDEX_STEM:
+            continue
+        number = _sop_number(doc.meta.get("sop", "")) or _sop_number(path.stem)
+        if number:
+            by_number.setdefault(number, []).append((path, doc))
+
+    current = {}
+    for number, entries in sorted(by_number.items()):
+        if len(entries) == 1:
+            current[number] = entries[0]
+            continue
+        revisions = {path: doc.meta.get("revision", "").strip() for path, doc in entries}
+        names = ", ".join(p.name for p in revisions)
+        if len({r.upper() for r in revisions.values()}) == 1:
+            errors.append(f"SOP-{number}: {len(entries)} files with the same revision "
+                          f"({names}) - only one can be current")
+            current[number] = entries[0]
+        else:
+            newest = max(entries, key=lambda e: e[1].meta.get("revision", "").upper())
+            warnings.append(f"SOP-{number}: several revisions present ({names}); "
+                            f"treating {newest[0].name} as current - "
+                            f"move superseded revisions to old/")
+            current[number] = newest
+
+    index_path = next((p for p in docs if p.stem == INDEX_STEM), None)
+    if index_path is None:
+        warnings.append(f"no {INDEX_STEM}.md found; the register was not checked")
+        return errors, warnings
+
+    register = next(_register_rows(docs[index_path]), None)
+    if register is None:
+        warnings.append(f"{index_path.name}: no SOP register table with a 'Rev.' column")
+        return errors, warnings
+
+    block, columns = register
+    rev_col = columns.get("rev.", columns.get("rev"))
+    listed = {}
+    for row in block["rows"]:
+        number = _sop_number(row[0])
+        if number:
+            listed[number] = row
+
+    for number, (path, doc) in sorted(current.items()):
+        row = listed.get(number)
+        if row is None:
+            errors.append(f"SOP-{number} ({path.name}) is missing from the register "
+                          f"in {index_path.name}")
+            continue
+        want = doc.meta.get("revision", "").replace("Rev.", "").strip()
+        got = row[rev_col].strip() if rev_col < len(row) else ""
+        if want and got and want.upper() != got.upper():
+            errors.append(f"SOP-{number}: register says Rev. {got}, "
+                          f"{path.name} says Rev. {want}")
+    for number in sorted(set(listed) - set(current)):
+        warnings.append(f"the register lists SOP-{number}, but no such file is in md/")
+    return errors, warnings
+
+
+def fix_register(paths):
+    """Rewrite the register's revision column from each SOP's frontmatter.
+
+    Only the revision is touched: it restates the frontmatter and carries no
+    editorial content. The procedure names and descriptions are left alone,
+    because those are judgements, not derived data.
+    """
+    docs = {path: load(path) for path in paths}
+    index_path = next((p for p in docs if p.stem == INDEX_STEM), None)
+    if index_path is None:
+        return []
+
+    wanted = {}
+    for path, doc in docs.items():
+        if path.stem == INDEX_STEM:
+            continue
+        number = _sop_number(doc.meta.get("sop", "")) or _sop_number(path.stem)
+        revision = doc.meta.get("revision", "").replace("Rev.", "").strip()
+        if not number or not revision:
+            continue
+        # with several revisions present, the register should name the newest
+        if number not in wanted or revision.upper() > wanted[number].upper():
+            wanted[number] = revision
+
+    lines = index_path.read_text(encoding="utf-8").split("\n")
+    changes, rev_col, in_register = [], None, False
+    for n, line in enumerate(lines):
+        if not line.lstrip().startswith("|"):
+            in_register = False
+            rev_col = None
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        lowered = [c.lower().rstrip(".") for c in cells]
+        if "sop" in lowered and "rev" in lowered:
+            rev_col = lowered.index("rev")
+            in_register = True
+            continue
+        if not in_register or rev_col is None or rev_col >= len(cells):
+            continue
+        number = _sop_number(cells[0])
+        if number is None or number not in wanted:
+            continue
+        if cells[rev_col].upper() == wanted[number].upper():
+            continue
+        changes.append(f"SOP-{number}: register Rev. {cells[rev_col]} "
+                       f"-> Rev. {wanted[number]}")
+        cells[rev_col] = wanted[number]
+        lines[n] = "| " + " | ".join(cells) + " |"
+
+    if changes:
+        index_path.write_text("\n".join(lines), encoding="utf-8")
+    return changes
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("inputs", nargs="+", help=".md files or a directory")
+    ap.add_argument("--fix", action="store_true",
+                    help="update the index register's revision column from the "
+                         "SOP frontmatter, then re-check")
     args = ap.parse_args()
 
     targets = []
@@ -112,7 +260,19 @@ def main():
         item = Path(item)
         targets.extend(sorted(item.glob("*.md")) if item.is_dir() else [item])
 
+    if args.fix and len(targets) > 1:
+        for change in fix_register(targets) or ["register revisions already match"]:
+            print(f"fixed   {change}")
+
     failed = False
+    if len(targets) > 1:
+        errors, warnings = check_collection(targets)
+        for message in errors:
+            print(f"ERROR   {message}")
+        for message in warnings:
+            print(f"warn    {message}")
+        failed = failed or bool(errors)
+
     for target in targets:
         errors, warnings = check_file(target)
         if not errors and not warnings:
