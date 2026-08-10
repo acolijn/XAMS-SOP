@@ -1,0 +1,343 @@
+#!/usr/bin/env python3
+"""Render an XAMS SOP markdown file to PDF in the canonical house style.
+
+    md_to_pdf.py input.md [-o output.pdf]
+    md_to_pdf.py input.md --outdir ../XAMS_Operations_Manual_2026-08-07
+"""
+
+import argparse
+import re
+from pathlib import Path
+
+from reportlab.lib import colors
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.platypus import (BaseDocTemplate, CondPageBreak, Frame, Image,
+                                KeepTogether, PageBreak, PageTemplate, Paragraph,
+                                Spacer, Table, TableStyle)
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfbase.pdfmetrics import stringWidth
+
+import sop_style as st
+from sop_doc import inline, load
+
+META_LAYOUT = [
+    ("Document", "document"),
+    ("Revision", "revision"),
+    ("Author", "author"),
+    ("Date", "date"),
+    ("Location", "location"),
+    ("Status", "status"),
+]
+
+
+def _meta_table(meta):
+    values = dict(meta)
+    values.setdefault("document", meta.get("sop", ""))
+    data = []
+    for i in range(0, len(META_LAYOUT), 2):
+        row = []
+        for label, key in META_LAYOUT[i:i + 2]:
+            row.append(Paragraph(label, st.S_META_LABEL))
+            row.append(Paragraph(inline(values.get(key, "")), st.S_META_VALUE))
+        data.append(row)
+    tbl = Table(data, colWidths=st.META_COLS, rowHeights=[st.META_ROW_H] * len(data))
+    style = [
+        ("GRID", (0, 0), (-1, -1), 0.6, st.GRID),
+        ("BACKGROUND", (0, 0), (0, -1), st.BG_META_LABEL),
+        ("BACKGROUND", (2, 0), (2, -1), st.BG_META_LABEL),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 8.5),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 8.5),
+    ]
+    tbl.setStyle(TableStyle(style))
+    return tbl
+
+
+def _banner(block):
+    spec = st.BANNER_KINDS[block["kind"]]
+    para_style = ParagraphStyle(
+        f"banner_{block['kind']}", fontName="Helvetica-Bold" if spec["bold"] else "Helvetica",
+        fontSize=spec["size"], leading=spec["size"] + 2.6, textColor=spec["color"],
+    )
+    tbl = Table([[Paragraph(inline(block["text"]), para_style)]],
+                colWidths=[st.CONTENT_WIDTH])
+    style_cmds = [
+        ("BACKGROUND", (0, 0), (-1, -1), spec["bg"]),
+        ("LEFTPADDING", (0, 0), (-1, -1), 9),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 9),
+        ("TOPPADDING", (0, 0), (-1, -1), 10),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+    ]
+    if spec["border"]:
+        style_cmds.append(("BOX", (0, 0), (-1, -1), 1.2, spec["border"]))
+    tbl.setStyle(TableStyle(style_cmds))
+    return tbl
+
+
+def _section(block):
+    tbl = Table([[Paragraph(inline(block["text"]), st.S_SECTION)]],
+                colWidths=[st.CONTENT_WIDTH], rowHeights=[st.SECTION_BAR_H])
+    tbl.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), st.GREEN),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 14.2),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 9),
+    ]))
+    return tbl
+
+
+def _row(block):
+    kind = block["kind"]
+    spec = st.row_style(kind)
+    tbl = Table(
+        [[Paragraph(kind, st.label_style(kind)),
+          Paragraph(inline(block["text"]), st.body_style(kind))]],
+        colWidths=st.ROW_COLS,
+    )
+    tbl.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), spec["bg"]),
+        ("BOX", (0, 0), (-1, -1), 0.6, st.GRID),
+        ("LINEAFTER", (0, 0), (0, 0), 0.4, st.GRID),
+        ("VALIGN", (0, 0), (0, 0), "MIDDLE"),
+        ("VALIGN", (1, 0), (1, 0), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), st.ROW_PAD),
+        ("RIGHTPADDING", (0, 0), (-1, -1), st.ROW_PAD),
+        ("TOPPADDING", (0, 0), (-1, -1), st.ROW_PAD),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), st.ROW_PAD),
+    ]))
+    return tbl
+
+
+BIND_MAX_HEIGHT = 230.0     # a section bar is only bound to a shorter neighbour
+
+
+def _height(flowables):
+    total = 0.0
+    for flowable in flowables:
+        # KeepTogether cannot be measured itself; measure what it holds
+        if isinstance(flowable, KeepTogether):
+            total += _height(flowable._content)
+            continue
+        try:
+            total += flowable.wrap(st.CONTENT_WIDTH, 10_000)[1]
+        except Exception:                       # noqa: BLE001 - unmeasurable, assume large
+            return float("inf")
+    return total
+
+
+BOX_BG = {
+    "action": st.BG_ACTION, "verify": st.BG_VERIFY, "stop": st.BG_STOP,
+    "note": st.BG_NOTE, "info": st.BG_NOTE, "warning": st.BG_STOP,
+}
+
+
+def _box(block, base_dir, width):
+    inner = []
+    for child in block["blocks"]:
+        inner.extend(_flowables(child, base_dir, width - 2 * 10, nested=True))
+    tbl = Table([[inner]], colWidths=[width])
+    cmds = [
+        ("BACKGROUND", (0, 0), (-1, -1), BOX_BG.get(block["kind"], st.BG_NOTE)),
+        ("LEFTPADDING", (0, 0), (-1, -1), 10),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+        ("TOPPADDING", (0, 0), (-1, -1), 8),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+    ]
+    if block["kind"] == "warning":
+        cmds.append(("BOX", (0, 0), (-1, -1), 1.2, st.RED))
+    tbl.setStyle(TableStyle(cmds))
+    return tbl
+
+
+def _plain_table(block, width):
+    """Two-column label/value grid as used inside callout boxes."""
+    label_w = min(140.0, width * 0.32)
+    data = [[Paragraph(inline(row[0]), st.S_DEFTERM),
+             Paragraph(inline(row[1] if len(row) > 1 else ""), st.S_BODY)]
+            for row in block["rows"]]
+    tbl = Table(data, colWidths=[label_w, width - label_w])
+    tbl.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 0),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("TOPPADDING", (0, 0), (-1, -1), 3),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+    ]))
+    return tbl
+
+
+def _column_widths(block, ncols, total=None):
+    """Share the width out by measured text, never splitting a word.
+
+    Character counts are a poor proxy: a column of short codes like "SOP-006"
+    was coming out narrower than the code itself and wrapping onto two lines.
+    """
+    total = total or st.CONTENT_WIDTH
+    padding = 16.0                      # left + right cell padding
+    header = block.get("header") or []
+    rows = block["rows"]
+
+    def measure(text, bold):
+        plain = re.sub(r"[*`~^]", "", text)
+        font = "Helvetica-Bold" if bold else "Helvetica"
+        return stringWidth(plain, font, st.S_TABLE_CELL.fontSize)
+
+    minimum, wanted = [], []
+    for i in range(ncols):
+        cells = [(header[i], True)] if i < len(header) else []
+        cells += [(r[i], False) for r in rows if i < len(r)]
+        # a column must fit its widest single word, or the text breaks mid-word
+        widest_word = max((measure(word, bold)
+                           for text, bold in cells for word in text.split() or [""]),
+                          default=0)
+        minimum.append(min(widest_word + padding, total * 0.6))
+        wanted.append(min(max((measure(t, b) for t, b in cells), default=0) + padding,
+                          total * 0.6))
+
+    if sum(wanted) <= total:                    # everything fits on one line
+        slack = total - sum(wanted)
+        share = sum(wanted) or 1
+        return [w + slack * w / share for w in wanted]
+
+    slack = total - sum(minimum)
+    if slack <= 0:                              # nothing fits; fall back to equal
+        return [total / ncols] * ncols
+    extra = [max(w - m, 0) for w, m in zip(wanted, minimum)]
+    share = sum(extra) or 1
+    return [m + slack * e / share for m, e in zip(minimum, extra)]
+
+
+def _table(block, base_dir):
+    head = [Paragraph(inline(c), st.S_TABLE_HEAD) for c in block["header"]]
+    body = [[Paragraph(inline(c), st.S_TABLE_CELL) for c in r] for r in block["rows"]]
+    ncols = max(len(block["header"]), 1)
+    tbl = Table([head] + body, colWidths=_column_widths(block, ncols), repeatRows=1)
+    tbl.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), st.GREEN),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, st.BG_TABLE_ZEBRA]),
+        ("LINEBELOW", (0, 0), (-1, -2), 0.4, st.GRID),
+        ("BOX", (0, 0), (-1, -1), 0.6, st.GRID),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 8),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+        ("TOPPADDING", (0, 0), (-1, -1), 5.5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5.5),
+    ]))
+    return tbl
+
+
+def _image(block, base_dir):
+    path = (base_dir / block["path"]).resolve()
+    if not path.exists():
+        return Paragraph(inline(f"[missing image: {block['path']}]"), st.S_CAPTION)
+    iw, ih = ImageReader(str(path)).getSize()
+    width_spec = block.get("width")
+    if width_spec and width_spec.endswith("%"):
+        target = st.CONTENT_WIDTH * float(width_spec[:-1]) / 100.0
+    elif width_spec:
+        target = float(width_spec.rstrip("pt"))
+    else:
+        target = min(st.CONTENT_WIDTH, iw)
+    target = min(target, st.CONTENT_WIDTH)
+    img = Image(str(path), width=target, height=target * ih / iw)
+    img.hAlign = "CENTER"
+    if block["caption"]:
+        return KeepTogether([img, Paragraph(inline(block["caption"]), st.S_CAPTION)])
+    return img
+
+
+def _flowables(block, base_dir, width=st.CONTENT_WIDTH, nested=False):
+    kind = block["type"]
+    if kind == "banner":
+        return [_banner(block), Spacer(1, 11.4)]
+    if kind == "box":
+        return [Spacer(1, 7), _box(block, base_dir, width), Spacer(1, 7)]
+    if kind == "section":
+        # a bar with nothing under it looks broken: demand some room first
+        return [CondPageBreak(150), _section(block), Spacer(1, 8.5)]
+    if kind == "step":
+        return [Paragraph(inline(block["text"]), st.S_STEP)]
+    if kind == "row":
+        return [_row(block)]
+    if kind == "para":
+        return [Spacer(1, 6), Paragraph(inline(block["text"]), st.S_BODY), Spacer(1, 6)]
+    if kind == "bullets":
+        return [Spacer(1, 6)] + [Paragraph(inline(i), st.S_BULLET, bulletText="\u2022")
+                                 for i in block["items"]]
+    if kind == "table":
+        table = _plain_table(block, width) if block.get("style") == "plain" \
+            else _table(block, base_dir)
+        # a very short table should not be split; longer ones may flow onto the
+        # next page, where repeatRows redraws the header
+        if not nested and len(block["rows"]) <= 4:
+            table = KeepTogether(table)
+        return [Spacer(1, 8), table, Spacer(1, 8)]
+    if kind == "image":
+        return [Spacer(1, 8), _image(block, base_dir), Spacer(1, 8)]
+    if kind == "pagebreak":
+        return [PageBreak()]
+    return []
+
+
+def build_story(doc, base_dir):
+    story = [
+        Paragraph(inline(doc.meta.get("title", "")).upper(), st.S_TITLE),
+    ]
+    subtitle = doc.meta.get("subtitle")
+    if subtitle:
+        story.append(Paragraph(inline(subtitle), st.S_SUBTITLE))
+    story.append(_meta_table(doc.meta))
+    story.append(Spacer(1, 11.4))
+
+    for block in doc.blocks:
+        story.extend(_flowables(block, base_dir))
+    return story
+
+
+def render(md_path, out_path=None, outdir=None):
+    doc = load(md_path)
+    base_dir = Path(md_path).parent
+    if out_path is None:
+        out_path = Path(outdir or base_dir) / doc.output_name
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    footer_text = doc.footer
+
+    def on_page(canvas, _doc):
+        canvas.saveState()
+        canvas.setFont("Helvetica-Bold", st.FOOTER_SIZE)
+        canvas.setFillColor(st.GREEN)
+        canvas.drawString(st.MARGIN_X, st.FOOTER_Y, footer_text)
+        canvas.setFont("Helvetica", st.FOOTER_SIZE)
+        canvas.drawRightString(st.PAGESIZE[0] - st.MARGIN_X, st.FOOTER_Y,
+                               f"Page {canvas.getPageNumber()}")
+        canvas.restoreState()
+
+    pdf = BaseDocTemplate(
+        str(out_path), pagesize=st.PAGESIZE,
+        leftMargin=st.MARGIN_X, rightMargin=st.MARGIN_X,
+        topMargin=st.MARGIN_TOP, bottomMargin=st.MARGIN_BOTTOM,
+        title=doc.meta.get("title", ""), author=doc.meta.get("author", ""),
+        subject=doc.meta.get("subtitle", ""),
+    )
+    frame = Frame(st.MARGIN_X, st.MARGIN_BOTTOM, st.CONTENT_WIDTH,
+                  st.PAGESIZE[1] - st.MARGIN_TOP - st.MARGIN_BOTTOM, id="body",
+                  leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
+    pdf.addPageTemplates([PageTemplate(id="sop", frames=[frame], onPage=on_page)])
+    pdf.build(build_story(doc, base_dir))
+    return out_path
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("input", help="markdown source")
+    ap.add_argument("-o", "--output", help="explicit output PDF path")
+    ap.add_argument("--outdir", help="directory for the PDF (name taken from frontmatter)")
+    args = ap.parse_args()
+    out = render(args.input, args.output, args.outdir)
+    print(f"wrote {out}")
+
+
+if __name__ == "__main__":
+    main()

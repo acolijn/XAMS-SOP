@@ -1,0 +1,14 @@
+# Superseded PDFs, kept only for reference
+old/
+
+# Generated manuals - rebuild with tools/build.py
+XAMS_Operations_Manual_*/
+XAMS_Operations_Manual_*.zip
+
+# Python environment and caches
+tools/.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
