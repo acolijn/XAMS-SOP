@@ -1,7 +1,7 @@
 ---
 sop: SOP-002
-title: Gxe Circulation Through Hot Getter
-subtitle: STANDARD OPERATING PROCEDURE - purify xenon before cooling
+title: GXe Circulation Through Hot Getter
+subtitle: Purify xenon before cooling
 revision: Rev. C
 author: Auke-Pieter Colijn
 date: 7 August 2026

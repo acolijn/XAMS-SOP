@@ -1,7 +1,7 @@
 ---
 sop: SOP-005
-title: Normal Lxe Operation
-subtitle: STANDARD OPERATING PROCEDURE - normal operation after LXe filling
+title: Normal LXe Operation
+subtitle: Normal operation after LXe filling
 revision: Rev. A
 author: Auke-Pieter Colijn
 date: 7 August 2026

@@ -27,13 +27,18 @@ filename plus the revision.
     ---
     sop: SOP-009
     title: Short Procedure Name
-    subtitle: STANDARD OPERATING PROCEDURE - one line saying what it does
+    subtitle: One line saying what the procedure is for
     revision: Rev. A
     author: Auke-Pieter Colijn
     date: 7 August 2026
     location: Nikhef - XAMS
     status: Initial release
     ---
+
+The `subtitle:` is one short sentence saying what the procedure is for. Do not
+prefix it with "STANDARD OPERATING PROCEDURE" - that is obvious from the
+document. It is printed under the title and reused as the Purpose column of the
+manual index, so write it as a standalone phrase starting with a capital.
 
 **Structure**
 
@@ -98,7 +103,7 @@ A complete, valid document. Follow this shape.
     ---
     sop: SOP-009
     title: Cold Trap Regeneration
-    subtitle: STANDARD OPERATING PROCEDURE - regenerate the cold trap after recovery
+    subtitle: Regenerate the cold trap after a recovery
     revision: Rev. A
     author: Auke-Pieter Colijn
     date: 7 August 2026

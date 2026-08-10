@@ -6,7 +6,7 @@ editor and render to the house PDF style. A document looks like:
     ---
     sop: SOP-101
     title: PMT Power On / Off
-    subtitle: STANDARD OPERATING PROCEDURE - detector operations
+    subtitle: Safely power the photomultiplier tube on and off
     revision: Rev. A
     author: Auke-Pieter Colijn
     date: 7 August 2026

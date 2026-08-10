@@ -1,7 +1,7 @@
 ---
 sop: SOP-006
-title: Xenon Recovery Procedure
-subtitle: STANDARD OPERATING PROCEDURE - transfer xenon from detector to storage bottles
+title: Xenon Recovery
+subtitle: Transfer xenon from detector to storage bottles
 revision: Rev. C
 author: Auke-Pieter Colijn
 date: 7 August 2026

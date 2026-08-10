@@ -50,13 +50,14 @@ The second command writes `XAMS_Operations_Manual_<today>/`.
 run if `check_md.py` reports an error. Useful flags:
 
     build.py --outdir dist                      # somewhere else
-    build.py --clean                            # drop the PDFs already in outdir first
+    build.py --no-clean                         # keep existing PDFs, overwrite in place
     build.py --srcdir md --check --refdir OLD   # diff text against older PDFs
     build.py --force                            # render despite validation errors
 
-Rebuilding into an existing directory is safe: files are overwritten in place.
-Use `--clean` when a document was renamed or deleted and you want its stale PDF
-gone. `--clean` removes only `*.pdf` from the output directory, nothing else.
+The output directory is cleaned before each build, so a renamed or deleted
+document cannot leave a stale PDF behind. Cleaning removes only `*.pdf` from the
+top level of that directory and nothing else - the P&ID is copied back in from
+`md/assets/` on every build. Pass `--no-clean` to keep what is there.
 
 Render a single document while editing:
 
@@ -81,7 +82,7 @@ Standard GitHub-flavored markdown, so the sources preview correctly in VS Code.
 
 | Construct | Meaning |
 | --- | --- |
-| frontmatter keys | title block and footer of the document |
+| frontmatter keys | title block and footer; `title:` and `subtitle:` also fill the index register |
 | `## A. Name` | section, drawn as a green bar |
 | `### 1. Name` | numbered step |
 | `> **ACTION** — text` | procedure row; also `VERIFY`, `STOP`, `NOTE` |
@@ -122,10 +123,19 @@ When you bump a revision in an SOP, update the register with:
 
     tools/.venv/bin/python tools/check_md.py md --fix
 
-That rewrites only the register's revision column, from the frontmatter of each
-SOP. Procedure names and descriptions are never touched - those are editorial,
-the revision is not. The build never edits your sources; run `--fix` yourself so
-the change shows up in a diff.
+That rewrites the derived columns of **every** SOP table in the index -
+`Rev.` from `revision:`, `Procedure` from `title:`, `Purpose` from `subtitle:`
+and `Status` from `status:` - so the index cannot drift from the procedures it
+lists. Any other column, such as "Condition to move on", is left alone, and so
+is prose outside the tables.
+
+`Status` is the one derived value that is not copied verbatim: a `status:`
+containing "draft" or "placeholder" shows as `DRAFT`, anything else as
+`Released`. The build
+never edits your sources; run `--fix` yourself so the change shows up in a diff.
+
+A revision mismatch is an error and blocks the build; a stale procedure name or
+purpose is only a warning.
 
 ## Tools
 

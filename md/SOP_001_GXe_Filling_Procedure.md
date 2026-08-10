@@ -1,7 +1,7 @@
 ---
 sop: SOP-001
-title: GXe Filling Procedure
-subtitle: STANDARD OPERATING PROCEDURE - initial gas fill before purification
+title: GXe Filling
+subtitle: Initial gas fill before purification
 revision: Rev. D
 author: Auke-Pieter Colijn
 date: 5 August 2026

@@ -1,7 +1,7 @@
 ---
 sop: SOP-101
 title: PMT Power On and Off
-subtitle: STANDARD OPERATING PROCEDURE - safely power the photomultiplier tube on and off
+subtitle: Safely power the photomultiplier tube on and off
 revision: Rev. A
 author: Auke-Pieter Colijn
 date: 10 August 2026

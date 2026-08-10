@@ -1,7 +1,7 @@
 ---
 sop: SOP-0XX
 title: Short Procedure Name
-subtitle: STANDARD OPERATING PROCEDURE - one line saying what it does
+subtitle: One line saying what the procedure is for
 revision: Rev. A
 author: Auke-Pieter Colijn
 date: 1 January 2026

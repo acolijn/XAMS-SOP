@@ -1,10 +1,10 @@
 ---
 sop: SOP-007
 title: Emergency Xenon Recuperation
-subtitle: STANDARD OPERATING PROCEDURE - night-time emergency response
+subtitle: Night-time emergency response
 revision: Rev. B
 author: Auke-Pieter Colijn
-date: 
+date: 10 August 2026
 location: Nikhef - XAMS
 status: Initial release
 ---

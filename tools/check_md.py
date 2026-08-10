@@ -19,6 +19,19 @@ from sop_doc import ALERT_RE, QUOTE_ROW_RE, load
 
 REQUIRED_META = ("sop", "title", "revision", "author", "date", "location", "status")
 SOP_RE = re.compile(r"SOP[-_ ]?(\d+)", re.I)
+
+# Register columns that merely restate an SOP's frontmatter. They are checked
+# and can be rewritten by --fix, so the register cannot drift from the sources.
+# header name -> (frontmatter key, mismatch is an error)
+DERIVED_COLUMNS = {"rev": ("revision", True),
+                   "procedure": ("title", False),
+                   "purpose": ("subtitle", False),
+                   "status": ("status", False)}
+
+# `status:` in the frontmatter is a change note ("Updated release", "Layout
+# update"), printed on the cover. The index needs the operational question
+# instead: is this approved for use, or still a placeholder?
+DRAFT_WORDS = ("draft", "placeholder")
 INDEX_STEM = "XAMS_Operations_Manual_Index"
 ROW_LABELS = ("ACTION", "VERIFY", "STOP", "NOTE")
 ALERT_TYPES = ("NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION")
@@ -108,6 +121,16 @@ def check_file(path):
     return errors, warnings
 
 
+def _derived_value(doc, key):
+    """The frontmatter value as an index table should show it."""
+    value = doc.meta.get(key, "").strip()
+    if key == "revision":
+        return value.replace("Rev.", "").strip()
+    if key == "status":
+        return "DRAFT" if any(w in value.lower() for w in DRAFT_WORDS) else "Released"
+    return value
+
+
 def _sop_number(text):
     """'SOP-004', 'SOP_004_LXe_...' and a bare '004' all mean SOP-004."""
     text = (text or "").strip()
@@ -115,17 +138,27 @@ def _sop_number(text):
     return match.group(1).lstrip("0").zfill(3) if match else None
 
 
-def _register_rows(doc):
-    """Rows of the SOP register table in the index document."""
+def _sop_tables(doc):
+    """Every table in the index keyed by SOP number, with its column map.
+
+    Sections 1-3 group the procedures editorially and the register lists them
+    all; each may restate frontmatter in a column, and all of them are kept in
+    step with the sources.
+    """
     for block in doc.blocks:
         if block["type"] != "table":
             continue
-        header = [h.lower().strip() for h in (block.get("header") or [])]
-        if header[:1] == ["sop"] and "procedure" in header:
-            columns = {name: i for i, name in enumerate(header)}
-            if "rev." in columns or "rev" in columns:
-                yield block, columns
-                return
+        header = [h.lower().strip().rstrip(".") for h in (block.get("header") or [])]
+        if header[:1] == ["sop"]:
+            yield block, {name: i for i, name in enumerate(header)}
+
+
+def _register_rows(doc):
+    """The full register: the SOP table carrying a revision column."""
+    for block, columns in _sop_tables(doc):
+        if "rev" in columns:
+            yield block, columns
+            return
 
 
 def check_collection(paths):
@@ -170,35 +203,40 @@ def check_collection(paths):
         return errors, warnings
 
     block, columns = register
-    rev_col = columns.get("rev.", columns.get("rev"))
-    listed = {}
-    for row in block["rows"]:
-        number = _sop_number(row[0])
-        if number:
-            listed[number] = row
-
-    for number, (path, doc) in sorted(current.items()):
-        row = listed.get(number)
-        if row is None:
+    listed = {_sop_number(row[0]) for row in block["rows"] if _sop_number(row[0])}
+    for number, (path, _) in sorted(current.items()):
+        if number not in listed:
             errors.append(f"SOP-{number} ({path.name}) is missing from the register "
                           f"in {index_path.name}")
-            continue
-        want = doc.meta.get("revision", "").replace("Rev.", "").strip()
-        got = row[rev_col].strip() if rev_col < len(row) else ""
-        if want and got and want.upper() != got.upper():
-            errors.append(f"SOP-{number}: register says Rev. {got}, "
-                          f"{path.name} says Rev. {want}")
+
+    for table, columns in _sop_tables(docs[index_path]):
+        for row in table["rows"]:
+            number = _sop_number(row[0])
+            entry = current.get(number)
+            if entry is None:
+                continue
+            doc = entry[1]
+            for name, (key, fatal) in DERIVED_COLUMNS.items():
+                column = columns.get(name)
+                if column is None or column >= len(row):
+                    continue
+                want = _derived_value(doc, key)
+                got = row[column].strip()
+                if not want or not got or want.lower() == got.lower():
+                    continue
+                message = (f"SOP-{number}: index {name} is {got!r}, the SOP says "
+                           f"{want!r} - run check_md.py md --fix")
+                (errors if fatal else warnings).append(message)
     for number in sorted(set(listed) - set(current)):
         warnings.append(f"the register lists SOP-{number}, but no such file is in md/")
     return errors, warnings
 
 
 def fix_register(paths):
-    """Rewrite the register's revision column from each SOP's frontmatter.
+    """Rewrite the register's derived columns from each SOP's frontmatter.
 
-    Only the revision is touched: it restates the frontmatter and carries no
-    editorial content. The procedure names and descriptions are left alone,
-    because those are judgements, not derived data.
+    Only columns listed in DERIVED_COLUMNS are touched - they restate the
+    frontmatter and carry no editorial content. Any other column is left alone.
     """
     docs = {path: load(path) for path in paths}
     index_path = next((p for p in docs if p.stem == INDEX_STEM), None)
@@ -210,36 +248,40 @@ def fix_register(paths):
         if path.stem == INDEX_STEM:
             continue
         number = _sop_number(doc.meta.get("sop", "")) or _sop_number(path.stem)
-        revision = doc.meta.get("revision", "").replace("Rev.", "").strip()
+        revision = _derived_value(doc, "revision")
         if not number or not revision:
             continue
-        # with several revisions present, the register should name the newest
-        if number not in wanted or revision.upper() > wanted[number].upper():
-            wanted[number] = revision
+        # with several revisions present, the register should follow the newest
+        if number not in wanted or revision.upper() > wanted[number][0].upper():
+            wanted[number] = (revision, doc)
 
     lines = index_path.read_text(encoding="utf-8").split("\n")
-    changes, rev_col, in_register = [], None, False
+    changes, columns, in_register = [], None, False
     for n, line in enumerate(lines):
         if not line.lstrip().startswith("|"):
-            in_register = False
-            rev_col = None
+            in_register, columns = False, None
             continue
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
         lowered = [c.lower().rstrip(".") for c in cells]
-        if "sop" in lowered and "rev" in lowered:
-            rev_col = lowered.index("rev")
+        if lowered[:1] == ["sop"]:
+            columns = {name: i for i, name in enumerate(lowered)}
             in_register = True
             continue
-        if not in_register or rev_col is None or rev_col >= len(cells):
+        if not in_register or not columns:
             continue
         number = _sop_number(cells[0])
         if number is None or number not in wanted:
             continue
-        if cells[rev_col].upper() == wanted[number].upper():
-            continue
-        changes.append(f"SOP-{number}: register Rev. {cells[rev_col]} "
-                       f"-> Rev. {wanted[number]}")
-        cells[rev_col] = wanted[number]
+        revision, doc = wanted[number]
+        for name, (key, _) in DERIVED_COLUMNS.items():
+            column = columns.get(name)
+            if column is None or column >= len(cells):
+                continue
+            want = revision if key == "revision" else _derived_value(doc, key)
+            if not want or cells[column].lower() == want.lower():
+                continue
+            changes.append(f"SOP-{number} {name}: {cells[column]!r} -> {want!r}")
+            cells[column] = want
         lines[n] = "| " + " | ".join(cells) + " |"
 
     if changes:
@@ -261,7 +303,7 @@ def main():
         targets.extend(sorted(item.glob("*.md")) if item.is_dir() else [item])
 
     if args.fix and len(targets) > 1:
-        for change in fix_register(targets) or ["register revisions already match"]:
+        for change in fix_register(targets) or ["register already matches the sources"]:
             print(f"fixed   {change}")
 
     failed = False

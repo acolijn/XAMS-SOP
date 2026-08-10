@@ -1,7 +1,7 @@
 ---
 sop: SOP-103
 title: TPC Voltages On / Off
-subtitle: STANDARD OPERATING PROCEDURE - detector operations placeholder
+subtitle: Detector operations placeholder
 revision: Rev. A
 author: Auke-Pieter Colijn
 date: 7 August 2026

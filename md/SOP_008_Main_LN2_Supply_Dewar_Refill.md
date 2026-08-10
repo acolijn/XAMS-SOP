@@ -1,7 +1,7 @@
 ---
 sop: SOP-008
 title: Main LN2 Supply Dewar Refill
-subtitle: STANDARD OPERATING PROCEDURE - schedule and prepare the main LN2 dewar for refill
+subtitle: Schedule and prepare the main LN2 dewar for refill
 revision: Rev. A
 author: Auke-Pieter Colijn
 date: 7 August 2026

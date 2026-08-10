@@ -1,10 +1,10 @@
 ---
 sop: SOP-004
-title: LXe Filling Procedure
-subtitle: STANDARD OPERATING PROCEDURE - fill the detector with liquid xenon
+title: LXe Filling
+subtitle: Fill the detector with liquid xenon
 revision: Rev. E
 author: Auke-Pieter Colijn
-date: 
+date: 10 August 2026
 location: Nikhef - XAMS
 status: Updated release
 ---

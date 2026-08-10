@@ -1,7 +1,7 @@
 ---
 sop: SOP-104
 title: PMT Gain Calibration
-subtitle: STANDARD OPERATING PROCEDURE - LED gain calibration of the top and bottom PMTs
+subtitle: LED gain calibration of the top and bottom PMTs
 revision: Rev. B
 author: Auke-Pieter Colijn
 date: 7 August 2026

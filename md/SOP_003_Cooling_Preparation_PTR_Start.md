@@ -1,7 +1,7 @@
 ---
 sop: SOP-003
-title: Cooling Preparation And Ptr Start
-subtitle: STANDARD OPERATING PROCEDURE - prepare cooling after GXe purification
+title: Cooling Preparation and PTR Start
+subtitle: Prepare cooling after GXe purification
 revision: Rev. D
 author: Auke-Pieter Colijn
 date: 7 August 2026
