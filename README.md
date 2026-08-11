@@ -21,7 +21,6 @@ therefore a one-line edit, not a rename.
 | `md/` | one markdown file per SOP, plus the hand-written index, `figs/` and `assets/` |
 | `tools/` | the renderer, validator and build script |
 | `XAMS_Operations_Manual_<date>/` | generated output, not tracked in git |
-| `old/` | superseded PDFs, kept for reference only |
 
 ## Installation
 
@@ -47,8 +46,16 @@ The second command writes `XAMS_Operations_Manual_<today>/`.
     tools/.venv/bin/python tools/build.py          # render all PDFs
 
 `build.py` writes to `XAMS_Operations_Manual_<today>/` by default and refuses to
-run if `check_md.py` reports an error. Useful flags:
+run if `check_md.py` reports an error. Besides one PDF per document it writes
+`XAMS_Operations_Manual_Complete.pdf` - the whole manual in one file, in reading
+order, with a bookmark per document. That is the file to print.
 
+Every document is rendered to an even page count, so in the combined file each
+one still begins on a right-hand page when printed double-sided. Where the
+content ends on an odd page the last page says so, rather than looking like a
+printing fault. Useful flags:
+
+    build.py --no-combined                      # skip the single-file print copy
     build.py --outdir dist                      # somewhere else
     build.py --no-clean                         # keep existing PDFs, overwrite in place
     build.py --srcdir md --check --refdir OLD   # diff text against older PDFs

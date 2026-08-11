@@ -4,8 +4,11 @@
     build.py                       # md/ -> XAMS_Operations_Manual_<today>/
     build.py --srcdir md --outdir dist
     build.py --check               # also compare text against the previous PDF
+    build.py --no-combined         # skip the single-file print copy
 
 Files listed in md/.passthrough are copied instead of rendered (e.g. the P&ID).
+Every build also writes XAMS_Operations_Manual_Complete.pdf: the whole manual in
+one file, in reading order, for printing in a single job.
 """
 
 import argparse
@@ -37,6 +40,62 @@ def check(old_pdf, new_pdf):
     return lost, gained
 
 
+COMBINED_NAME = "XAMS_Operations_Manual_Complete.pdf"
+
+
+def _reading_order(pdf, index_stem="XAMS_Operations_Manual_Index"):
+    """Sort key: the index first, then by SOP number, then anything else."""
+    stem = pdf.stem
+    if stem.startswith(index_stem):
+        return (0, 0, stem)
+    match = re.match(r"SOP_(\d+)_", stem)
+    if match:
+        return (1, int(match.group(1)), stem)
+    return (2, 0, stem)                     # the P&ID and any other passthrough
+
+
+def combine(pdfs, target, title):
+    """Merge the manual into one file for printing.
+
+    Every document is rendered to an even page count, so in the combined file
+    each one still starts on a right-hand page when printed double-sided.
+
+    Each source keeps its own outline, one level down, under a top-level entry
+    for the document itself.
+    """
+    import pymupdf
+    out = pymupdf.open()
+    toc = []
+    for pdf in pdfs:
+        src = pymupdf.open(pdf)
+        offset = out.page_count
+        title_text = src.metadata.get("title") or ""
+        if not title_text or title_text.lower().endswith(".pdf"):
+            title_text = pdf.stem.replace("_", " ")     # passthrough files
+        toc.append([1, title_text, offset + 1])
+        for level, text, page in src.get_toc():
+            toc.append([level + 1, text, page + offset])
+        out.insert_pdf(src)
+        src.close()
+
+    # a passthrough of odd length can still leave the whole file odd
+    if out.page_count % 2:
+        page = out.new_page(-1)
+        page.insert_textbox(pymupdf.Rect(0, 78, page.rect.width, 100),
+                            "This page is intentionally blank.",
+                            fontname="heit", fontsize=9.5,
+                            color=(0.31, 0.31, 0.31), align=1)
+
+    out.set_metadata({"title": title, "author": "Nikhef - XAMS",
+                      "subject": "Combined print copy of the XAMS operations manual",
+                      "creator": "XAMS SOP toolchain (tools/build.py)"})
+    out.set_toc(toc)
+    out.save(target, garbage=3, deflate=True)
+    pages = out.page_count
+    out.close()
+    return pages
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--srcdir", default=str(ROOT / "md"))
@@ -47,6 +106,9 @@ def main():
     ap.add_argument("--refdir", default=None, help="PDFs to compare against")
     ap.add_argument("--force", action="store_true",
                     help="render even if check_md reports errors")
+    ap.add_argument("--combined", action=argparse.BooleanOptionalAction, default=True,
+                    help=f"also write {COMBINED_NAME}, the whole manual in one "
+                         f"file for printing (default: on)")
     ap.add_argument("--clean", action=argparse.BooleanOptionalAction, default=True,
                     help="delete the PDFs already in --outdir first (default: on); "
                          "--no-clean keeps them and overwrites in place")
@@ -125,6 +187,14 @@ def main():
                     print(f"        lost {len(lost)} words: {' '.join(lost[:12])}")
                 if gained:
                     print(f"        new  {len(gained)} words: {' '.join(gained[:12])}")
+
+    if args.combined:
+        parts = sorted((p for p in outdir.glob("*.pdf") if p.name != COMBINED_NAME),
+                       key=_reading_order)
+        if parts:
+            target = outdir / COMBINED_NAME
+            pages = combine(parts, target, f"XAMS Operations Manual - {outdir.name}")
+            print(f"wrote   {target}  ({len(parts)} documents, {pages} pages)")
     return 1 if failures else 0
 
 
