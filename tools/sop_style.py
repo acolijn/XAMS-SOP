@@ -152,6 +152,21 @@ S_TABLE_HEAD = ParagraphStyle(
 S_TABLE_CELL = ParagraphStyle(
     "tcell", fontName="Helvetica", fontSize=10, leading=13,
 )
+S_TOC_HEAD = ParagraphStyle(
+    "toc_head", fontName="Helvetica-Bold", fontSize=11, leading=14,
+    textColor=GREEN, spaceBefore=4, spaceAfter=6,
+)
+# level 0 is a section bar, level 1 a numbered step
+S_TOC = [
+    ParagraphStyle("toc0", fontName="Helvetica-Bold", fontSize=10, leading=14,
+                   textColor=GREEN_DARK, leftIndent=0, firstLineIndent=0,
+                   spaceBefore=4),
+    ParagraphStyle("toc1", fontName="Helvetica", fontSize=9.5, leading=12.5,
+                   leftIndent=16, firstLineIndent=0),
+]
+
+# a document shorter than this many steps does not need a table of contents
+TOC_MIN_STEPS = 12
 
 
 def row_style(kind):

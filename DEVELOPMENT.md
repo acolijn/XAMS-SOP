@@ -11,7 +11,7 @@ principles of NEN-EN-IEC/IEEE 82079-1:2020, *Preparation of information for use
 | 1 | conformity statement | **done** - 11 August 2026 |
 | 2 | signal words and safety messages | **done** - 11 August 2026; hazard wording needs operator review |
 | 2b | SOP-000 general hazard sheet | **done** - 11 August 2026; same review caveat |
-| 3 | document control furniture | not started |
+| 3 | document control furniture | **done** - 11 August 2026 |
 | 4 | frontmatter, template, required sections | not started |
 | 5 | content sweep | not started |
 | 6 | SOP-103 | not started |
@@ -346,7 +346,9 @@ procedure.
 
 ---
 
-## Phase 3 - document control furniture
+## Phase 3 - document control furniture - DONE
+
+*Completed 11 August 2026.*
 
 Small, mechanical, and disproportionately convincing.
 
@@ -369,6 +371,45 @@ Small, mechanical, and disproportionately convincing.
 
 **Done when:** every page of every PDF is self-identifying, and the outline pane
 shows the full step list.
+
+### Outcome
+
+All five items delivered. Every page of all 14 documents carries
+`SOP-nnn | Rev. X | Title` on the left and `Page x of y` on the right; outlines run
+from 5 to 27 entries; SOP-004, SOP-006 and SOP-007 have a contents list with dot
+leaders and page numbers.
+
+**The `NumberedCanvas` recipe named in the plan is wrong, and was not used.**
+Buffering pages and stamping the footer at save time does produce `Page x of y`,
+but the destinations of every bookmark and internal link are bound while the pages
+are being buffered, and they all collapse onto page 1. This is silent - the PDF
+looks right and only the outline is broken - so it is worth stating plainly.
+
+What replaced it: `render()` lays the document out **twice**. The first pass goes
+into an `io.BytesIO()` purely to count pages, the second writes the file with the
+total known, and the footer is painted by an ordinary `onPage` handler. The footer
+is drawn on the canvas outside the text frame, so it cannot change pagination
+between the two passes. Cost is one extra render per document, which is not
+measurable at this size.
+
+**Second trap, also silent-ish.** `multiBuild` re-runs the whole story until the
+contents list stops changing, and the bookmark key is part of each contents entry.
+The `_outline_seq` counter has to be reset in `beforeDocument()`, or the keys
+differ on every pass, no two passes compare equal, and the build dies with
+`Index entries not resolved after 10 passes`. It failed exactly this way first.
+
+**Threshold for the contents list** is 12 steps (`TOC_MIN_STEPS` in
+`sop_style.py`), which selects SOP-004, SOP-006 and SOP-007. Eight was tried first
+and pulled in five more documents of three or four pages, where a contents list
+costs a page and saves nobody anything.
+
+**Files changed:** `doc_id` and a reordered `footer` property in `sop_doc.py`;
+`S_TOC`, `S_TOC_HEAD` and `TOC_MIN_STEPS` in `sop_style.py`; `_footer_painter`,
+`SopDocTemplate`, `_plain`, `_contents`, `_render_once` and a rewritten `render` in
+`md_to_pdf.py`; the page-number regex in `build.py`.
+
+`doc_id` falls back to `sop:` until Phase 4 introduces the real key, so the footer
+reads `SOP-004` today and `XAMS-SOP-004` afterwards with no further change.
 
 ---
 

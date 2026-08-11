@@ -6,6 +6,7 @@
 """
 
 import argparse
+import io
 import re
 from pathlib import Path
 
@@ -14,6 +15,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import (BaseDocTemplate, CondPageBreak, Frame, Image,
                                 KeepTogether, PageBreak, PageTemplate, Paragraph,
                                 Spacer, Table, TableStyle)
+from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
@@ -29,6 +31,65 @@ META_LAYOUT = [
     ("Location", "location"),
     ("Status", "status"),
 ]
+
+
+def _footer_painter(footer_text, total):
+    """`onPage` handler drawing the running footer.
+
+    `total` is None on the counting pass, when the page count is not yet known.
+    """
+
+    def paint(canvas, doc):
+        canvas.saveState()
+        canvas.setFont("Helvetica-Bold", st.FOOTER_SIZE)
+        canvas.setFillColor(st.GREEN)
+        canvas.drawString(st.MARGIN_X, st.FOOTER_Y, footer_text)
+        canvas.setFont("Helvetica", st.FOOTER_SIZE)
+        page = f"Page {doc.page}" if total is None else f"Page {doc.page} of {total}"
+        canvas.drawRightString(st.PAGESIZE[0] - st.MARGIN_X, st.FOOTER_Y, page)
+        canvas.restoreState()
+
+    return paint
+
+
+class SopDocTemplate(BaseDocTemplate):
+    """Adds the PDF outline and the table-of-contents entries.
+
+    Flowables that should appear in both are tagged with `_outline` by
+    `_flowables`; a section bar is a Table and a step is a Paragraph, so a tag is
+    more reliable than inspecting the flowable itself.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._outline_seq = 0
+        self._seen_section = False
+
+    def beforeDocument(self):
+        """Reset per-pass state.
+
+        `multiBuild` re-runs the whole story until the contents list stops
+        changing. The bookmark key is part of each contents entry, so without
+        this reset the keys differ on every pass, no two passes ever compare
+        equal, and the build fails with `Index entries not resolved`.
+        """
+        self._outline_seq = 0
+        self._seen_section = False
+
+    def afterFlowable(self, flowable):
+        entry = getattr(flowable, "_outline", None)
+        if not entry:
+            return
+        text, level = entry
+        if level == 0:
+            self._seen_section = True
+        elif not self._seen_section:
+            level = 0          # a step before any section, rather than a gap
+        key = f"sop-outline-{self._outline_seq}"
+        self._outline_seq += 1
+        self.canv.bookmarkPage(key)
+        self.canv.addOutlineEntry(text, key, level=level, closed=False)
+        self.notify("TOCEntry", (level, text, self.page, key))
 
 
 def _meta_table(meta):
@@ -267,6 +328,11 @@ def _image(block, base_dir):
     return img
 
 
+def _plain(text):
+    """Markdown text as it should read in an outline or contents entry."""
+    return re.sub(r"[*`~^]", "", text).strip()
+
+
 def _flowables(block, base_dir, width=st.CONTENT_WIDTH, nested=False):
     kind = block["type"]
     if kind == "banner":
@@ -275,9 +341,13 @@ def _flowables(block, base_dir, width=st.CONTENT_WIDTH, nested=False):
         return [Spacer(1, 7), _box(block, base_dir, width), Spacer(1, 7)]
     if kind == "section":
         # a bar with nothing under it looks broken: demand some room first
-        return [CondPageBreak(150), _section(block), Spacer(1, 8.5)]
+        bar = _section(block)
+        bar._outline = (_plain(block["text"]), 0)
+        return [CondPageBreak(150), bar, Spacer(1, 8.5)]
     if kind == "step":
-        return [Paragraph(inline(block["text"]), st.S_STEP)]
+        step = Paragraph(inline(block["text"]), st.S_STEP)
+        step._outline = (_plain(block["text"]), 1)
+        return [step]
     if kind == "row":
         return [_row(block)]
     if kind == "para":
@@ -300,6 +370,13 @@ def _flowables(block, base_dir, width=st.CONTENT_WIDTH, nested=False):
     return []
 
 
+def _contents():
+    toc = TableOfContents()
+    toc.levelStyles = st.S_TOC
+    toc.dotsMinLevel = 0
+    return toc
+
+
 def build_story(doc, base_dir):
     story = [
         Paragraph(inline(doc.meta.get("title", "")).upper(), st.S_TITLE),
@@ -310,9 +387,42 @@ def build_story(doc, base_dir):
     story.append(_meta_table(doc.meta))
     story.append(Spacer(1, 11.4))
 
+    # a short procedure is easier to page through than to look up
+    if sum(b["type"] == "step" for b in doc.blocks) >= st.TOC_MIN_STEPS:
+        story.append(Paragraph("Contents", st.S_TOC_HEAD))
+        story.append(_contents())
+        story.append(Spacer(1, 11.4))
+
     for block in doc.blocks:
         story.extend(_flowables(block, base_dir))
     return story
+
+
+def _render_once(doc, base_dir, target, total):
+    """Lay the document out into `target`, returning the page count.
+
+    `multiBuild` is used because the contents list only learns its page numbers
+    on a second pass.
+    """
+    keywords = ", ".join(p for p in (doc.doc_id, "XAMS", "Nikhef",
+                                     doc.meta.get("revision", ""), "SOP") if p)
+    pdf = SopDocTemplate(
+        target, pagesize=st.PAGESIZE,
+        leftMargin=st.MARGIN_X, rightMargin=st.MARGIN_X,
+        topMargin=st.MARGIN_TOP, bottomMargin=st.MARGIN_BOTTOM,
+        title=f"{doc.doc_id} {doc.meta.get('title', '')}".strip(),
+        author=doc.meta.get("author", ""),
+        subject=doc.meta.get("subtitle", ""),
+        creator="XAMS SOP toolchain (tools/build.py)",
+        keywords=keywords,
+    )
+    frame = Frame(st.MARGIN_X, st.MARGIN_BOTTOM, st.CONTENT_WIDTH,
+                  st.PAGESIZE[1] - st.MARGIN_TOP - st.MARGIN_BOTTOM, id="body",
+                  leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
+    pdf.addPageTemplates([PageTemplate(id="sop", frames=[frame],
+                                       onPage=_footer_painter(doc.footer, total))])
+    pdf.multiBuild(build_story(doc, base_dir))
+    return pdf.page
 
 
 def render(md_path, out_path=None, outdir=None):
@@ -323,30 +433,16 @@ def render(md_path, out_path=None, outdir=None):
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    footer_text = doc.footer
-
-    def on_page(canvas, _doc):
-        canvas.saveState()
-        canvas.setFont("Helvetica-Bold", st.FOOTER_SIZE)
-        canvas.setFillColor(st.GREEN)
-        canvas.drawString(st.MARGIN_X, st.FOOTER_Y, footer_text)
-        canvas.setFont("Helvetica", st.FOOTER_SIZE)
-        canvas.drawRightString(st.PAGESIZE[0] - st.MARGIN_X, st.FOOTER_Y,
-                               f"Page {canvas.getPageNumber()}")
-        canvas.restoreState()
-
-    pdf = BaseDocTemplate(
-        str(out_path), pagesize=st.PAGESIZE,
-        leftMargin=st.MARGIN_X, rightMargin=st.MARGIN_X,
-        topMargin=st.MARGIN_TOP, bottomMargin=st.MARGIN_BOTTOM,
-        title=doc.meta.get("title", ""), author=doc.meta.get("author", ""),
-        subject=doc.meta.get("subtitle", ""),
-    )
-    frame = Frame(st.MARGIN_X, st.MARGIN_BOTTOM, st.CONTENT_WIDTH,
-                  st.PAGESIZE[1] - st.MARGIN_TOP - st.MARGIN_BOTTOM, id="body",
-                  leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
-    pdf.addPageTemplates([PageTemplate(id="sop", frames=[frame], onPage=on_page)])
-    pdf.build(build_story(doc, base_dir))
+    # `Page x of y` needs a total that only exists once the document has been
+    # laid out, so it is rendered twice: once into a throwaway buffer to count
+    # the pages, then for real. The footer is painted on the canvas outside the
+    # text frame, so adding it cannot change the pagination between the two.
+    #
+    # The obvious alternative - a canvas that buffers pages and stamps the
+    # footer at save time - breaks every bookmark and internal link, because
+    # the destinations are bound while the pages are being buffered.
+    total = _render_once(doc, base_dir, io.BytesIO(), None)
+    _render_once(doc, base_dir, str(out_path), total)
     return out_path
 
 

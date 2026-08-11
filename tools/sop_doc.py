@@ -78,11 +78,21 @@ class SopDoc:
         self.source = source
 
     @property
+    def doc_id(self):
+        """The identifier a reader uses to tell one document from another."""
+        return (self.meta.get("doc_id") or self.meta.get("document")
+                or self.meta.get("sop", ""))
+
+    @property
     def footer(self):
+        """Identity for the running footer: identifier first, then revision.
+
+        The identifier leads because that is what a reader checks a loose page
+        against; the title follows so the footer is still readable on its own.
+        """
         if self.meta.get("footer"):
             return self.meta["footer"]
-        parts = [self.meta.get("title", ""), self.meta.get("document") or self.meta.get("sop", ""),
-                 self.meta.get("revision", "")]
+        parts = [self.doc_id, self.meta.get("revision", ""), self.meta.get("title", "")]
         return " | ".join(p for p in parts if p)
 
     @property

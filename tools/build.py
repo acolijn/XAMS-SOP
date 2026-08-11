@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parent.parent
 def _words(pdf_path):
     import pymupdf
     text = " ".join(page.get_text() for page in pymupdf.open(pdf_path))
-    text = re.sub(r"Page \d+", " ", text)
+    text = re.sub(r"Page \d+(?: of \d+)?", " ", text)
     return re.findall(r"[^\s]+", text)
 
 
