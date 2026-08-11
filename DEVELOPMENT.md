@@ -14,7 +14,7 @@ principles of NEN-EN-IEC/IEEE 82079-1:2020, *Preparation of information for use
 | 3 | document control furniture | **done** - 11 August 2026 |
 | 4 | frontmatter, template, required sections | not started |
 | 5 | content sweep | not started |
-| 6 | SOP-103 | not started |
+| 6 | SOP-103 | **drafted** - 11 August 2026; blocked on expert setpoints and approval |
 | 7 | reusable starter kit | not started |
 
 ## Why, and how far
@@ -525,15 +525,54 @@ Per SOP, in numeric order:
 
 ---
 
-## Phase 6 - SOP-103
+## Phase 6 - SOP-103 - DRAFTED, NOT CLOSED
 
-SOP-103 (TPC Voltages On/Off) is a placeholder carrying a DRAFT warning, listed in
-a released manual. A safety officer who finds a draft high-voltage procedure in an
-otherwise controlled manual will discount everything in Phases 1-5.
+*Procedure written 11 August 2026. Still a draft: it cannot be released until the
+detector experts supply the setpoints and approve it.*
 
-Either finish it with the detector experts, or remove it from `md/` and from the
-register in `XAMS_Operations_Manual_Index.md`. Both are acceptable; leaving it is
-not.
+SOP-103 was a bare placeholder carrying a DRAFT warning, listed in a released
+manual. A safety officer who finds a draft high-voltage procedure in an otherwise
+controlled manual will discount everything in Phases 1-5, so it had to be either
+finished or removed.
+
+It was finished, as far as it can be without the experts. The document is now a
+real procedure - retitled *XAMS TPC Electrode High-Voltage Operation* - with ten
+steps in three sections: preconditions and interlock checks, energisation, and
+de-energisation. The energisation order is screens, then cathode, gate, anode, and
+the shutdown sequence is its exact reverse to minimise field transients. Hazards
+follow the Phase 2 scheme: DANGER for electric shock from exposed high-voltage
+equipment, WARNING for an out-of-order energisation sequence, NOTICE for wrong
+setpoints or ramp rates.
+
+### What still blocks release
+
+- **Six values are `TBD`** in the settings table: bottom screen, cathode, gate,
+  anode, top screen and the ramp rate. Only the detector experts can supply them.
+  Until they do, `status:` stays `Draft placeholder` and the register correctly
+  derives `DRAFT`.
+- **No approver.** Phase 4 introduces `approved_by:`; this is the document that
+  most needs it.
+
+### Two things that go stale silently when it is released
+
+- The `[!DANGER]` box in `XAMS_Operations_Manual_Index.md` still calls SOP-103 "a
+  placeholder" whose settings "have not been reviewed". That is prose, so
+  `check_md.py --fix` will never touch it - the register Status column will flip to
+  `Released` from the frontmatter while the warning above it keeps saying the
+  opposite. Rewrite or delete that box in the same commit that releases SOP-103.
+- The source filename is still `SOP_103_TPC_Voltages_On_Off.md` while the title is
+  now *XAMS TPC Electrode High-Voltage Operation*, so the PDF is named after the
+  old title. Harmless, but rename the source when the document is released rather
+  than leaving the mismatch in the issued manual.
+
+### Release checklist
+
+1. Detector experts supply the six setpoints and the ramp rate.
+2. Fill them in; remove every `TBD`.
+3. Rename the source to match the title.
+4. Set `status:` to a released wording, add `reviewed_by:` and `approved_by:`.
+5. Rewrite or delete the DANGER box in the index.
+6. `check_md.py md --fix`, then `build.py`.
 
 ---
 

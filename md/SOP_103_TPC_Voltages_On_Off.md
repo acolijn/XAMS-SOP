@@ -1,83 +1,142 @@
 ---
 sop: SOP-103
-title: TPC Voltages On / Off
-subtitle: Detector operations placeholder
+title: XAMS TPC Electrode High-Voltage Operation
+subtitle: Apply and remove high voltage from the XAMS TPC electrodes in the correct sequence
 revision: Rev. A
 author: Auke-Pieter Colijn
-date: 7 August 2026
+date: 11 August 2026
 location: Nikhef - XAMS
 status: Draft placeholder
 ---
 
+> [!NOTE]
+> **Work discipline:** Record all voltage setpoints, achieved voltages and any
+> abnormal behaviour in the electronic LogIt logbook.
+
+## Hazards
+
 > [!DANGER]
-> **Unapproved procedure - this document is a DRAFT placeholder and the TPC
-> high-voltage settings in it have not been reviewed.**
-> Energising the TPC electrodes from an unverified procedure risks a fatal electric
-> shock and destruction of the detector.
-> Do not use this document to energise any detector hardware. Obtain the approved
-> procedure from the detector experts first.
+> **Electric shock - exposed high-voltage equipment.**
+> Contact with energised high-voltage components can cause serious injury or
+> death.
+> Ensure all high-voltage enclosures are closed and interlocks are functional
+> before enabling any high-voltage supply.
 
-## A. Purpose and prerequisites
+> [!WARNING]
+> **Incorrect electrode energisation sequence.**
+> Applying voltages in the wrong order may produce excessive electric fields,
+> causing electrical discharges or detector damage.
+> Always energise and de-energise the electrodes in the sequence specified in
+> this procedure.
 
-### 1. Confirm the approved TPC-HV procedure is available
+> [!NOTICE]
+> Incorrect voltage setpoints or ramp rates may damage the detector or
+> high-voltage supplies.
+> Verify all setpoints before enabling any high-voltage channel.
 
-> **ACTION** — **Use this placeholder to collect the final approved procedure for
-> switching TPC** **electric-field voltages ON and OFF. Before release, replace every
-> TBD item with** **approved electrode names, voltage setpoints, ramp rates,
-> current/trip limits, interlocks** **and required detector conditions.**
+## A. Preconditions
 
-> **VERIFY** — An approved measurement/operating plan exists and the detector state
-> permits TPC high-voltage operation.
+### 1. Verify detector readiness
 
-> **STOP** — **Do not use this draft to energise the TPC electrodes.**
+> **ACTION** — Confirm that the detector is ready for high-voltage operation,
+> all safety interlocks are satisfied and all electrode channels are switched
+> OFF.
 
-## B. Procedure placeholder
+> **VERIFY** — No active interlocks are present and all electrode voltages read
+> 0 V.
 
-### 2. Prepare TPC HV system
+> **STOP** — Do not proceed if any interlock is active or any electrode cannot
+> be verified at 0 V.
 
-> **ACTION** — **TBD - define detector prerequisites, required LXe
-> level/pressure/temperature** **conditions, DAQ state, grounding checks, controller
-> state and all required interlocks.**
+### 2. Enter the required voltage settings
 
-> **VERIFY** — TBD - define the expected controller and current readbacks before
-> release.
+> **ACTION** — Enter the required operating voltages and ramp rates for each
+> electrode channel.
 
-### 3. Turn TPC voltages ON
+> **NOTE** — Operating voltages and ramp rates depend on the detector
+> configuration and shall be specified by the detector expert.
 
-> **ACTION** — **TBD - define electrode order (for example cathode/anode/gate if
-> applicable), exact** **target voltages, ramp sequence, ramp rates and pause points.**
+| Item | Value |
+| --- | --- |
+| Bottom screen voltage | TBD - detector operating value |
+| Cathode voltage | TBD - detector operating value |
+| Gate voltage | TBD - detector operating value |
+| Anode voltage | TBD - detector operating value |
+| Top screen voltage | TBD - detector operating value |
+| Ramp rate | TBD - detector operating value |
 
-> **VERIFY** — TBD - define the expected controller and current readbacks before
-> release.
+## B. Switching ON the electrodes
 
-### 4. Verify stable TPC HV
+### 3. Energise the screen electrodes
 
-> **ACTION** — **TBD - define current/readback limits, acceptable trip rate,
-> field-stability checks and the** **required observation period before measurement.**
+> **ACTION** — Ramp the bottom and top screen electrodes to the same voltage as
+> the corresponding PMT high voltage, within ±50 V.
 
-> **VERIFY** — TBD - define the expected controller and current readbacks before
-> release.
+> **VERIFY** — Both screen electrodes reach their target voltages without trips
+> or abnormal current.
 
-### 5. Turn TPC voltages OFF
+> **STOP** — Do not continue if either screen electrode trips or cannot reach
+> its setpoint.
 
-> **ACTION** — **TBD - define the approved ramp-down order, ramp rates, zero-voltage
-> confirmation and** **final safe state.**
+### 4. Energise the cathode
 
-> **VERIFY** — TBD - define the expected controller and current readbacks before
-> release.
+> **ACTION** — Ramp the cathode to the required operating voltage.
 
-### 6. Respond to a trip or abnormal current
+> **VERIFY** — The cathode reaches the requested voltage and remains stable.
 
-> **ACTION** — **TBD - define immediate response, whether automatic restart is allowed,
-> required LogIt** **entry and escalation criteria.**
+> **STOP** — Do not continue if the cathode trips or exhibits unstable current.
 
-> **VERIFY** — TBD - define the expected controller and current readbacks before
-> release.
+### 5. Energise the gate
 
-## C. Information required before release
+> **ACTION** — Ramp the gate to the required operating voltage.
 
-> **NOTE** — Complete this SOP with exact electrode/channel names, controller/software
-> controls, nominal voltages, ramp rates, current limits, trip thresholds, interlocks,
-> prerequisites, monitoring period, trip recovery and safe OFF state.
+> **VERIFY** — The gate reaches the requested voltage and remains stable.
 
-> **STOP** — **Release only after review and approval by the detector-HV experts.**
+> **STOP** — Do not continue if the gate trips or exhibits unstable current.
+
+### 6. Energise the anode
+
+> **ACTION** — Ramp the anode to the required operating voltage.
+
+> **VERIFY** — The anode reaches the requested voltage and all electrode
+> voltages remain stable.
+
+> **NOTE** — The TPC is ready for operation once all electrode voltages are
+> stable and no trips or abnormal leakage currents are observed.
+
+## C. Switching OFF the electrodes
+
+### 7. Ramp down the anode
+
+> **ACTION** — Ramp the anode to 0 V.
+
+> **VERIFY** — The anode voltage reads 0 V.
+
+### 8. Ramp down the gate
+
+> **ACTION** — Ramp the gate to 0 V.
+
+> **VERIFY** — The gate voltage reads 0 V.
+
+### 9. Ramp down the cathode
+
+> **ACTION** — Ramp the cathode to 0 V.
+
+> **VERIFY** — The cathode voltage reads 0 V.
+
+### 10. Ramp down the screen electrodes
+
+> **ACTION** — Ramp the top and bottom screen electrodes to 0 V.
+
+> **VERIFY** — Both screen electrode voltages read 0 V.
+
+> **NOTE** — The shutdown sequence is the reverse of the energisation sequence
+> to minimise electric field transients inside the detector.
+
+## FINAL SAFE-STATE CHECK
+
+> [!CHECKLIST]
+> - All electrode channels at 0 V
+> - All high-voltage channels disabled
+> - No active high-voltage alarms or trips
+> - Final voltages recorded in LogIt

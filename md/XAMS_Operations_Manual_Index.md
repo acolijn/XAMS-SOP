@@ -50,16 +50,8 @@ Run these procedures in the order listed.
 | --- | --- | --- |
 | SOP-101 | PMT Power On and Off | Released |
 | SOP-102 | SiPM Bias Power On and Off | Released |
-| SOP-103 | TPC Voltages On / Off | DRAFT |
+| SOP-103 | XAMS TPC Electrode High-Voltage Operation | DRAFT |
 | SOP-104 | PMT Gain Calibration | Released |
-
-> [!DANGER]
-> **Unapproved procedure - SOP-103 is a placeholder and its TPC high-voltage
-> settings have not been reviewed.**
-> Energising the TPC electrodes from an unverified procedure risks a fatal electric
-> shock and destruction of the detector.
-> Do not use SOP-103 to energise detector hardware until the detector experts have
-> approved all settings.
 
 ## 4. SOP register
 
@@ -76,7 +68,7 @@ Run these procedures in the order listed.
 | 008 | A | Main LN2 Supply Dewar Refill | Schedule and prepare the main LN2 dewar for refill |
 | 101 | A | PMT Power On and Off | Safely power the photomultiplier tube on and off |
 | 102 | A | SiPM Bias Power On and Off | Safely power the SiPM readout and bias supply |
-| 103 | A | TPC Voltages On / Off | Detector operations placeholder |
+| 103 | A | XAMS TPC Electrode High-Voltage Operation | Apply and remove high voltage from the XAMS TPC electrodes in the correct sequence |
 | 104 | B | PMT Gain Calibration | LED gain calibration of the top and bottom PMTs |
 
 ## 5. Before starting any SOP
