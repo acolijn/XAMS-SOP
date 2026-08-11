@@ -9,7 +9,8 @@ principles of NEN-EN-IEC/IEEE 82079-1:2020, *Preparation of information for use
 | Phase | Content | State |
 | --- | --- | --- |
 | 1 | conformity statement | **done** - 11 August 2026 |
-| 2 | signal words and safety messages | not started |
+| 2 | signal words and safety messages | **done** - 11 August 2026; hazard wording needs operator review |
+| 2b | SOP-000 general hazard sheet | **done** - 11 August 2026; same review caveat |
 | 3 | document control furniture | not started |
 | 4 | frontmatter, template, required sections | not started |
 | 5 | content sweep | not started |
@@ -68,15 +69,12 @@ Read these before starting; they shape several design choices.
   `key: value` only** - no YAML lists or nested maps. Multi-value fields must be
   comma-separated strings, and the revision history must live in a markdown table
   in the body, not in the frontmatter.
-- The alert vocabulary is declared in **two** places that must stay in step:
-  `ALERT_RE` / `ALERT_TO_KIND` ([tools/sop_doc.py:49](tools/sop_doc.py#L49)) and
-  `ALERT_TYPES` ([tools/check_md.py:37](tools/check_md.py#L37)). Phase 2 should
-  make `check_md` import the list from `sop_doc` rather than restate it.
-- `_box` hardcodes a single special case for `warning`
-  ([tools/md_to_pdf.py:146](tools/md_to_pdf.py#L146)) and `BOX_BG`
-  ([tools/md_to_pdf.py:128](tools/md_to_pdf.py#L128)) carries the colours. Both
-  become table-driven in Phase 2, with the table living in `sop_style.py` where
-  all styling belongs.
+- *(resolved in Phase 2)* The alert vocabulary was declared in two places that had
+  to stay in step, `ALERT_TO_KIND` in `sop_doc.py` and `ALERT_TYPES` in
+  `check_md.py`. `check_md` now derives its list from `sop_doc`; keep it that way.
+- *(resolved in Phase 2)* `_box` hardcoded a special case for `warning` and
+  `BOX_BG` carried the colours. Both are now driven by `BOX_KINDS` in
+  `sop_style.py`, where all styling belongs.
 - `build.py --check` strips page numbers with `re.sub(r"Page \d+", ...)`
   ([tools/build.py:27](tools/build.py#L27)). The `of y` suffix added in Phase 3
   breaks that regex - update it in the same commit.
@@ -142,7 +140,10 @@ the repository and need local knowledge:
 
 ---
 
-## Phase 2 - signal words and safety messages
+## Phase 2 - signal words and safety messages - DONE
+
+*Completed 11 August 2026. See the Outcome section at the end of this phase - the
+hazard wording is drafted and needs review by the responsible operator.*
 
 The highest-value phase, both for real safety and for how the manual reads to an
 auditor.
@@ -215,6 +216,134 @@ Go through all 12 SOPs and reclassify every existing callout:
 **Done when:** every SOP has an explicit hazard section, every callout carries one
 of the four signal words, and the word diff shows only intended changes.
 
+### Outcome
+
+Delivered as planned, with two additions that the sources forced.
+
+**Two non-severity callouts were added, not just the four signal words.** All 14
+`[!TIP]` uses turned out to be end-of-procedure verification checklists, except two
+that were OPERATOR CUE tables - none of them were safety messages. Retyping them
+all as `[!NOTE]` would have lost a useful visual distinction, so the vocabulary
+gained `[!CHECKLIST]` (renders green, like ACTION) and `[!CUE]` (renders cream,
+like VERIFY). `[!TIP]` and `[!IMPORTANT]` still parse but `check_md.py` now warns
+that they carry no severity.
+
+**Reclassifications made.** SOP-101's "never apply high voltage" CAUTION became a
+WARNING (electric shock can be fatal). SOP-102's light-damage WARNING became a
+NOTICE (equipment only) and its wiring CAUTION became a WARNING. SOP-103's
+"DRAFT / NOT FOR OPERATION" and the matching note in the index became DANGER. No
+existing `STOP` row was converted: on inspection they are all genuine hold points,
+which is what `STOP` is for.
+
+**Files changed:** new `tools/sop_symbols.py`; `BOX_KINDS`, the signal palette and
+`signal_style` in `sop_style.py`; the alert vocabulary in `sop_doc.py`;
+`_signal_band` and a table-driven `_box` in `md_to_pdf.py`; vocabulary import,
+deprecation warning and a hazard-structure check in `check_md.py`; the callout
+sections of `TEMPLATE.md` and `PROMPT.md`; all 12 SOPs and the index.
+
+`check_md.py md` is clean and `build.py --check` reports only the intended words.
+
+> **The hazard text needs review before issue.** The 30-odd hazard messages were
+> drafted from what the procedures themselves describe - ODH from xenon and
+> nitrogen, cryogenic burns, stored energy in the bottles, flash evaporation on
+> overflow, high voltage, dewar handling. The severities and the avoidance
+> measures are plausible but they are not authoritative: they were not taken from
+> the XAMS RI&E or the ODH assessment, and nobody who operates the setup has
+> checked them. Read every DANGER and WARNING against the real installation before
+> this goes anywhere near the safety department.
+
+Deferred to Phase 4: PPE named per hazard belongs in the `## Scope and competence`
+section, which does not exist yet. The avoidance lines currently name PPE inline
+("wear cryogenic gloves and a face shield"), which is correct but duplicates what
+that section will say.
+
+---
+
+## Phase 2b - SOP-000, the general hazard sheet - DONE
+
+*Completed 11 August 2026. Added after Phase 2 showed the front matter growing out
+of proportion to the procedures.*
+
+### The problem it solves
+
+Phase 2 put a `## Hazards` section on all 12 SOPs, and the result was twelve
+near-verbatim copies of two hazards: asphyxiation from xenon and nitrogen, and
+cryogenic burn. On the shorter procedures the hazards filled page 1 and pushed step
+1 onto page 2. Duplicated safety text is also how safety text becomes wallpaper
+that nobody reads.
+
+82079-1 permits information to be supplied once for a set of documents, provided it
+is referenced and available. So the installation-wide hazards move to one sheet and
+each SOP keeps only what is specific to it.
+
+### Why SOP-000 and not a separate document type
+
+`md/SOP_000_General_Hazards.md` needs **no tooling change at all**: `_sop_number`
+parses `000`, the register check picks it up, `build.py` renders it like any other
+document, and it sorts first in `md/` so it leads the built manual. A non-SOP name
+such as `XAMS_General_Hazards.md` would have needed a second special case beside
+`INDEX_STEM`, for no benefit.
+
+It is not a procedure, so the title and subtitle say so, and the index introduces
+it in its own section 0 above the operating sequence rather than inside it.
+
+### What the sheet carries
+
+The four installation-wide hazards in full (asphyxiation, cryogenic burn, stored
+energy in the gas system, detector high voltage), PPE by activity, what to do when
+an ODH alarm sounds, the emergency contacts, and who may work on XAMS. The contacts
+in particular had been reachable only from SOP-007, which was wrong - they are
+needed during SOP-004 just as much.
+
+### The pointer line
+
+Each SOP replaces the boilerplate boxes with one `[!NOTE]`:
+
+    > [!NOTE]
+    > **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn,
+    > stored energy in the gas system. Read SOP-000 before starting.
+
+**Naming the hazards is the point, not the citation.** The one real weakness of
+splitting the sheet out is that someone printing SOP-004 alone does not get
+SOP-000. Listing the hazards by name in the pointer means that operator still knows
+what can kill them, in one line. A bare "see SOP-000" would not.
+
+**Never version-lock the pointer.** Write `SOP-000`, never `SOP-000 Rev. B` -
+otherwise every revision of the hazard sheet orphans twelve pointers and
+`check_md.py` cannot detect a stale one.
+
+### Which hazards stayed inline
+
+The test applied to each box: *would a competent operator who read SOP-000 last
+month still need this warning at this step?*
+
+| SOP | Kept, because it is specific to the procedure |
+| --- | --- |
+| 002 | hot getter burn - heat, not cryogenic |
+| 003 | cold gas jet when the emergency solenoid valve is tested |
+| 004 | flash-evaporation overpressure at the overflow transition |
+| 005 | loss of cooling during *unattended* running, discovered by the next person through the door |
+| 006 | bottle overfilled or warming while isolated |
+| 007 | the alarm condition may already have released gas; working alone at night under time pressure |
+| 008 | large nitrogen release in a short time with an untrained contractor present; dewar crush and pinch |
+| 101 | energising a channel whose interlocks are not satisfied |
+| 102 | arcing when a live connector is made or broken |
+| 103 | the procedure itself is unapproved |
+| 104 | cabling changed on a live calibration setup |
+
+Several were rewritten rather than deleted, to say what is different about *this*
+procedure instead of restating the general hazard. SOP-001 kept only its NOTICE.
+
+### Result
+
+`check_md.py md` is clean. SOP-004 went from 6 pages to 5 with step 1 back on
+page 1. The review caveat from Phase 2 applies unchanged, and now applies to
+SOP-000 most of all: it is the sheet everything else points at.
+
+Two placeholders on SOP-000 need local knowledge: where PPE and personal O~2~
+monitors are kept, and whether the ODH re-entry rule as written matches the Nikhef
+procedure.
+
 ---
 
 ## Phase 3 - document control furniture
@@ -273,25 +402,52 @@ Sequence, to keep the build green:
 2. Migrate all 13 sources.
 3. Move the keys into `REQUIRED_META` so they become errors.
 
-### 4.2 Cover block
+### 4.2 Cover block, and where the administrative material goes
 
-`META_LAYOUT` ([tools/md_to_pdf.py:23](tools/md_to_pdf.py#L23)) is six fields in a
-2x3 grid. Do not grow it past eight - a cover that is mostly table reads as
-bureaucracy. Keep Document / Revision / Issue date / Status / Audience / Location
-in the grid, and render **prepared / reviewed / approved** as a separate
-three-column approval strip directly underneath.
+The original plan was to keep the six-field grid and add an approval strip under
+it. That is the wrong direction: page 1 is the operator's page, and every field
+added to it pushes step 1 further away.
+
+**Principle: the front is operational, the back is administrative.** 82079-1 asks
+that identification be unambiguous and findable. It never asks for it on page 1,
+and after Phase 3 every page already carries `doc_id - Rev - Page x of y` in the
+footer.
+
+So:
+
+- Replace the 2x3 `META_LAYOUT` grid
+  ([tools/md_to_pdf.py:23](tools/md_to_pdf.py#L23)) with a **single identification
+  line** under the subtitle:
+
+      SOP-004 - Rev. E - Issued 10 August 2026 - Trained XAMS operator - Nikhef XAMS
+
+  That is roughly 70 pt recovered, and it repeats nothing the footer does not
+  already guarantee on every page.
+- Add a `## Document control` block on the **last page**: prepared by, reviewed by,
+  approved by, supersedes, status, and the revision history table. This is material
+  for whoever audits the document, not for the operator at 02:00.
 
 ### 4.3 Required sections
 
-Extend `tools/TEMPLATE.md` and `tools/PROMPT.md` with four sections, and have
-`check_md.py` warn when an SOP lacks one:
+Extend `tools/TEMPLATE.md` and `tools/PROMPT.md`, and have `check_md.py` warn when
+an SOP lacks one:
 
 - `## Scope and competence` - what this procedure is for, what it is **not** for,
-  who may run it, PPE, tools and consumables needed before starting.
-- `## Hazards` - the grouped signal-word boxes from Phase 2.
+  the competence required to run it, and any tools or consumables needed before
+  starting. **PPE is not repeated here**: SOP-000 carries PPE by activity, so this
+  section names only what is unusual for this procedure. Phase 2b already removed
+  the general hazards; this removes the second source of duplication.
+- The hazard pointer plus `## Hazards specific to this procedure`, as established
+  in Phase 2b. A procedure with no specific hazards keeps the pointer and drops the
+  section.
 - `## Troubleshooting` - a fault -> likely cause -> remedy grid table. There is no
   manufacturer to call; this section is pure bus-factor insurance.
-- `## Revision history` - grid table: revision, date, change, prepared, approved.
+- `## Document control` - the back-page block from 4.2, including the revision
+  history.
+
+The avoidance lines written in Phase 2 still name PPE inline ("wear cryogenic
+gloves and a face shield"). Leave them: at the point of the hazard that is the
+useful place to say it, and SOP-000 is the authority on where the equipment is.
 
 Also add to the template the "why" habit: rationale in `NOTE` boxes. 82079
 discourages rationale inside steps, but for a one-off instrument the reasoning

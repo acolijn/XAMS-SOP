@@ -46,12 +46,29 @@ BANNER_RE = re.compile(r"^!!!\s*(warning|info)\s*$")          # legacy
 BOX_RE = re.compile(r"^:::\s*(action|verify|stop|note|info|warning)\s*$")  # legacy
 QUOTE_RE = re.compile(r"^>\s?(.*)$")
 QUOTE_ROW_RE = re.compile(r"^\*\*(ACTION|VERIFY|STOP|NOTE)\*\*\s*(?:[-\u2013\u2014:])?\s*(.*)$")
-ALERT_RE = re.compile(r"^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$", re.I)
+ALERT_RE = re.compile(
+    r"^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|DANGER|NOTICE|CHECKLIST|CUE)\]\s*$",
+    re.I)
 
-# GitHub alert type <-> callout kind. The kind drives the colour in the PDF.
-ALERT_TO_KIND = {"tip": "action", "important": "verify", "caution": "stop",
-                 "warning": "warning", "note": "info"}
+# Alert type <-> callout kind. The kind drives the colour and, for the four
+# signal-word classes, the header band in the PDF.
+#
+# DANGER/WARNING/CAUTION/NOTICE are the ISO 3864-2 / ANSI Z535.6 hierarchy and
+# are the only forms that should be used for safety information. DANGER and
+# NOTICE are not GitHub-native alert types, so an editor preview shows them as a
+# plain blockquote; the PDF is the deliverable and `check_md.py` owns the
+# vocabulary.
+ALERT_TO_KIND = {"danger": "danger", "warning": "warning", "caution": "caution",
+                 "notice": "notice", "note": "info",
+                 # non-severity callouts: a completion checklist and an
+                 # indication/response cue table
+                 "checklist": "action", "cue": "verify",
+                 # deprecated, accepted so older sources still render
+                 "tip": "action", "important": "verify"}
 KIND_TO_ALERT = {v: k.upper() for k, v in ALERT_TO_KIND.items()}
+
+# Alerts that carry no severity and must not be used for safety information.
+DEPRECATED_ALERTS = ("TIP", "IMPORTANT")
 
 
 class SopDoc:

@@ -13,6 +13,17 @@ status: Added detector operations
 > This index lists the current revision of every procedure. Always work from the
 > individual SOP, not from this summary.
 
+## 0. Read this first
+
+| SOP | Procedure | Use |
+| --- | --- | --- |
+| SOP-000 | General Hazards | Hazards, PPE, ODH response and emergency contacts for the whole installation |
+
+SOP-000 is not a procedure. It collects the hazards common to every XAMS
+operation so that the individual SOPs need only name them and add what is
+specific to themselves. Read it before any work on the setup, and keep a copy
+posted in the laboratory.
+
 ## 1. Normal operating sequence
 
 Run these procedures in the order listed.
@@ -42,14 +53,19 @@ Run these procedures in the order listed.
 | SOP-103 | TPC Voltages On / Off | DRAFT |
 | SOP-104 | PMT Gain Calibration | Released |
 
-> [!WARNING]
-> SOP-103 is a placeholder. Do not use it to energise detector hardware until
-> the detector experts have approved all settings.
+> [!DANGER]
+> **Unapproved procedure - SOP-103 is a placeholder and its TPC high-voltage
+> settings have not been reviewed.**
+> Energising the TPC electrodes from an unverified procedure risks a fatal electric
+> shock and destruction of the detector.
+> Do not use SOP-103 to energise detector hardware until the detector experts have
+> approved all settings.
 
 ## 4. SOP register
 
 | SOP | Rev. | Procedure | Purpose |
 | --- | --- | --- | --- |
+| 000 | A | General Hazards | Hazards common to all XAMS operations - read before any procedure |
 | 001 | D | GXe Filling | Initial gas fill before purification |
 | 002 | C | GXe Circulation Through Hot Getter | Purify xenon before cooling |
 | 003 | D | Cooling Preparation and PTR Start | Prepare cooling after GXe purification |

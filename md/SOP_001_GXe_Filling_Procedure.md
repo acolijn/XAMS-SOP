@@ -13,6 +13,18 @@ status: Updated release
 > **Work discipline:** Every valve operation, configuration change, pressure, mass and
 > flow value must be recorded in the electronic LogIt logbook.
 
+> [!NOTE]
+> **General hazards apply:** asphyxiation (xenon and nitrogen), stored energy in
+> the gas system. Read SOP-000 before starting.
+
+## Hazards specific to this procedure
+
+> [!NOTICE]
+> Admitting air to an evacuated detector volume contaminates the xenon inventory
+> and can poison the hot getter used in SOP-002.
+> Verify the vacuum and RGA condition before filling, and change valve states one at
+> a time.
+
 ## A. Preconditions and preparation
 
 ### 1. Pump out detector and gas lines
@@ -139,7 +151,7 @@ status: Updated release
 
 ## D. LogIt completion and cross-check
 
-> [!TIP]
+> [!CHECKLIST]
 > - Bottle ID (A or B) and initial mass
 > - Detector pressure after pump-out
 > - RGA result and pressure
@@ -156,7 +168,7 @@ status: Updated release
 
 ## FINAL SAFE-STATE CHECK
 
-> [!TIP]
+> [!CHECKLIST]
 > - GXe filling completed and pressure equalised
 > - Storage bottle isolated
 > - V17 closed

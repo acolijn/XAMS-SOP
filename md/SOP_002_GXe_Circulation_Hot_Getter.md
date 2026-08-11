@@ -13,6 +13,25 @@ status: Updated release
 > **Prerequisite:** SOP-001 must be complete. The detector must contain GXe, the pump
 > buffer volume must be at 1.0 bar, and the final valve state must be recorded in LogIt.
 
+> [!NOTE]
+> **General hazards apply:** asphyxiation (xenon and nitrogen), stored energy in
+> the gas system. Read SOP-000 before starting.
+
+## Hazards specific to this procedure
+
+> [!WARNING]
+> **Burn hazard - the hot getter and its connecting pipework operate far above
+> ambient temperature.**
+> Contact with the getter body or an adjacent fitting causes immediate burns.
+> Do not touch the getter or its pipework while it is hot, and allow it to cool with
+> flow maintained before any intervention.
+
+> [!NOTICE]
+> Circulating xenon that still contains air, or losing pump-head cooling, destroys
+> the getter cartridge and the recirculation pump.
+> Confirm the water chiller and pump-head cooling are running before starting the
+> pump, and keep the getter within its approved operating condition throughout.
+
 ## A. Prepare the purification loop
 
 ### 1. Confirm system readiness
@@ -100,7 +119,7 @@ status: Updated release
 
 ## FINAL SAFE-STATE CHECK
 
-> [!TIP]
+> [!CHECKLIST]
 > - SOP-001 completed
 > - Pump buffer volume at 1.0 bar
 > - Water chiller operating and pump-head cooling active
@@ -108,7 +127,7 @@ status: Updated release
 > - At least seven effective days of GXe circulation completed
 > - Flow, pressure, temperatures and interruptions recorded in LogIt
 
-> [!TIP]
+> [!CHECKLIST]
 > - System released for SOP-003: Cooling Preparation and PTR Start
 
 > [!NOTE]

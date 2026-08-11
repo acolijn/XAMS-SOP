@@ -9,17 +9,26 @@ location: Nikhef - XAMS
 status: Initial release
 ---
 
-> [!WARNING]
-> Never power SiPMs unless they are installed in a light-tight environment.
-> Exposure to ambient light while biased can permanently damage the sensors.
-
-> [!CAUTION]
-> Never physically disconnect or reconnect SiPM wiring while bias voltage is
-> applied.
-
 > [!NOTE]
 > **Work discipline:** Record all bias voltages, breakdown voltages and any
 > anomalies in the electronic LogIt logbook.
+
+> [!NOTE]
+> **General hazards apply:** detector high voltage. Read SOP-000 before starting.
+
+## Hazards specific to this procedure
+
+> [!WARNING]
+> **Electric shock and arcing - SiPM bias voltage present on the wiring and
+> connectors.**
+> Disconnecting or reconnecting a biased channel can arc across the connector and
+> injure the hands or eyes.
+> Ramp the bias to 0 V and switch off the supply before touching any SiPM cable, and
+> never make or break a connection while bias is applied.
+
+> [!NOTICE]
+> Biasing a SiPM that is exposed to ambient light permanently damages the sensor.
+> Confirm the environment is light-tight before applying any bias voltage.
 
 ## A. Pre-power Checks
 
@@ -84,7 +93,7 @@ status: Initial release
 > **NOTE** — The operating bias voltage is equal to the measured breakdown
 > voltage plus 3 V.
 
-> [!TIP]
+> [!CUE]
 > **OPERATOR CUE**
 >
 > | | |
@@ -136,7 +145,7 @@ status: Initial release
 
 ## FINAL SAFE-STATE CHECK
 
-> [!TIP]
+> [!CHECKLIST]
 > - SiPM bias voltage is 0 V.
 > - ±6 V amplifier supply is switched OFF.
 > - No SiPM cables are connected or disconnected while powered.

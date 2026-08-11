@@ -13,6 +13,26 @@ status: Updated release
 > **Work discipline:** Record every valve operation, configuration change, bottle mass,
 > pressure, temperature, and integrated-flow value in the electronic LogIt logbook.
 
+> [!NOTE]
+> **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn,
+> stored energy in the gas system. Read SOP-000 before starting.
+
+## Hazards specific to this procedure
+
+> [!WARNING]
+> **Overpressure - flash evaporation when liquid xenon first contacts warm cryostat
+> surfaces.**
+> A sudden pressure rise in the detector volume can rupture a fitting or a window
+> and injure anyone standing at the cryostat.
+> Keep emergency cooling operational, monitor TT203/TT204/TT205 continuously through
+> the overflow transition, and do not stand over the cryostat while filling.
+
+> [!NOTICE]
+> Mixing the direct and hot-getter filling routes, or filling with detector voltages
+> on, damages the getter and the detector electronics.
+> Switch off all detector voltages before filling, and record the chosen route in
+> LogIt before opening V7.
+
 ## A. Preconditions and preparation
 
 ### 1. Confirm prerequisites
@@ -137,9 +157,12 @@ status: Updated release
 ### 9A. Respond when LXe reaches the top of the TPC bucket
 
 > [!WARNING]
-> **CRITICAL TRANSITION** **When LXe overflows the TPC bucket, it contacts the
-> still-warm cryostat wall. Flash** **evaporation can cause a sudden pressure increase
-> and unstable pressure until the** **cryostat bottom has cooled.**
+> **Overpressure - liquid xenon overflowing the TPC bucket onto the still-warm
+> cryostat wall.**
+> Flash evaporation causes a sudden pressure rise and unstable detector pressure
+> until the cryostat bottom has cooled, and can rupture a fitting or a window.
+> Switch on emergency cooling as soon as TT203/TT204/TT205 drop, keep clear of the
+> cryostat, and do not increase the fill rate until pressure is stable again.
 
 > **ACTION** — **Continuously monitor TT203, TT204, and TT205. When their temperatures
 > drop,** **indicating that LXe has reached the top of the TPC bucket, switch ON
@@ -153,7 +176,7 @@ status: Updated release
 > control,** **stop the active fill and follow** SOP-007 - Emergency Xenon Recuperation
 > **.**
 
-> [!TIP]
+> [!CUE]
 > **OPERATOR CUE**
 >
 > |  |  |
@@ -200,7 +223,7 @@ status: Updated release
 
 ## FINAL SAFE-STATE CHECK
 
-> [!TIP]
+> [!CHECKLIST]
 > - SOP-002 one-week hot-getter purification completed and documented
 > - All detector voltages are OFF during filling
 > - LakeShore Heater Range HIGH

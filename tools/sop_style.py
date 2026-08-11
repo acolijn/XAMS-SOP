@@ -13,15 +13,27 @@ from reportlab.lib.units import mm
 # --- palette ---------------------------------------------------------------
 GREEN = colors.HexColor("#0f5a42")        # titles, section bars, step numbers
 GREEN_DARK = colors.HexColor("#0c3f31")   # emphasised body text
-RED = colors.HexColor("#8e1f1f")          # STOP label, warning banner
+RED = colors.HexColor("#8e1f1f")          # STOP label, DANGER band and border
 GREY_TEXT = colors.HexColor("#4f4f4f")    # subtitle
 GREY_LABEL = colors.HexColor("#555555")   # metadata labels
 GRID = colors.HexColor("#b7c2c8")
+
+# signal-word palette (ISO 3864-2 / ANSI Z535.6 colour conventions: DANGER red
+# on white, WARNING orange on black, CAUTION yellow on black, NOTICE blue on
+# white)
+AMBER = colors.HexColor("#c8860d")        # WARNING band
+AMBER_LIGHT = colors.HexColor("#f0c96b")  # CAUTION band
+AMBER_DARK = colors.HexColor("#9a6a09")   # WARNING / CAUTION border
+SLATE = colors.HexColor("#4f6b80")        # NOTICE band and border
 
 BG_ACTION = colors.HexColor("#e8f2ee")
 BG_VERIFY = colors.HexColor("#fff3c4")
 BG_STOP = colors.HexColor("#f7dddd")
 BG_NOTE = colors.HexColor("#e9f0f6")
+BG_DANGER = colors.HexColor("#f7dddd")
+BG_WARNING = colors.HexColor("#fdf1dc")
+BG_CAUTION = colors.HexColor("#fdf8ea")
+BG_NOTICE = colors.HexColor("#eef2f6")
 BG_META_LABEL = colors.HexColor("#e9f0f6")
 BG_TABLE_ZEBRA = colors.HexColor("#f4f9f7")   # alternate rows in reference tables
 
@@ -61,6 +73,39 @@ BANNER_KINDS = {
     "warning": dict(bg=BG_STOP, border=RED, color=RED, bold=True, size=11.0),
     "info":    dict(bg=BG_NOTE, border=None, color=colors.black, bold=False, size=10.6),
 }
+
+# --- callout boxes ---------------------------------------------------------
+# The first four kinds are the ISO 3864-2 / ANSI Z535.6 signal-word classes and
+# render with a signal-word header band. The safety-alert triangle means
+# *personal injury*, so NOTICE - property damage only - deliberately has none.
+# The remaining kinds are plain callouts: background colour, no band.
+SIGNAL_SIZE = 12.5          # triangle edge length in the header band
+SIGNAL_BAND_H = 19.0
+BOX_PAD = 10.0
+
+BOX_KINDS = {
+    "danger":  dict(bg=BG_DANGER,  border=RED,        band=RED,
+                    band_text=colors.white, signal="DANGER",  triangle=True),
+    "warning": dict(bg=BG_WARNING, border=AMBER_DARK, band=AMBER,
+                    band_text=colors.black, signal="WARNING", triangle=True),
+    "caution": dict(bg=BG_CAUTION, border=AMBER_DARK, band=AMBER_LIGHT,
+                    band_text=colors.black, signal="CAUTION", triangle=True),
+    "notice":  dict(bg=BG_NOTICE,  border=SLATE,      band=SLATE,
+                    band_text=colors.white, signal="NOTICE",  triangle=False),
+    "action":  dict(bg=BG_ACTION, border=None, band=None, band_text=None,
+                    signal=None, triangle=False),
+    "verify":  dict(bg=BG_VERIFY, border=None, band=None, band_text=None,
+                    signal=None, triangle=False),
+    "stop":    dict(bg=BG_STOP,   border=None, band=None, band_text=None,
+                    signal=None, triangle=False),
+    "note":    dict(bg=BG_NOTE,   border=None, band=None, band_text=None,
+                    signal=None, triangle=False),
+    "info":    dict(bg=BG_NOTE,   border=None, band=None, band_text=None,
+                    signal=None, triangle=False),
+}
+
+SIGNAL_KINDS = tuple(k for k, v in BOX_KINDS.items() if v["signal"])
+INJURY_KINDS = tuple(k for k, v in BOX_KINDS.items() if v["triangle"])
 
 # --- paragraph styles ------------------------------------------------------
 S_TITLE = ParagraphStyle(
@@ -128,4 +173,17 @@ def label_style(kind):
     return ParagraphStyle(
         f"label_{kind}", fontName="Helvetica-Bold", fontSize=BODY_SIZE,
         leading=BODY_LEADING, textColor=spec["label_color"],
+    )
+
+
+def box_style(kind):
+    return BOX_KINDS.get(kind, BOX_KINDS["info"])
+
+
+def signal_style(kind):
+    """Paragraph style for the signal word in a safety callout's header band."""
+    spec = BOX_KINDS[kind]
+    return ParagraphStyle(
+        f"signal_{kind}", fontName="Helvetica-Bold", fontSize=11.5, leading=13.5,
+        textColor=spec["band_text"],
     )

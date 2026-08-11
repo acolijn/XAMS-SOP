@@ -15,7 +15,8 @@ import re
 import sys
 from pathlib import Path
 
-from sop_doc import ALERT_RE, QUOTE_ROW_RE, load
+import sop_style as st
+from sop_doc import ALERT_RE, ALERT_TO_KIND, DEPRECATED_ALERTS, QUOTE_ROW_RE, load
 
 REQUIRED_META = ("sop", "title", "revision", "author", "date", "location", "status")
 SOP_RE = re.compile(r"SOP[-_ ]?(\d+)", re.I)
@@ -34,7 +35,11 @@ DERIVED_COLUMNS = {"rev": ("revision", True),
 DRAFT_WORDS = ("draft", "placeholder")
 INDEX_STEM = "XAMS_Operations_Manual_Index"
 ROW_LABELS = ("ACTION", "VERIFY", "STOP", "NOTE")
-ALERT_TYPES = ("NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION")
+
+# The vocabulary is owned by sop_doc, so the parser and the checker cannot drift.
+ALERT_TYPES = tuple(a.upper() for a in ALERT_TO_KIND)
+SIGNAL_ALERTS = tuple(a.upper() for a, kind in ALERT_TO_KIND.items()
+                      if kind in st.SIGNAL_KINDS)
 
 # markdown the renderer does not implement, and would print literally
 UNSUPPORTED = [
@@ -90,6 +95,10 @@ def check_file(path):
             if alert and alert.group(1).upper() not in ALERT_TYPES:
                 error(n, f"unknown alert type '[!{alert.group(1)}]'; "
                          f"use one of {', '.join(ALERT_TYPES)}")
+            elif alert and alert.group(1).upper() in DEPRECATED_ALERTS:
+                warn(n, f"'[!{alert.group(1).upper()}]' carries no severity; use a "
+                        f"signal word ({', '.join(SIGNAL_ALERTS)}) for anything "
+                        f"safety-relevant, or [!NOTE] for background")
             elif (label and not QUOTE_ROW_RE.match(body) and not ALERT_RE.match(body)
                     and label.group(1).upper() not in ROW_LABELS):
                 error(n, f"unknown row label '{label.group(1)}'; "
@@ -117,8 +126,49 @@ def check_file(path):
                 if not (path.parent / block["path"]).exists():
                     error(1, f"figure not found: {block['path']}")
 
+    def check_hazards(blocks):
+        """A safety message states the hazard, its consequence, and how to avoid it.
+
+        Only the injury classes are checked. NOTICE covers property damage and
+        needs no consequence-for-people wording.
+        """
+        for block in blocks:
+            if block["type"] != "box":
+                continue
+            check_hazards(block["blocks"])
+            if block["kind"] not in st.INJURY_KINDS:
+                continue
+            signal = st.BOX_KINDS[block["kind"]]["signal"]
+            text = _box_text(block)
+            excerpt = text[:48]
+            lead = next((b for b in block["blocks"] if b["type"] == "para"), None)
+            if lead is None or not lead["text"].lstrip().startswith("**"):
+                warn(1, f"{signal} box ({excerpt!r}) does not open with a bold "
+                        f"hazard statement; write hazard and source, then the "
+                        f"consequence, then how to avoid it")
+            if len(re.findall(r"[.!?](?:\s|$)", text)) < 2:
+                warn(1, f"{signal} box ({excerpt!r}) is a single sentence; give the "
+                        f"consequence and the way to avoid the hazard as well")
+
     check_tables(doc.blocks)
+    check_hazards(doc.blocks)
     return errors, warnings
+
+
+def _box_text(block):
+    """All plain text inside a callout, for structural checks."""
+    parts = []
+    for child in block.get("blocks", []):
+        kind = child["type"]
+        if kind in ("para", "step", "section", "row", "banner"):
+            parts.append(child.get("text", ""))
+        elif kind == "bullets":
+            parts.extend(child["items"])
+        elif kind == "table":
+            parts.extend(cell for row in child["rows"] for cell in row)
+        elif kind == "box":
+            parts.append(_box_text(child))
+    return " ".join(p for p in parts if p)
 
 
 def _derived_value(doc, key):

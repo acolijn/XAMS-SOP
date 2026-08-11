@@ -19,6 +19,7 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 
 import sop_style as st
 from sop_doc import inline, load
+from sop_symbols import WarningTriangle
 
 META_LAYOUT = [
     ("Document", "document"),
@@ -125,26 +126,46 @@ def _height(flowables):
     return total
 
 
-BOX_BG = {
-    "action": st.BG_ACTION, "verify": st.BG_VERIFY, "stop": st.BG_STOP,
-    "note": st.BG_NOTE, "info": st.BG_NOTE, "warning": st.BG_STOP,
-}
+def _signal_band(kind, spec, width):
+    """Header band of a safety callout: safety-alert triangle, then the word."""
+    label = Paragraph(spec["signal"], st.signal_style(kind))
+    if spec["triangle"]:
+        gap = 7.0
+        cells = [[WarningTriangle(st.SIGNAL_SIZE), label]]
+        widths = [st.SIGNAL_SIZE + gap, width - st.SIGNAL_SIZE - gap]
+    else:
+        cells = [[label]]
+        widths = [width]
+    tbl = Table(cells, colWidths=widths, rowHeights=[st.SIGNAL_BAND_H])
+    tbl.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), spec["band"]),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("TOPPADDING", (0, 0), (-1, -1), 2),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+    ]))
+    return tbl
 
 
 def _box(block, base_dir, width):
+    spec = st.box_style(block["kind"])
+    inner_width = width - 2 * st.BOX_PAD
     inner = []
+    if spec["signal"]:
+        inner.extend([_signal_band(block["kind"], spec, inner_width), Spacer(1, 6)])
     for child in block["blocks"]:
-        inner.extend(_flowables(child, base_dir, width - 2 * 10, nested=True))
+        inner.extend(_flowables(child, base_dir, inner_width, nested=True))
     tbl = Table([[inner]], colWidths=[width])
     cmds = [
-        ("BACKGROUND", (0, 0), (-1, -1), BOX_BG.get(block["kind"], st.BG_NOTE)),
-        ("LEFTPADDING", (0, 0), (-1, -1), 10),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+        ("BACKGROUND", (0, 0), (-1, -1), spec["bg"]),
+        ("LEFTPADDING", (0, 0), (-1, -1), st.BOX_PAD),
+        ("RIGHTPADDING", (0, 0), (-1, -1), st.BOX_PAD),
         ("TOPPADDING", (0, 0), (-1, -1), 8),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
     ]
-    if block["kind"] == "warning":
-        cmds.append(("BOX", (0, 0), (-1, -1), 1.2, st.RED))
+    if spec["border"]:
+        cmds.append(("BOX", (0, 0), (-1, -1), 1.2, spec["border"]))
     tbl.setStyle(TableStyle(cmds))
     return tbl
 

@@ -60,15 +60,36 @@ Rules: every step has at least an ACTION. Use STOP only for genuine
 stop conditions. Separate rows with a blank line. Wrap text at roughly 88
 characters; the renderer re-flows it.
 
-**Callouts** - GitHub alert blockquotes:
+**Safety messages** - the four signal words of ISO 3864-2 / ANSI Z535.6, chosen by
+the *severity of the consequence*, not by how alarming the wording sounds:
+
+| Alert | Use when the hazard, if not avoided | Triangle |
+| --- | --- | --- |
+| `[!DANGER]` | is imminent and causes death or serious injury | yes |
+| `[!WARNING]` | could cause death or serious injury | yes |
+| `[!CAUTION]` | could cause minor or moderate injury | yes |
+| `[!NOTICE]` | damages equipment only, nobody is hurt | no |
+
+Every safety message has three parts, in this order: the **hazard and its source**
+in bold on the first line, then the **consequence**, then **how to avoid it**.
+Place it *before* the step it guards, never after.
+
+    > [!DANGER]
+    > **Asphyxiation - xenon released into the laboratory.**
+    > Xenon displaces air at floor level and causes loss of consciousness
+    > without any warning sensation.
+    > Confirm the ODH monitoring is active before opening any bottle valve.
+
+Each SOP also opens with a `## Hazards` section grouping the hazards that apply to
+the whole procedure.
+
+**Other callouts** - these carry no severity and must never be used for safety
+information:
 
     > [!NOTE]
-    > Neutral background information.
+    > Neutral background information, or the reason behind a step.
 
-    > [!WARNING]
-    > A prominent safety warning, e.g. DRAFT - NOT FOR OPERATION.
-
-    > [!TIP]
+    > [!CUE]
     > **OPERATOR CUE**
     >
     > | | |
@@ -76,8 +97,12 @@ characters; the renderer re-flows it.
     > | **Indication** | what the operator sees |
     > | **Immediate response** | what to do at once |
 
-`[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!CAUTION]` and `[!WARNING]` are the only
-alert types.
+    > [!CHECKLIST]
+    > - what must be true, or recorded, before the procedure is closed
+
+`[!TIP]` and `[!IMPORTANT]` are deprecated: they still render, but they say
+nothing about severity. Use a signal word, `[!NOTE]`, `[!CUE]` or `[!CHECKLIST]`
+instead.
 
 **Tables** - standard markdown, header row and `| --- |` separator required.
 Leave the header cells empty for a plain label/value grid.
@@ -115,6 +140,17 @@ A complete, valid document. Follow this shape.
     > **Work discipline:** Record every valve operation, pressure and temperature
     > in the electronic LogIt logbook.
 
+    ## Hazards
+
+    > [!WARNING]
+    > **Burn hazard - the cold trap and its heater during regeneration.**
+    > Contact with the trap body causes immediate burns.
+    > Allow the trap to return to ambient temperature before touching it.
+
+    > [!NOTICE]
+    > Heating an isolated trap too quickly overpressurises it.
+    > Raise the setpoint at no more than the stated rate and watch PT201.
+
     ## A. Preconditions
 
     ### 1. Confirm the system is isolated
@@ -145,7 +181,7 @@ A complete, valid document. Follow this shape.
 
     > **VERIFY** — TT301 rises smoothly and pressure stays below TBD bar.
 
-    > [!TIP]
+    > [!CUE]
     > **OPERATOR CUE**
     >
     > | | |
@@ -165,7 +201,7 @@ A complete, valid document. Follow this shape.
 
     ## FINAL SAFE-STATE CHECK
 
-    > [!TIP]
+    > [!CHECKLIST]
     > - Trap heater OFF
     > - V7, V8 and V12 closed
     > - Final pressure and valve state recorded in LogIt

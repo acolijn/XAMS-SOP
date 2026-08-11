@@ -13,6 +13,25 @@ status: Layout update
 > modified 20 April 2026. This SOP preserves the settings and sequence stated in that
 > source.
 
+> [!NOTE]
+> **General hazards apply:** detector high voltage. Read SOP-000 before starting.
+
+## Hazards specific to this procedure
+
+> [!WARNING]
+> **Electric shock - the calibration hardware is connected and adjusted while PMT
+> high voltage is applied.**
+> Changing a cable on a live setup exposes the operator to a potentially fatal
+> voltage.
+> Follow SOP-101 to ramp to 0 V and disable the channel before changing any cable or
+> connector on the calibration setup.
+
+> [!NOTICE]
+> Driving the LED at an excessive amplitude while the PMTs are biased saturates and
+> can damage the photocathode.
+> Set the pulse amplitude and width to the documented values before enabling the
+> pulser, and increase Vpp only in small steps.
+
 ## A. Hardware setup
 
 ### 1. Connect the calibration hardware
@@ -126,5 +145,8 @@ status: Layout update
 
 ## F. Completion
 
-> [!IMPORTANT]
-> ** FINAL CHECK ** Calibration run saved; PMT voltages, Vpp, pulse width and run ID documented; gain fit completed or queued; any Vpp tuning or deviations recorded. 
+> [!CHECKLIST]
+> - Calibration run saved
+> - PMT voltages, Vpp, pulse width and run ID documented
+> - Gain fit completed or queued
+> - Any Vpp tuning or deviations recorded

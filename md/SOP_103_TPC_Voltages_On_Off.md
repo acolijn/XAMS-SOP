@@ -9,8 +9,13 @@ location: Nikhef - XAMS
 status: Draft placeholder
 ---
 
-> [!WARNING]
-> **DRAFT / PLACEHOLDER - NOT FOR OPERATION**
+> [!DANGER]
+> **Unapproved procedure - this document is a DRAFT placeholder and the TPC
+> high-voltage settings in it have not been reviewed.**
+> Energising the TPC electrodes from an unverified procedure risks a fatal electric
+> shock and destruction of the detector.
+> Do not use this document to energise any detector hardware. Obtain the approved
+> procedure from the detector experts first.
 
 ## A. Purpose and prerequisites
 

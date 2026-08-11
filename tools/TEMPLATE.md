@@ -14,6 +14,28 @@ status: Initial release
 > bottle mass, pressure, temperature and integrated-flow value in the
 > electronic LogIt logbook.
 
+## Hazards
+
+Signal words follow ISO 3864-2 / ANSI Z535.6 and are chosen by the severity of
+the consequence: DANGER (imminent, death or serious injury), WARNING (could
+cause death or serious injury), CAUTION (minor or moderate injury), NOTICE
+(equipment damage only, nobody is hurt). Each message reads hazard and source in
+bold, then consequence, then how to avoid it.
+
+> [!DANGER]
+> **Hazard and its source, in bold, on the first line.**
+> What happens to the person if it is not avoided.
+> What the operator must do to avoid it.
+
+> [!WARNING]
+> **Cryogenic burn - uninsulated LN2 line.**
+> Contact with a cold surface destroys tissue within seconds.
+> Wear cryogenic gloves and a face shield before touching any line.
+
+> [!NOTICE]
+> Property damage only, so no bold hazard line and no triangle.
+> Say what breaks and what prevents it.
+
 ## A. Preconditions and preparation
 
 ### 1. First thing the operator does
@@ -49,7 +71,7 @@ status: Initial release
 
 > **ACTION** — Start the transfer and watch the temperatures.
 
-> [!TIP]
+> [!CUE]
 > **OPERATOR CUE**
 >
 > | | |
@@ -68,3 +90,7 @@ status: Initial release
 > **ACTION** — Final safe state.
 
 > **NOTE** — What to record in LogIt before closing the procedure.
+
+> [!CHECKLIST]
+> - What must be true before the procedure is closed
+> - What must be recorded in LogIt

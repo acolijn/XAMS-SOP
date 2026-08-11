@@ -14,6 +14,26 @@ status: Updated release
 > circulation through the hot getter must be documented in LogIt. Detector pressure must
 > be stable and the final valve state recorded.
 
+> [!NOTE]
+> **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn.
+> Read SOP-000 before starting.
+
+## Hazards specific to this procedure
+
+> [!CAUTION]
+> **Cold gas jet - the emergency-cooling solenoid valve vents to the roof outlet
+> when tested.**
+> Cold nitrogen escaping at the valve or at a loose fitting can injure the eyes.
+> Confirm the roof exhaust is clear and stand clear of the valve before energising
+> it.
+
+> [!NOTICE]
+> Starting the pulse-tube refrigerator with a poor insulation vacuum, or exhausting
+> compressor heat towards the emergency LN2 dewar, wastes cryogen and can damage the
+> cold head.
+> Confirm the insulation vacuum and the direction of the heat exhaust before
+> starting the compressor.
+
 ## A. Prepare emergency cooling
 
 ### 1. Check emergency cooling readiness
@@ -61,7 +81,7 @@ status: Updated release
 
 ## FINAL SAFE-STATE CHECK
 
-> [!TIP]
+> [!CHECKLIST]
 > - SOP-002 purification completed and documented
 > - Emergency cooling readiness confirmed
 > - Insulation vacuum in the 10\^-6 mbar regime

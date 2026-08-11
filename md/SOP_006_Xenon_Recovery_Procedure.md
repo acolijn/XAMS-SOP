@@ -14,6 +14,23 @@ status: Updated release
 
 > **NOTE** — V12 remains OPEN so the getter volume is evacuated during recovery.
 
+> [!NOTE]
+> **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn,
+> stored energy in the gas system. Read SOP-000 before starting.
+
+## Hazards specific to this procedure
+
+> [!WARNING]
+> **Stored energy - a storage bottle overfilled or warmed while isolated.**
+> Pressure rises steeply as a filled bottle returns to room temperature and can
+> burst a fitting.
+> Respect the approved fill mass per bottle, and never isolate a bottle that is
+> still being cooled.
+
+> [!NOTICE]
+> Closing V12 before getter recovery is complete traps xenon in the getter volume.
+> Leave V12 open until the getter has been recovered, then close it.
+
 ## A. Preconditions and preparation
 
 ### 1. Confirm safety and resources
@@ -193,7 +210,7 @@ status: Updated release
 
 ## FINAL SAFE-STATE CHECK
 
-> [!TIP]
+> [!CHECKLIST]
 > - All detector voltages OFF
 > - Both storage-bottle valves closed
 > - V3-V11, V13 and V17 closed as applicable

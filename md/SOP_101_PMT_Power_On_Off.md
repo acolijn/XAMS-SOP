@@ -13,9 +13,23 @@ status: Initial release
 > **Work discipline:** Record every change to the PMT high-voltage state in the
 > electronic LogIt logbook.
 
-> [!CAUTION]
-> Never apply high voltage to a PMT unless the detector configuration permits
-> safe operation and all interlocks are satisfied.
+> [!NOTE]
+> **General hazards apply:** detector high voltage. Read SOP-000 before starting.
+
+## Hazards specific to this procedure
+
+> [!WARNING]
+> **Electric shock - high voltage applied to a PMT whose interlocks are not
+> satisfied.**
+> Energising a channel in the wrong detector configuration can leave an exposed
+> conductor live, and contact can be fatal.
+> Never apply high voltage unless the detector configuration permits safe operation
+> and all interlocks are satisfied.
+
+> [!NOTICE]
+> Applying high voltage too quickly, or with the PMT exposed to light, damages the
+> photocathode and the dynode chain.
+> Ramp in 50 V increments and allow the voltage to stabilise after each increment.
 
 ## A. Power On
 
@@ -95,7 +109,7 @@ status: Initial release
 
 ## FINAL SAFE-STATE CHECK
 
-> [!TIP]
+> [!CHECKLIST]
 > - PMT high voltage is 0 V.
 > - CAEN high-voltage channel is disabled.
 > - CAEN power supply is switched OFF.

@@ -14,6 +14,27 @@ status: Initial release
 > detector pressure and temperature must be stable, and the approved measurement plan
 > must be available.
 
+> [!NOTE]
+> **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn.
+> Read SOP-000 before starting.
+
+## Hazards specific to this procedure
+
+> [!WARNING]
+> **Loss of cooling during unattended operation boils the liquid xenon inventory
+> into the laboratory.**
+> A cooling failure can release the whole inventory over hours while nobody is
+> present, producing an oxygen-deficient room that gives no warning to the next
+> person through the door.
+> Keep the alarm chain and the remote connection active whenever the detector is
+> left running, and confirm shifter coverage before leaving.
+
+> [!NOTICE]
+> Losing the water chiller or the pump-head cooling while the recirculation pump
+> runs destroys the pump.
+> Confirm the chiller is running whenever the pump is on, and stop the pump first if
+> cooling is lost.
+
 ## A. Establish normal LXe operation
 
 ### 1. Set temperature control
@@ -74,7 +95,7 @@ status: Initial release
 
 ## NORMAL OPERATING STATE
 
-> [!TIP]
+> [!CHECKLIST]
 > - LakeShore setpoint -90 °C
 > - Heater ON
 > - Normal circulation valve configuration recorded

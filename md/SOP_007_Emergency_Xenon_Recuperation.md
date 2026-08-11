@@ -15,6 +15,38 @@ status: Initial release
 > **Auke-Pieter Colijn:** 06 468 121 33 **Patrick Decowski:** 06 233 989 55 **Security
 > desk:** 020 592 6060
 
+> [!NOTE]
+> **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn,
+> stored energy in the gas system. Read SOP-000 before starting - and note that in
+> an emergency the hazards below are more likely, not less.
+
+## Hazards specific to this procedure
+
+> [!DANGER]
+> **Asphyxiation - the condition that triggered the alarm may already have released
+> xenon or nitrogen into the laboratory.**
+> Both gases displace air and cause loss of consciousness without any warning
+> sensation, and at night there may be nobody to find you.
+> Check the oxygen-deficiency readings from outside the room before entering, never
+> enter alone, and notify the security desk on 020 592 6060 that you are in the
+> laboratory and when you leave.
+
+> [!DANGER]
+> **Working alone at night, under time pressure, on a system that is already
+> abnormal.**
+> Haste and fatigue lead to valve errors that can make the situation worse or injure
+> the operator.
+> Call Auke-Pieter or Patrick before acting and stay in contact throughout; if the
+> situation is not understood, secure what is safe and wait rather than improvise.
+
+> [!WARNING]
+> **Cryogenic burn - emergency LN2 lines handled in a hurry, without the usual
+> preparation.**
+> Contact with liquid nitrogen or an uninsulated cold surface destroys tissue within
+> seconds, and haste is exactly when the gloves get skipped.
+> Put on cryogenic gloves and a face shield before touching anything cold, however
+> urgent the situation appears.
+
 ## A. Decide whether to go to the lab
 
 ### 1. Respond to the SMS
@@ -248,7 +280,7 @@ V22 reading **Manual-pressure path / V22 area**
 
 ## FINAL SAFE-STATE CHECK
 
-> [!TIP]
+> [!CHECKLIST]
 > - Detector pressure below the critical region and stable
 > - Recuperation path understood and supervised
 > - V7 adjusted or closed as required

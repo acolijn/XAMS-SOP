@@ -12,6 +12,27 @@ status: Initial release
 > [!NOTE]
 > **Work discipline: ** Record the refill appointment and completion in the electronic LogIt logbook.
 
+> [!NOTE]
+> **General hazards apply:** asphyxiation (nitrogen), cryogenic burn. Read SOP-000
+> before starting.
+
+## Hazards specific to this procedure
+
+> [!DANGER]
+> **Asphyxiation - a refill releases a large volume of nitrogen in a short time,
+> with an external contractor present.**
+> The room can become oxygen-deficient far faster than during normal operation, and
+> the Cryotrans driver is not trained on this installation.
+> Confirm ventilation and oxygen-deficiency monitoring before the transfer begins,
+> brief the driver on the ODH alarm and the exit route, and keep the area clear
+> throughout.
+
+> [!CAUTION]
+> **Crush and pinch hazard - moving the main dewar to and from the weighing scale.**
+> A full dewar is heavy and can trap a foot or a hand if it tips or rolls.
+> Move the dewar with a second person, keep it upright, and confirm it is stable on
+> the scale before releasing it.
+
 ## A. Schedule the refill
 
 ### 1. Contact Cryotrans
@@ -92,7 +113,7 @@ status: Initial release
 
 ## E. Final safe-state check
 
-> [!TIP]
+> [!CHECKLIST]
 > - Refill date and Cryotrans visit recorded in LogIt
 > - Dewar returned to the laboratory and stable on the weighing scale
 > - Transfer hose connected securely; main valve open
