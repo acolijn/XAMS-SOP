@@ -1,10 +1,16 @@
 ---
 sop: SOP-004
+doc_id: XAMS-SOP-004
 title: LXe Filling
 subtitle: Fill the detector with liquid xenon
 revision: Rev. E
+issue_date: 2026-08-10
+supersedes: Rev. D
 author: Auke-Pieter Colijn
-date: 10 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: Bart Sarlemijn
+approved_by: Auke-PIeter Colijn
+audience: Trained XAMS operator
 location: Nikhef - XAMS
 status: Updated release
 ---
@@ -12,6 +18,15 @@ status: Updated release
 > [!NOTE]
 > **Work discipline:** Record every valve operation, configuration change, bottle mass,
 > pressure, temperature, and integrated-flow value in the electronic LogIt logbook.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Fill the cooled detector with liquid xenon, by the direct route or through the hot getter. |
+| **Not for** | Normal running once the detector is full, which is SOP-005, and any recovery, which is SOP-006. |
+| **Competence** | Trained XAMS operator, briefed on cryogenics and oxygen-deficiency hazards. Do not run this procedure alone. |
+| **Before you start** | SOP-002 and SOP-003 complete; emergency cooling operational; alarms, remote access and shifter coverage confirmed; all detector voltages OFF. |
 
 > [!NOTE]
 > **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn,
@@ -221,8 +236,6 @@ status: Updated release
 
 ## F. Final safe-state and LogIt record
 
-## FINAL SAFE-STATE CHECK
-
 > [!CHECKLIST]
 > - SOP-002 one-week hot-getter purification completed and documented
 > - All detector voltages are OFF during filling
@@ -237,3 +250,11 @@ status: Updated release
 > - Any deviation, unexpected response, or intervention documented and handed over
 
 NEXT PROCEDURE: Continue with SOP-005 - Normal LXe Operation.
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. E | 2026-08-10 | Content updated; see the source history for details. |
+
+Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.

@@ -1,10 +1,16 @@
 ---
 sop: SOP-003
+doc_id: XAMS-SOP-003
 title: Cooling Preparation and PTR Start
 subtitle: Prepare cooling after GXe purification
 revision: Rev. D
+issue_date: 2026-08-07
+supersedes: Rev. C
 author: Auke-Pieter Colijn
-date: 7 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: Bart Sarlemijn
+approved_by: Auke-Pieter Colijn
+audience: Trained XAMS operator
 location: Nikhef - XAMS
 status: Updated release
 ---
@@ -13,6 +19,15 @@ status: Updated release
 > **Prerequisite:** SOP-002 must be complete: at least seven effective days of GXe
 > circulation through the hot getter must be documented in LogIt. Detector pressure must
 > be stable and the final valve state recorded.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Bring emergency cooling, insulation vacuum and the pulse-tube refrigerator to the state required before liquid filling. |
+| **Not for** | Liquid filling itself, which is SOP-004. |
+| **Competence** | Trained XAMS operator, briefed on cryogenics and oxygen-deficiency hazards. |
+| **Before you start** | SOP-002 complete and documented; emergency LN2 dewar available; turbopump and compressor serviceable. |
 
 > [!NOTE]
 > **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn.
@@ -95,3 +110,11 @@ status: Updated release
 
 > [!NOTE]
 > **NEXT PROCEDURE:** Continue with SOP-004 - LXe Filling Procedure.
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. D | 2026-08-07 | Content updated; see the source history for details. |
+
+Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.

@@ -1,10 +1,16 @@
 ---
 sop: SOP-101
+doc_id: XAMS-SOP-101
 title: PMT Power On and Off
 subtitle: Safely power the photomultiplier tube on and off
 revision: Rev. A
+issue_date: 2026-08-10
+supersedes: N/A
 author: Auke-Pieter Colijn
-date: 10 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: N/A
+approved_by: N/A
+audience: Trained XAMS operator authorised for detector high voltage
 location: Nikhef - XAMS
 status: Initial release
 ---
@@ -12,6 +18,15 @@ status: Initial release
 > [!NOTE]
 > **Work discipline:** Record every change to the PMT high-voltage state in the
 > electronic LogIt logbook.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Switch the PMT high voltage on and off in a controlled ramp. |
+| **Not for** | Gain calibration, which is SOP-104, and TPC electrode voltages, which are SOP-103. |
+| **Competence** | Trained XAMS operator authorised for detector high voltage. |
+| **Before you start** | Detector configuration permits high voltage; all interlocks satisfied; CAEN supply serviceable. |
 
 > [!NOTE]
 > **General hazards apply:** detector high voltage. Read SOP-000 before starting.
@@ -114,3 +129,9 @@ status: Initial release
 > - CAEN high-voltage channel is disabled.
 > - CAEN power supply is switched OFF.
 > - Power-on and power-off actions have been recorded in LogIt.
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. A | 2026-08-10 | First issue. |

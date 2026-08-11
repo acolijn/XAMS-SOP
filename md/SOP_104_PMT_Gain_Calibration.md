@@ -1,10 +1,16 @@
 ---
 sop: SOP-104
+doc_id: XAMS-SOP-104
 title: PMT Gain Calibration
 subtitle: LED gain calibration of the top and bottom PMTs
 revision: Rev. B
+issue_date: 2026-08-07
+supersedes: Rev. A
 author: Auke-Pieter Colijn
-date: 7 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: N/A
+approved_by: N/A
+audience: Trained XAMS operator authorised for detector high voltage
 location: Nikhef - XAMS
 status: Layout update
 ---
@@ -12,6 +18,15 @@ status: Layout update
 > **NOTE** — Source basis: XAMS wiki procedure “Gain Calibration for PMTs”, last
 > modified 20 April 2026. This SOP preserves the settings and sequence stated in that
 > source.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Calibrate the gain of the top and bottom PMTs with the LED pulser. |
+| **Not for** | Switching the PMTs on or off, which is SOP-101. |
+| **Competence** | Trained XAMS operator authorised for detector high voltage. |
+| **Before you start** | PMTs powered per SOP-101; LED pulser and digitiser connected per the approved calibration setup. |
 
 > [!NOTE]
 > **General hazards apply:** detector high voltage. Read SOP-000 before starting.
@@ -42,7 +57,7 @@ status: Layout update
 > **VERIFY** — The function generator, pulse generator, oscilloscope, digitiser crate,
 > LED source and PMT signal path are connected as in the source setup.
 
-![](figs/PMT_Gain_Calibration_SOP_104_Rev_B_fig1.png){width=85%}
+![Approved PMT LED-calibration setup](figs/PMT_Gain_Calibration_SOP_104_Rev_B_fig1.png){width=85%}
 
 ## B. Configure the LED calibration pulse
 
@@ -150,3 +165,11 @@ status: Layout update
 > - PMT voltages, Vpp, pulse width and run ID documented
 > - Gain fit completed or queued
 > - Any Vpp tuning or deviations recorded
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. B | 2026-08-07 | Layout brought into the current house style. |
+
+Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.

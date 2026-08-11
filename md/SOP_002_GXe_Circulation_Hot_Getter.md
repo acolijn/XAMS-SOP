@@ -1,10 +1,16 @@
 ---
 sop: SOP-002
+doc_id: XAMS-SOP-002
 title: GXe Circulation Through Hot Getter
 subtitle: Purify xenon before cooling
 revision: Rev. C
+issue_date: 2026-08-07
+supersedes: Rev. B
 author: Auke-Pieter Colijn
-date: 7 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: Bart Sarlemijn
+approved_by: Auke-Pieter Colijn
+audience: Trained XAMS operator
 location: Nikhef - XAMS
 status: Updated release
 ---
@@ -12,6 +18,15 @@ status: Updated release
 > [!NOTE]
 > **Prerequisite:** SOP-001 must be complete. The detector must contain GXe, the pump
 > buffer volume must be at 1.0 bar, and the final valve state must be recorded in LogIt.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Circulate gaseous xenon through the hot getter for at least seven effective days to purify the inventory. |
+| **Not for** | Purification during liquid operation, which is part of SOP-005. |
+| **Competence** | Trained XAMS operator, briefed on cryogenics and oxygen-deficiency hazards. |
+| **Before you start** | SOP-001 complete; pump buffer volume at 1.0 bar; water chiller available; getter serviceable. |
 
 > [!NOTE]
 > **General hazards apply:** asphyxiation (xenon and nitrogen), stored energy in
@@ -132,3 +147,11 @@ status: Updated release
 
 > [!NOTE]
 > **NEXT PROCEDURE:** Continue with SOP-003 - Cooling Preparation and PTR Start.
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. C | 2026-08-07 | Content updated; see the source history for details. |
+
+Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.

@@ -1,10 +1,16 @@
 ---
 sop: SOP-000
+doc_id: XAMS-SOP-000
 title: General Hazards
 subtitle: Hazards common to all XAMS operations - read before any procedure
 revision: Rev. A
+issue_date: 2026-08-11
+supersedes: N/A
 author: Auke-Pieter Colijn
-date: 11 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: N/A
+approved_by: Auke-Pieter Colijn
+audience: All personnel working on XAMS
 location: Nikhef - XAMS
 status: Initial release
 ---

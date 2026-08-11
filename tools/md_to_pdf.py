@@ -15,7 +15,6 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import (BaseDocTemplate, CondPageBreak, Frame, Image,
                                 KeepTogether, PageBreak, PageTemplate, Paragraph,
                                 Spacer, Table, TableStyle)
-from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
@@ -23,14 +22,20 @@ import sop_style as st
 from sop_doc import inline, load
 from sop_symbols import WarningTriangle
 
-META_LAYOUT = [
-    ("Document", "document"),
+# Administrative fields, shown in the Document control block on the back page.
+# Preparation, review and approval are three separate roles and are recorded
+# separately; a document with no approver is a draft and its status says so.
+CONTROL_LAYOUT = [
+    ("Document", "doc_id"),
     ("Revision", "revision"),
-    ("Author", "author"),
-    ("Date", "date"),
-    ("Location", "location"),
+    ("Issued", "issue_date"),
+    ("Supersedes", "supersedes"),
+    ("Prepared by", "prepared_by"),
+    ("Reviewed by", "reviewed_by"),
+    ("Approved by", "approved_by"),
     ("Status", "status"),
 ]
+CONTROL_SECTION = "Document control"
 
 
 def _footer_painter(footer_text, total):
@@ -53,26 +58,15 @@ def _footer_painter(footer_text, total):
 
 
 class SopDocTemplate(BaseDocTemplate):
-    """Adds the PDF outline and the table-of-contents entries.
+    """Adds the PDF outline, so the bookmark pane mirrors the procedure.
 
-    Flowables that should appear in both are tagged with `_outline` by
+    Flowables that belong in the outline are tagged with `_outline` by
     `_flowables`; a section bar is a Table and a step is a Paragraph, so a tag is
     more reliable than inspecting the flowable itself.
     """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._outline_seq = 0
-        self._seen_section = False
-
-    def beforeDocument(self):
-        """Reset per-pass state.
-
-        `multiBuild` re-runs the whole story until the contents list stops
-        changing. The bookmark key is part of each contents entry, so without
-        this reset the keys differ on every pass, no two passes ever compare
-        equal, and the build fails with `Index entries not resolved`.
-        """
         self._outline_seq = 0
         self._seen_section = False
 
@@ -89,29 +83,40 @@ class SopDocTemplate(BaseDocTemplate):
         self._outline_seq += 1
         self.canv.bookmarkPage(key)
         self.canv.addOutlineEntry(text, key, level=level, closed=False)
-        self.notify("TOCEntry", (level, text, self.page, key))
 
 
-def _meta_table(meta):
-    values = dict(meta)
-    values.setdefault("document", meta.get("sop", ""))
-    data = []
-    for i in range(0, len(META_LAYOUT), 2):
+def _ident_line(doc):
+    """The one line of identification the operator needs on page 1."""
+    meta = doc.meta
+    parts = [doc.doc_id, meta.get("revision", "")]
+    issued = meta.get("issue_date", "")
+    if issued:
+        parts.append(f"Issued {issued}")
+    parts += [meta.get("location", ""), meta.get("audience", "")]
+    return Paragraph(inline("  ·  ".join(p for p in parts if p)), st.S_IDENT)
+
+
+def _control_grid(doc):
+    """Administrative fields as a label/value grid for the back page."""
+    rows = []
+    for i in range(0, len(CONTROL_LAYOUT), 2):
         row = []
-        for label, key in META_LAYOUT[i:i + 2]:
+        for label, key in CONTROL_LAYOUT[i:i + 2]:
+            value = doc.doc_id if key == "doc_id" else doc.meta.get(key, "")
             row.append(Paragraph(label, st.S_META_LABEL))
-            row.append(Paragraph(inline(values.get(key, "")), st.S_META_VALUE))
-        data.append(row)
-    tbl = Table(data, colWidths=st.META_COLS, rowHeights=[st.META_ROW_H] * len(data))
-    style = [
+            row.append(Paragraph(inline(value or "-"), st.S_META_VALUE))
+        rows.append(row)
+    tbl = Table(rows, colWidths=st.CONTROL_COLS)
+    tbl.setStyle(TableStyle([
         ("GRID", (0, 0), (-1, -1), 0.6, st.GRID),
         ("BACKGROUND", (0, 0), (0, -1), st.BG_META_LABEL),
         ("BACKGROUND", (2, 0), (2, -1), st.BG_META_LABEL),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("LEFTPADDING", (0, 0), (-1, -1), 8.5),
         ("RIGHTPADDING", (0, 0), (-1, -1), 8.5),
-    ]
-    tbl.setStyle(TableStyle(style))
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+    ]))
     return tbl
 
 
@@ -370,40 +375,34 @@ def _flowables(block, base_dir, width=st.CONTENT_WIDTH, nested=False):
     return []
 
 
-def _contents():
-    toc = TableOfContents()
-    toc.levelStyles = st.S_TOC
-    toc.dotsMinLevel = 0
-    return toc
-
-
-def build_story(doc, base_dir):
+def build_story(doc, base_dir, blank_page=False):
     story = [
         Paragraph(inline(doc.meta.get("title", "")).upper(), st.S_TITLE),
     ]
     subtitle = doc.meta.get("subtitle")
     if subtitle:
         story.append(Paragraph(inline(subtitle), st.S_SUBTITLE))
-    story.append(_meta_table(doc.meta))
-    story.append(Spacer(1, 11.4))
+    story.append(_ident_line(doc))
 
-    # a short procedure is easier to page through than to look up
-    if sum(b["type"] == "step" for b in doc.blocks) >= st.TOC_MIN_STEPS:
-        story.append(Paragraph("Contents", st.S_TOC_HEAD))
-        story.append(_contents())
-        story.append(Spacer(1, 11.4))
-
+    seen_control = False
     for block in doc.blocks:
         story.extend(_flowables(block, base_dir))
+        # the administrative grid comes straight from the frontmatter, so it is
+        # generated rather than written out again in every source
+        if block["type"] == "section" and _plain(block["text"]) == CONTROL_SECTION:
+            story.extend([_control_grid(doc), Spacer(1, 10)])
+            seen_control = True
+    if not seen_control:
+        story.extend(_flowables({"type": "section", "text": CONTROL_SECTION}, base_dir))
+        story.append(_control_grid(doc))
+    if blank_page:
+        story.extend([PageBreak(),
+                      Paragraph("This page is intentionally blank.", st.S_BLANK)])
     return story
 
 
-def _render_once(doc, base_dir, target, total):
-    """Lay the document out into `target`, returning the page count.
-
-    `multiBuild` is used because the contents list only learns its page numbers
-    on a second pass.
-    """
+def _render_once(doc, base_dir, target, total, blank_page=False):
+    """Lay the document out into `target`, returning the page count."""
     keywords = ", ".join(p for p in (doc.doc_id, "XAMS", "Nikhef",
                                      doc.meta.get("revision", ""), "SOP") if p)
     pdf = SopDocTemplate(
@@ -421,7 +420,7 @@ def _render_once(doc, base_dir, target, total):
                   leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
     pdf.addPageTemplates([PageTemplate(id="sop", frames=[frame],
                                        onPage=_footer_painter(doc.footer, total))])
-    pdf.multiBuild(build_story(doc, base_dir))
+    pdf.build(build_story(doc, base_dir, blank_page=blank_page))
     return pdf.page
 
 
@@ -441,8 +440,14 @@ def render(md_path, out_path=None, outdir=None):
     # The obvious alternative - a canvas that buffers pages and stamps the
     # footer at save time - breaks every bookmark and internal link, because
     # the destinations are bound while the pages are being buffered.
-    total = _render_once(doc, base_dir, io.BytesIO(), None)
-    _render_once(doc, base_dir, str(out_path), total)
+    #
+    # The manual is printed double-sided, so the count is rounded up to an even
+    # number and the padding page is added on the second pass. It sits after a
+    # PageBreak with a single line on it, so it adds exactly one page and cannot
+    # disturb the pagination the first pass measured.
+    laid_out = _render_once(doc, base_dir, io.BytesIO(), None)
+    total = laid_out + laid_out % 2
+    _render_once(doc, base_dir, str(out_path), total, blank_page=total != laid_out)
     return out_path
 
 

@@ -1,16 +1,31 @@
 ---
 sop: SOP-008
+doc_id: XAMS-SOP-008
 title: Main LN2 Supply Dewar Refill
 subtitle: Schedule and prepare the main LN2 dewar for refill
 revision: Rev. A
+issue_date: 2026-08-07
+supersedes: N/A
 author: Auke-Pieter Colijn
-date: 7 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: N/A
+approved_by: N/A
+audience: Trained XAMS operator
 location: Nikhef - XAMS
 status: Initial release
 ---
 
 > [!NOTE]
 > **Work discipline: ** Record the refill appointment and completion in the electronic LogIt logbook.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Schedule a Cryotrans refill of the main LN2 supply dewar, and move, refill and reconnect it. |
+| **Not for** | Filling the emergency LN2 dewar, or any work on the detector cooling circuit. |
+| **Competence** | Trained XAMS operator, briefed on cryogenics and oxygen-deficiency hazards. Two people are required to move the dewar. |
+| **Before you start** | Refill appointment agreed; wooden ramp available; a second person available for the move. |
 
 > [!NOTE]
 > **General hazards apply:** asphyxiation (nitrogen), cryogenic burn. Read SOP-000
@@ -118,3 +133,9 @@ status: Initial release
 > - Dewar returned to the laboratory and stable on the weighing scale
 > - Transfer hose connected securely; main valve open
 > - No abnormal leakage or icing; normal LN2 supply restored
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. A | 2026-08-07 | First issue. |

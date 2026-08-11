@@ -1,10 +1,16 @@
 ---
 sop: SOP-007
+doc_id: XAMS-SOP-007
 title: Emergency Xenon Recuperation
 subtitle: Night-time emergency response
 revision: Rev. B
+issue_date: 2026-08-10
+supersedes: Rev. A
 author: Auke-Pieter Colijn
-date: 10 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: Bart Sarlemijn
+approved_by: Bart Sarlemijn
+audience: Trained XAMS operator on the emergency call list
 location: Nikhef - XAMS
 status: Initial release
 ---
@@ -14,6 +20,15 @@ status: Initial release
 > [!NOTE]
 > **Auke-Pieter Colijn:** 06 468 121 33 **Patrick Decowski:** 06 233 989 55 **Security
 > desk:** 020 592 6060
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Bring the detector to a safe state at night, after an alarm, until an experienced operator can take over. |
+| **Not for** | Planned recovery, which is SOP-006. Nothing here replaces calling the contacts first. |
+| **Competence** | Trained XAMS operator on the emergency call list, briefed on cryogenics and oxygen-deficiency hazards. |
+| **Before you start** | Contact made with Auke-Pieter or Patrick; security desk informed; site access available. |
 
 > [!NOTE]
 > **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn,
@@ -64,9 +79,7 @@ status: Initial release
 
 > **STOP** — **Do not improvise access routes.**
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig1.png){width=53%}
-
-**Route to the security / emergency gate**
+![Route to the security and emergency gate](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig1.png){width=53%}
 
 ## B. Check whether entry is safe
 
@@ -82,11 +95,9 @@ status: Initial release
 > **STOP** — **LOUD AUDIBLE ALARM: DO NOT ENTER. Call the security desk and an
 > emergency** **contact.**
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig2.png){width=38%}
+![Door indicator light](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig2.png){width=38%}
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig3.png){width=21%}
-
-**Door indicator light Flashlight location on gas panel**
+![Flashlight location on the gas panel](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig3.png){width=21%}
 
 ### 4. Never enter alone
 
@@ -108,9 +119,7 @@ status: Initial release
 > **STOP** — **If power cannot be restored, call an experienced operator before
 > proceeding.**
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig4.png){width=23%}
-
-**Power panel - green button** **Detector-pressure display Manual gauge and V24**
+![Power panel - green button](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig4.png){width=23%}
 
 ### 6. Check cooling and detector pressure
 
@@ -124,9 +133,9 @@ status: Initial release
 > V24. If cooling** **is off, or pressure is above normal and increasing, begin
 > recuperation.**
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig5.png){width=38%}
+![Detector-pressure display on the rack](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig5.png){width=38%}
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig6.png){width=38%}
+![Manual gauge and V24](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig6.png){width=38%}
 
 ## D. Prepare for emergency recuperation
 
@@ -139,14 +148,9 @@ status: Initial release
 
 > **STOP** — **Do not begin recuperation with the door able to close behind you.**
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig7.png){width=38%}
+![Releasing the door-closing mechanism](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig7.png){width=38%}
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig8.png){width=38%}
-
-| Item | Shows |
-| --- | --- |
-| Release door-closing mechanism | Door-closing arm released |
-| Getter switch | V8 location on gas board |
+![Door-closing arm released, door held open](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig8.png){width=38%}
 
 ### 8. Reduce electrical and flow-system load
 
@@ -156,9 +160,9 @@ status: Initial release
 > **VERIFY** — Getter switch is at the bottom; recirculation-pump rocker switch is on
 > the gas board.
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig9.png){width=38%}
+![Getter switch](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig9.png){width=38%}
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig10.png){width=24%}
+![V8 location on the gas board](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig10.png){width=24%}
 
 ### 9. Close all valves before configuring recuperation
 
@@ -177,9 +181,7 @@ status: Initial release
 | V1-V13 | CLOSED |
 | V17 regulator | CLOSED - turn counter-clockwise Open only if required for manual pressure |
 
-V22 reading **Manual-pressure path / V22 area**
-
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig11.png){width=20%}
+![Manual-pressure path and V22](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig11.png){width=20%}
 
 ## E. Cool storage cylinder B with liquid nitrogen
 
@@ -192,9 +194,7 @@ V22 reading **Manual-pressure path / V22 area**
 
 > **STOP** — **Do not handle liquid nitrogen without suitable goggles and gloves.**
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig12.png){width=33%}
-
-**Cryogenic gloves and goggles**
+![Cryogenic gloves and goggles](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig12.png){width=33%}
 
 ### 11. Fill and raise the left dewar
 
@@ -225,9 +225,7 @@ V22 reading **Manual-pressure path / V22 area**
 
 > **STOP** — **Do not open bottle A.**
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig13.png){width=40%}
-
-**Opening storage cylinder B**
+![Opening storage cylinder B](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig13.png){width=40%}
 
 ### 14. Verify bottle-B line pressure
 
@@ -240,9 +238,7 @@ V22 reading **Manual-pressure path / V22 area**
 > **STOP** — **If pressure is 3.7 bar or higher, close V6 and call an experienced
 > operator.**
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig14.png){width=33%}
-
-**High-pressure display**
+![High-pressure display and regulator V17](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig14.png){width=33%}
 
 ### 15. Open the recuperation path in the exact order
 
@@ -265,9 +261,7 @@ V22 reading **Manual-pressure path / V22 area**
 > **STOP** — **Never leave V7 unattended. If pressure or temperature changes
 > unexpectedly, close** **V7 and stop.**
 
-![](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig15.png){width=39%}
-
-**V7 - flow-control valve**
+![V7 - flow-control valve](figs/Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig15.png){width=39%}
 
 ## G. Stabilise and hand over
 
@@ -287,3 +281,9 @@ V22 reading **Manual-pressure path / V22 area**
 > - Emergency LN2 supply closed when no longer needed
 > - Experienced operator informed
 > - Continue with SOP-006 - Xenon Recovery Procedure when conditions are stable.
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. B | 2026-08-10 | First issue. |

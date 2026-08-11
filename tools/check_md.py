@@ -18,7 +18,17 @@ from pathlib import Path
 import sop_style as st
 from sop_doc import ALERT_RE, ALERT_TO_KIND, DEPRECATED_ALERTS, QUOTE_ROW_RE, load
 
-REQUIRED_META = ("sop", "title", "revision", "author", "date", "location", "status")
+REQUIRED_META = ("sop", "doc_id", "title", "revision", "issue_date", "author",
+                 "prepared_by", "audience", "location", "status")
+
+# Fields a released document should carry but a draft legitimately may not:
+# a procedure with no approver is a draft, and saying so is the point.
+RECOMMENDED_META = ("supersedes", "reviewed_by", "approved_by")
+
+# Sections every procedure carries. The index and the general hazard sheet are
+# not procedures and are exempt.
+REQUIRED_SECTIONS = ("Scope and competence", "Document control")
+EXEMPT_STEMS = ("XAMS_Operations_Manual_Index", "SOP_000_General_Hazards")
 SOP_RE = re.compile(r"SOP[-_ ]?(\d+)", re.I)
 
 # Register columns that merely restate an SOP's frontmatter. They are checked
@@ -68,6 +78,18 @@ def check_file(path):
             error(1, f"frontmatter is missing '{key}:'")
         elif not doc.meta[key].strip():
             warn(1, f"frontmatter '{key}:' is empty")
+    for key in RECOMMENDED_META:
+        if not doc.meta.get(key, "").strip():
+            warn(1, f"frontmatter has no '{key}:'")
+    if path.stem not in EXEMPT_STEMS:
+        headings = {block["text"].strip() for block in doc.blocks
+                    if block["type"] == "section"}
+        for wanted in REQUIRED_SECTIONS:
+            if wanted not in headings:
+                warn(1, f"no '## {wanted}' section")
+        # if not any(h.startswith("Troubleshooting") for h in headings):
+        #     warn(1, "no '## Troubleshooting' section; there is no manufacturer to "
+        #             "call, so fault -> cause -> remedy has to be written down here")
     if doc.meta.get("output"):
         warn(1, "frontmatter 'output:' overrides the derived PDF name; "
                 "remove it unless the override is deliberate")

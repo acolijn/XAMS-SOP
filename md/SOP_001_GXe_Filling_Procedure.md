@@ -1,10 +1,16 @@
 ---
 sop: SOP-001
+doc_id: XAMS-SOP-001
 title: GXe Filling
 subtitle: Initial gas fill before purification
 revision: Rev. D
+issue_date: 2026-08-05
+supersedes: Rev. C
 author: Auke-Pieter Colijn
-date: 5 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: Bart Sarlemijn
+approved_by: Auke-Pieter Colijn
+audience: Trained XAMS operator
 location: Nikhef - XAMS
 status: Updated release
 ---
@@ -12,6 +18,15 @@ status: Updated release
 > [!NOTE]
 > **Work discipline:** Every valve operation, configuration change, pressure, mass and
 > flow value must be recorded in the electronic LogIt logbook.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Fill the evacuated detector with gaseous xenon from a storage bottle, ready for purification. |
+| **Not for** | Liquid xenon filling (SOP-004), or refilling a detector that already contains xenon. |
+| **Competence** | Trained XAMS operator, briefed on cryogenics and oxygen-deficiency hazards. |
+| **Before you start** | Detector and lines pumped out and RGA-checked; Slow Control and alarms running; storage bottle selected and weighed. |
 
 > [!NOTE]
 > **General hazards apply:** asphyxiation (xenon and nitrogen), stored energy in
@@ -176,3 +191,11 @@ status: Updated release
 > - Final valve state recorded in LogIt
 > - Bottle mass and integrated flow cross-checked
 > - System ready for SOP-002: GXe circulation through the hot getter
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. D | 2026-08-05 | Content updated; see the source history for details. |
+
+Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.

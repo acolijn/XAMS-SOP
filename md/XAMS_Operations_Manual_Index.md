@@ -1,10 +1,16 @@
 ---
 sop: Master Index
+doc_id: XAMS-OPS-INDEX
 title: XAMS Operations Manual
 subtitle: Quick index
 revision: Rev. D
+issue_date: 2026-08-07
+supersedes: Rev. C
 author: Auke-Pieter Colijn
-date: 7 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: N/A
+approved_by: N/A
+audience: Trained XAMS operator
 location: Nikhef - XAMS
 status: Added detector operations
 ---

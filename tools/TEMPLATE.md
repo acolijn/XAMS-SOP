@@ -1,10 +1,16 @@
 ---
 sop: SOP-0XX
+doc_id: XAMS-SOP-0XX
 title: Short Procedure Name
 subtitle: One line saying what the procedure is for
 revision: Rev. A
+issue_date: 2026-01-01
+supersedes:
 author: Auke-Pieter Colijn
-date: 1 January 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by:
+approved_by:
+audience: Trained XAMS operator
 location: Nikhef - XAMS
 status: Initial release
 ---
@@ -14,7 +20,20 @@ status: Initial release
 > bottle mass, pressure, temperature and integrated-flow value in the
 > electronic LogIt logbook.
 
-## Hazards
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | What this procedure achieves. |
+| **Not for** | What it must not be used for, and which SOP covers that instead. |
+| **Competence** | Who may run it. PPE is not repeated here - SOP-000 states PPE per activity. |
+| **Before you start** | Prerequisite SOPs, tools, consumables and conditions. |
+
+> [!NOTE]
+> **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn.
+> Read SOP-000 before starting.
+
+## Hazards specific to this procedure
 
 Signal words follow ISO 3864-2 / ANSI Z535.6 and are chosen by the severity of
 the consequence: DANGER (imminent, death or serious injury), WARNING (could
@@ -94,3 +113,19 @@ bold, then consequence, then how to avoid it.
 > [!CHECKLIST]
 > - What must be true before the procedure is closed
 > - What must be recorded in LogIt
+
+## Troubleshooting
+
+| Fault | Likely cause | Remedy |
+| --- | --- | --- |
+| What the operator sees going wrong | Why it happens | What to do about it |
+
+## Document control
+
+The administrative grid - identifier, revision, issue date, supersedes, prepared,
+reviewed, approved, status - is generated from the frontmatter and does not belong
+in the source. Only the revision history is written here.
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. A | 2026-01-01 | First issue. |

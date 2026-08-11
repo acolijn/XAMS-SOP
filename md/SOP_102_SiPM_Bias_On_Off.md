@@ -1,10 +1,16 @@
 ---
 sop: SOP-102
+doc_id: XAMS-SOP-102
 title: SiPM Bias Power On and Off
 subtitle: Safely power the SiPM readout and bias supply
 revision: Rev. A
+issue_date: 2026-08-10
+supersedes: N/A
 author: Auke-Pieter Colijn
-date: 10 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: Anna Hurhina
+approved_by: Auke-Pieter Colijn
+audience: Trained XAMS operator authorised for detector high voltage
 location: Nikhef - XAMS
 status: Initial release
 ---
@@ -12,6 +18,15 @@ status: Initial release
 > [!NOTE]
 > **Work discipline:** Record all bias voltages, breakdown voltages and any
 > anomalies in the electronic LogIt logbook.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Power the SiPM readout and bias supply on and off, and determine the operating bias voltage. |
+| **Not for** | PMT high voltage, which is SOP-101, and any work inside the readout box while powered. |
+| **Competence** | Trained XAMS operator authorised for detector high voltage. |
+| **Before you start** | SiPMs installed in a light-tight environment; multimeter and oscilloscope available; forward-voltage and short checks possible. |
 
 > [!NOTE]
 > **General hazards apply:** detector high voltage. Read SOP-000 before starting.
@@ -151,3 +166,9 @@ status: Initial release
 > - No SiPM cables are connected or disconnected while powered.
 > - Breakdown voltage, operating bias voltage and observations have been
 >   recorded in LogIt.
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. A | 2026-08-10 | First issue. |

@@ -1,10 +1,16 @@
 ---
 sop: SOP-103
+doc_id: XAMS-SOP-103
 title: XAMS TPC Electrode High-Voltage Operation
 subtitle: Apply and remove high voltage from the XAMS TPC electrodes in the correct sequence
 revision: Rev. A
+issue_date: 2026-08-11
+supersedes: N/A
 author: Auke-Pieter Colijn
-date: 11 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: N/A
+approved_by: N/A
+audience: Trained XAMS operator authorised for detector high voltage
 location: Nikhef - XAMS
 status: Draft placeholder
 ---
@@ -12,6 +18,15 @@ status: Draft placeholder
 > [!NOTE]
 > **Work discipline:** Record all voltage setpoints, achieved voltages and any
 > abnormal behaviour in the electronic LogIt logbook.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Apply and remove high voltage from the TPC electrodes in the sequence that keeps the fields controlled. |
+| **Not for** | PMT or SiPM voltages, which are SOP-101 and SOP-102. |
+| **Competence** | Trained XAMS operator authorised for detector high voltage, working to setpoints issued by the detector experts. |
+| **Before you start** | Detector ready for high voltage; all interlocks satisfied; every electrode channel verified at 0 V; approved setpoints and ramp rates available. |
 
 ## Hazards
 
@@ -140,3 +155,9 @@ status: Draft placeholder
 > - All high-voltage channels disabled
 > - No active high-voltage alarms or trips
 > - Final voltages recorded in LogIt
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. A | 2026-08-11 | Drafted; setpoints outstanding, not yet approved for use. |

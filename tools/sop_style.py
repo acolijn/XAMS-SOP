@@ -50,6 +50,9 @@ FOOTER_SIZE = 8.0
 META_COLS = [73.7, 192.7, 73.7, 175.8]
 META_ROW_H = 27.17
 
+# document-control grid on the back page: label | value | label | value
+CONTROL_COLS = [88.0, 170.0, 88.0, CONTENT_WIDTH - 346.0]
+
 # ACTION/VERIFY/STOP/NOTE bands: label | content
 ROW_LABEL_W = 76.5
 ROW_COLS = [ROW_LABEL_W, CONTENT_WIDTH - ROW_LABEL_W]
@@ -120,6 +123,13 @@ S_META_LABEL = ParagraphStyle(
     "meta_label", fontName="Helvetica-Bold", fontSize=8.2, leading=10,
     textColor=GREY_LABEL,
 )
+# The cover carries one identification line instead of a metadata grid: every
+# page already repeats the identifier and revision in the footer, so page 1
+# belongs to the operator, and the administrative fields live on the back page.
+S_IDENT = ParagraphStyle(
+    "ident", fontName="Helvetica", fontSize=9.5, leading=12.5,
+    textColor=GREY_LABEL, alignment=1, spaceBefore=2, spaceAfter=14,
+)
 S_META_VALUE = ParagraphStyle(
     "meta_value", fontName="Helvetica", fontSize=BODY_SIZE, leading=BODY_LEADING,
 )
@@ -152,21 +162,13 @@ S_TABLE_HEAD = ParagraphStyle(
 S_TABLE_CELL = ParagraphStyle(
     "tcell", fontName="Helvetica", fontSize=10, leading=13,
 )
-S_TOC_HEAD = ParagraphStyle(
-    "toc_head", fontName="Helvetica-Bold", fontSize=11, leading=14,
-    textColor=GREEN, spaceBefore=4, spaceAfter=6,
+# Documents are printed double-sided, so an odd page count leaves a blank back on
+# the last sheet. It is padded to an even count and the filler says so, because a
+# silent blank page in a controlled document reads as a printing fault.
+S_BLANK = ParagraphStyle(
+    "blank", fontName="Helvetica-Oblique", fontSize=9.5, leading=12,
+    textColor=GREY_TEXT, alignment=1, spaceBefore=24,
 )
-# level 0 is a section bar, level 1 a numbered step
-S_TOC = [
-    ParagraphStyle("toc0", fontName="Helvetica-Bold", fontSize=10, leading=14,
-                   textColor=GREEN_DARK, leftIndent=0, firstLineIndent=0,
-                   spaceBefore=4),
-    ParagraphStyle("toc1", fontName="Helvetica", fontSize=9.5, leading=12.5,
-                   leftIndent=16, firstLineIndent=0),
-]
-
-# a document shorter than this many steps does not need a table of contents
-TOC_MIN_STEPS = 12
 
 
 def row_style(kind):

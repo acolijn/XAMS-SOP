@@ -1,10 +1,16 @@
 ---
 sop: SOP-006
+doc_id: XAMS-SOP-006
 title: Xenon Recovery
 subtitle: Transfer xenon from detector to storage bottles
 revision: Rev. C
+issue_date: 2026-08-07
+supersedes: Rev. B
 author: Auke-Pieter Colijn
-date: 7 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: Bart Sarlemijn
+approved_by: Auke-Pieter Colijn
+audience: Trained XAMS operator
 location: Nikhef - XAMS
 status: Updated release
 ---
@@ -13,6 +19,15 @@ status: Updated release
 > ** Work  discipline: ** Record every valve operation, bottle change, pressure, temperature, flow setting and interruption in the electronic LogIt logbook. 
 
 > **NOTE** — V12 remains OPEN so the getter volume is evacuated during recovery.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Transfer the xenon inventory from the detector back into the storage bottles. |
+| **Not for** | An emergency at night, which is SOP-007; use this procedure for planned recovery only. |
+| **Competence** | Trained XAMS operator, briefed on cryogenics and oxygen-deficiency hazards. Do not run this procedure alone. |
+| **Before you start** | All detector voltages OFF; laboratory door open and ventilation confirmed; two nearly full LN2 dewars, a portable dewar, cryogenic gloves, apron and goggles to hand. |
 
 > [!NOTE]
 > **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn,
@@ -220,3 +235,11 @@ status: Updated release
 > - Integrated flow recorded; bottle mass recorded the next day after external ice has
 >   cleared
 > - Any interruption, bottle switch or abnormal pressure response documented
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. C | 2026-08-07 | Content updated; see the source history for details. |
+
+Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.

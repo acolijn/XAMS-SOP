@@ -1,10 +1,16 @@
 ---
 sop: SOP-005
+doc_id: XAMS-SOP-005
 title: Normal LXe Operation
 subtitle: Normal operation after LXe filling
 revision: Rev. A
+issue_date: 2026-08-07
+supersedes: N/A
 author: Auke-Pieter Colijn
-date: 7 August 2026
+prepared_by: Auke-Pieter Colijn
+reviewed_by: Bart Sarlemijn
+approved_by: Auke-PIeter Colijn
+audience: Trained XAMS operator
 location: Nikhef - XAMS
 status: Initial release
 ---
@@ -13,6 +19,15 @@ status: Initial release
 > **Prerequisite:** SOP-004 must be complete. The detector must be filled with LXe,
 > detector pressure and temperature must be stable, and the approved measurement plan
 > must be available.
+
+## Scope and competence
+
+|  |  |
+| --- | --- |
+| **Purpose** | Keep the detector in steady liquid operation: temperature control, circulation and monitoring. |
+| **Not for** | Filling, recovery, or any change of detector configuration. |
+| **Competence** | Trained XAMS operator, briefed on cryogenics and oxygen-deficiency hazards. |
+| **Before you start** | SOP-004 complete; pressure and temperature stable; an approved measurement plan available. |
 
 > [!NOTE]
 > **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic burn.
@@ -105,3 +120,9 @@ status: Initial release
 > - Slow Control and alarms active
 > - Approved measurement plan available
 > - Any deviations documented in LogIt
+
+## Document control
+
+| Revision | Issued | Change |
+| --- | --- | --- |
+| Rev. A | 2026-08-07 | First issue. |

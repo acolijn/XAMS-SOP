@@ -26,19 +26,46 @@ filename plus the revision.
 
     ---
     sop: SOP-009
+    doc_id: XAMS-SOP-009
     title: Short Procedure Name
     subtitle: One line saying what the procedure is for
     revision: Rev. A
+    issue_date: 2026-08-07
+    supersedes:
     author: Auke-Pieter Colijn
-    date: 7 August 2026
+    prepared_by: Auke-Pieter Colijn
+    reviewed_by:
+    approved_by:
+    audience: Trained XAMS operator
     location: Nikhef - XAMS
     status: Initial release
     ---
+
+`issue_date` is ISO, `YYYY-MM-DD`. Preparation, review and approval are three
+separate roles: leave `reviewed_by:` and `approved_by:` empty and say so in
+`status:` until real people have done them. `audience:` states who may run the
+procedure. `supersedes:` names the revision this one replaces, or is empty for a
+first issue.
 
 The `subtitle:` is one short sentence saying what the procedure is for. Do not
 prefix it with "STANDARD OPERATING PROCEDURE" - that is obvious from the
 document. It is printed under the title and reused as the Purpose column of the
 manual index, so write it as a standalone phrase starting with a capital.
+
+**Required sections**, in this order:
+
+1. `## Scope and competence` - purpose, what the procedure is *not* for, who may
+   run it, and what must be in place first. A two-column label/value grid. Do not
+   list PPE: SOP-000 states PPE per activity for the whole installation.
+2. A `[!NOTE]` naming the general hazards that apply, then
+   `## Hazards specific to this procedure` for the rest. Name the general hazards
+   rather than only citing SOP-000, so an operator holding a single printed
+   procedure still knows what can hurt them.
+3. The procedure itself, `## A.`, `## B.`, ...
+4. `## Troubleshooting` - a fault / likely cause / remedy table. There is no
+   manufacturer to call, so this has to be written down.
+5. `## Document control` - the revision-history table only. The administrative
+   grid is generated from the frontmatter.
 
 **Structure**
 
@@ -127,11 +154,17 @@ A complete, valid document. Follow this shape.
 
     ---
     sop: SOP-009
+    doc_id: XAMS-SOP-009
     title: Cold Trap Regeneration
     subtitle: Regenerate the cold trap after a recovery
     revision: Rev. A
+    issue_date: 2026-08-07
+    supersedes:
     author: Auke-Pieter Colijn
-    date: 7 August 2026
+    prepared_by: Auke-Pieter Colijn
+    reviewed_by:
+    approved_by:
+    audience: Trained XAMS operator
     location: Nikhef - XAMS
     status: Initial release
     ---
@@ -140,7 +173,20 @@ A complete, valid document. Follow this shape.
     > **Work discipline:** Record every valve operation, pressure and temperature
     > in the electronic LogIt logbook.
 
-    ## Hazards
+    ## Scope and competence
+
+    |  |  |
+    | --- | --- |
+    | **Purpose** | Regenerate the cold trap so it is ready for the next recovery. |
+    | **Not for** | Xenon recovery itself, which is SOP-006. |
+    | **Competence** | Trained XAMS operator, briefed on cryogenics and ODH. |
+    | **Before you start** | SOP-006 complete; storage bottle isolated. |
+
+    > [!NOTE]
+    > **General hazards apply:** asphyxiation (xenon and nitrogen), cryogenic
+    > burn. Read SOP-000 before starting.
+
+    ## Hazards specific to this procedure
 
     > [!WARNING]
     > **Burn hazard - the cold trap and its heater during regeneration.**
@@ -205,3 +251,15 @@ A complete, valid document. Follow this shape.
     > - Trap heater OFF
     > - V7, V8 and V12 closed
     > - Final pressure and valve state recorded in LogIt
+
+    ## Troubleshooting
+
+    | Fault | Likely cause | Remedy |
+    | --- | --- | --- |
+    | PT201 will not fall after heating | Trap still holds xenon | Extend the pump-out and recheck |
+
+    ## Document control
+
+    | Revision | Issued | Change |
+    | --- | --- | --- |
+    | Rev. A | 2026-08-07 | First issue. |
