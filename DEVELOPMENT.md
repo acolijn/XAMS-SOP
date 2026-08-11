@@ -1,0 +1,373 @@
+# DEVELOPMENT.md - aligning the XAMS manual with IEC/IEEE 82079-1:2020
+
+Implementation plan for restructuring the XAMS operations manual according to the
+principles of NEN-EN-IEC/IEEE 82079-1:2020, *Preparation of information for use
+(instructions for use) of products*.
+
+## Status
+
+| Phase | Content | State |
+| --- | --- | --- |
+| 1 | conformity statement | **done** - 11 August 2026 |
+| 2 | signal words and safety messages | not started |
+| 3 | document control furniture | not started |
+| 4 | frontmatter, template, required sections | not started |
+| 5 | content sweep | not started |
+| 6 | SOP-103 | not started |
+| 7 | reusable starter kit | not started |
+
+## Why, and how far
+
+Nobody requires this. XAMS is a one-off apparatus that is never placed on the
+market and never leaves the lab, so 82079-1 - a product-information standard that
+assumes unknown users, market placement and liability - does not apply as a legal
+obligation. What actually binds is the Arbowet/Arbobesluit duty to instruct
+workers, the pressure-equipment rules, and Nikhef's internal RI&E and ODH regime.
+
+The standard is nevertheless the best available checklist, and a one-off
+instrument has *no vendor manual, no support line and no second unit to compare
+against* - the SOPs are the only copy of the knowledge. So the plan adopts the
+clauses that carry real safety value and deliberately scopes out the ones that
+only make sense for a marketed product.
+
+**Never write "compliant with IEC/IEEE 82079-1" on a document.** Conformance
+requires the Clause 5 process evidence - validation by someone who is not the
+author, a documented review workflow - which this plan does not build. Write
+*"structured in accordance with the principles of IEC/IEEE 82079-1:2020"*. That
+is defensible, and a documented adopted/scoped-out split reads as more competent
+than a blanket claim that cannot be evidenced.
+
+### Adopted
+
+| Clause | Adopted as |
+| --- | --- |
+| 6.4 safety messages | DANGER / WARNING / CAUTION / NOTICE hierarchy, safety-alert triangle, hazard -> consequence -> avoidance wording, placement *before* the guarded step |
+| 5.3 target audience | required-competence and PPE statement on page 1 of every SOP |
+| 6.2 identification | `doc_id`, revision, issue date, supersedes, prepared/reviewed/approved by |
+| 6.2 / 7.2 | running footer `doc_id - Rev - Page x of y`, PDF metadata, PDF outline |
+| 6.7 troubleshooting | fault -> cause -> remedy table per SOP |
+| 4 verifiability | exact setpoints and tolerances instead of "approximately" |
+| 5.6 revision control | revision-history table per document; superseded PDFs kept |
+
+### Scoped out, with reason
+
+| Clause | Not done, because |
+| --- | --- |
+| translation / language management | single working language (English), fixed known user group |
+| tagged PDF, accessibility conformance | no external distribution |
+| publisher contact, formal feedback channel | replaced by one line: report errors to the document owner or open a git issue |
+| separate audience-analysis and task-analysis deliverables | audience is a handful of known people, already captured by the competence line |
+| disposal, spare parts, technical data sheets | not an instruction-for-use concern for a fixed installation |
+| per-document Annex A conformity tick sheets | replaced by one project-level statement (Phase 1) |
+
+## Constraints imposed by the existing toolchain
+
+Read these before starting; they shape several design choices.
+
+- `parse_frontmatter` ([tools/sop_doc.py:93](tools/sop_doc.py#L93)) is **flat
+  `key: value` only** - no YAML lists or nested maps. Multi-value fields must be
+  comma-separated strings, and the revision history must live in a markdown table
+  in the body, not in the frontmatter.
+- The alert vocabulary is declared in **two** places that must stay in step:
+  `ALERT_RE` / `ALERT_TO_KIND` ([tools/sop_doc.py:49](tools/sop_doc.py#L49)) and
+  `ALERT_TYPES` ([tools/check_md.py:37](tools/check_md.py#L37)). Phase 2 should
+  make `check_md` import the list from `sop_doc` rather than restate it.
+- `_box` hardcodes a single special case for `warning`
+  ([tools/md_to_pdf.py:146](tools/md_to_pdf.py#L146)) and `BOX_BG`
+  ([tools/md_to_pdf.py:128](tools/md_to_pdf.py#L128)) carries the colours. Both
+  become table-driven in Phase 2, with the table living in `sop_style.py` where
+  all styling belongs.
+- `build.py --check` strips page numbers with `re.sub(r"Page \d+", ...)`
+  ([tools/build.py:27](tools/build.py#L27)). The `of y` suffix added in Phase 3
+  breaks that regex - update it in the same commit.
+- `tools/pdf_to_md.py` was a one-shot migration tool and is deliberately not
+  maintained. Its `ALERT_FOR` map will go stale; leave it, do not extend it.
+- Adding keys to `REQUIRED_META` ([tools/check_md.py:20](tools/check_md.py#L20))
+  fails all 13 sources at once and `build.py` refuses to run on errors. Every new
+  key therefore lands as a **warning** first and is promoted to an error only
+  after the sources are migrated.
+
+## Working method
+
+One branch and one commit per phase. After every phase:
+
+    tools/.venv/bin/python tools/check_md.py md
+    tools/.venv/bin/python tools/build.py --check --refdir XAMS_Operations_Manual_2026-08-10
+
+The `--check` word diff is the regression net: it should report only the words the
+phase was supposed to change. Anything else is a rendering regression.
+
+---
+
+## Phase 1 - the conformity statement (the actual deliverable) - DONE
+
+*Completed 11 August 2026. Delivered as
+[docs/DOCUMENTATION_STANDARD.md](docs/DOCUMENTATION_STANDARD.md).*
+
+The safety department will not read SOP-004. They will flip three pages, form a
+judgement, and want one thing to file. That thing is a single page.
+
+**Write `docs/DOCUMENTATION_STANDARD.md`** containing:
+
+1. One paragraph: what the manual is, who it is for, what governs it (Arbowet,
+   RI&E, ODH assessment, pressure-equipment rules).
+2. The statement: *structured in accordance with the principles of IEC/IEEE
+   82079-1:2020*, never "compliant with".
+3. The **Adopted** table above, with a pointer to where each item lives.
+4. The **Scoped out, with reason** table above.
+5. How a document is issued: author -> reviewer -> approver, revision bump in
+   frontmatter, `check_md.py --fix`, `build.py`, superseded PDFs to `old/`.
+6. How to report an error in a procedure.
+
+Deliberately plain markdown, one page. It is not rendered to the house PDF style -
+it describes the system, it is not part of the manual.
+
+**Done when:** the page exists, is committed, and can be handed over on its own
+without any of the later phases being finished.
+
+### Outcome
+
+The statement describes the manual as it will be *after* Phases 2-5, which is
+correct for an issued standard but means the manual does not yet match it. Close
+that gap before handing the page to the safety department, or hand it over as
+Rev. A with the phases named as planned work.
+
+Section 6 of the statement lists three placeholders that cannot be filled in from
+the repository and need local knowledge:
+
+- named reviewer and approver roles for the SOP set;
+- reference numbers of the XAMS RI&E and of the ODH assessment;
+- which parts of the gas system fall under the pressure-equipment inspection
+  regime.
+
+---
+
+## Phase 2 - signal words and safety messages
+
+The highest-value phase, both for real safety and for how the manual reads to an
+auditor.
+
+### 2.1 Vocabulary
+
+Adopt the ISO 3864-2 / ANSI Z535.6 hierarchy:
+
+| Signal word | Meaning | Triangle |
+| --- | --- | --- |
+| `DANGER` | imminent hazard; death or serious injury if not avoided | yes |
+| `WARNING` | hazard that *could* cause death or serious injury | yes |
+| `CAUTION` | minor or moderate injury | yes |
+| `NOTICE` | equipment or property damage only, no injury | **no** |
+
+The absent triangle on `NOTICE` is normative, not a style choice - the
+safety-alert symbol means *personal injury*.
+
+### 2.2 Markdown syntax
+
+Keep the GitHub alert form and extend the vocabulary:
+
+    > [!DANGER]
+    > **Asphyxiation - xenon or nitrogen release in the pit.**
+    > Xenon displaces air and causes loss of consciousness without warning.
+    > Do not enter the pit while a transfer is running.
+
+Three parts, in order: **hazard and its source** (bold, first line),
+**consequence**, **how to avoid**.
+
+Trade-off: `[!DANGER]` and `[!NOTICE]` are not GitHub-native, so GitHub's preview
+renders them as a plain blockquote. Accepted - the PDF is the deliverable and
+`check_md.py` owns the vocabulary.
+
+### 2.3 Code changes
+
+- `sop_doc.py`: extend `ALERT_RE` and `ALERT_TO_KIND` with `danger` and `notice`
+  as their own kinds. Keep `tip`/`important` accepted for now so nothing breaks;
+  have `check_md` warn that they are deprecated.
+- `sop_style.py`: add a single `BOX_KINDS` table - background, border colour,
+  signal word, `triangle: bool`, text colour - replacing `BOX_BG` and the
+  hardcoded `warning` branch in `md_to_pdf._box`. New palette entries: an amber
+  for `WARNING`/`CAUTION`, a stronger red for `DANGER`, neutral grey-blue for
+  `NOTICE`.
+- New `tools/sop_symbols.py`: a small ReportLab `Flowable` that draws the ISO 7010
+  warning triangle as vector (yellow fill, black border, exclamation mark). No
+  image asset, so nothing to lose track of.
+- `md_to_pdf._box`: render a signal-word header band inside the box - triangle,
+  then the word in bold caps - above the message body.
+- `check_md.py`: import the vocabulary from `sop_doc` instead of restating it;
+  warn when a `DANGER`/`WARNING`/`CAUTION` box has no bold lead line or is a
+  single short sentence (a hazard message missing its consequence or its
+  avoidance).
+
+### 2.4 Content pass
+
+Go through all 12 SOPs and reclassify every existing callout:
+
+- Existing `[!WARNING]` / `[!CAUTION]` -> the correct one of the four by
+  *consequence severity*, not by how alarming the text sounds.
+- `[!TIP]` used for OPERATOR CUE -> keep as a cue box only where nothing safety-
+  relevant is being said; otherwise promote to `CAUTION` or `WARNING`.
+- `> **STOP**` rows: `STOP` stays a **hold point** (do not proceed until X). Where
+  the real content is "you will get hurt", lift it into a `WARNING`/`CAUTION` box
+  placed *before* the step. Where it is "you will damage the hardware", `NOTICE`.
+- Add a grouped **Hazards** section on page 1 of each SOP covering the ones that
+  apply: cryogenic burn, ODH/asphyxiation (Xe and LN2), high voltage, high
+  pressure.
+
+**Done when:** every SOP has an explicit hazard section, every callout carries one
+of the four signal words, and the word diff shows only intended changes.
+
+---
+
+## Phase 3 - document control furniture
+
+Small, mechanical, and disproportionately convincing.
+
+- **Footer.** Change `SopDoc.footer` ([tools/sop_doc.py:64](tools/sop_doc.py#L64))
+  to `doc_id - revision`. Add `Page x of y` via the standard ReportLab
+  `NumberedCanvas` recipe: subclass `canvas.Canvas`, buffer `showPage`, stamp the
+  total in `save()`, pass it as `canvasmaker=` to `pdf.build()`. This prevents
+  someone working from an incomplete printout at 02:00, which is the actual reason
+  the clause exists.
+- **Update `build.py:27`** to `re.sub(r"Page \d+ of \d+", ...)` in the same commit.
+- **PDF metadata.** `md_to_pdf.render` already sets title/author/subject
+  ([tools/md_to_pdf.py:321](tools/md_to_pdf.py#L321)); add `keywords` (SOP number,
+  XAMS, revision) and `creator`.
+- **PDF outline.** Subclass `BaseDocTemplate` with an `afterFlowable` hook that
+  calls `canvas.addOutlineEntry` for every `section` and `step` paragraph, so the
+  bookmark pane mirrors the procedure structure.
+- **Per-document table of contents** for the long SOPs (004, 006, 007 - all over
+  200 source lines). Generated from the `section`/`step` blocks, emitted after the
+  metadata table, suppressed for short documents.
+
+**Done when:** every page of every PDF is self-identifying, and the outline pane
+shows the full step list.
+
+---
+
+## Phase 4 - frontmatter, template and required sections
+
+### 4.1 Frontmatter
+
+Target set, remembering that the parser is flat:
+
+    doc_id: XAMS-SOP-004
+    sop: SOP-004
+    title: LXe Filling
+    subtitle: Fill the detector with liquid xenon
+    revision: Rev. E
+    issue_date: 2026-08-10
+    supersedes: Rev. D (2026-05-02)
+    prepared_by: A.P. Colijn
+    reviewed_by: <name>, <date>
+    approved_by: <name>, <date>
+    audience: Trained XAMS operator; cryogenics and ODH briefed
+    ppe: Cryogenic gloves, face shield, personal O2 monitor
+    location: Nikhef - XAMS
+    status: Updated release
+
+`author` alone is not enough: preparation, review and approval are three roles and
+must be separately visible.
+
+Sequence, to keep the build green:
+
+1. Add the new keys to a `RECOMMENDED_META` list in `check_md.py` - warnings only.
+2. Migrate all 13 sources.
+3. Move the keys into `REQUIRED_META` so they become errors.
+
+### 4.2 Cover block
+
+`META_LAYOUT` ([tools/md_to_pdf.py:23](tools/md_to_pdf.py#L23)) is six fields in a
+2x3 grid. Do not grow it past eight - a cover that is mostly table reads as
+bureaucracy. Keep Document / Revision / Issue date / Status / Audience / Location
+in the grid, and render **prepared / reviewed / approved** as a separate
+three-column approval strip directly underneath.
+
+### 4.3 Required sections
+
+Extend `tools/TEMPLATE.md` and `tools/PROMPT.md` with four sections, and have
+`check_md.py` warn when an SOP lacks one:
+
+- `## Scope and competence` - what this procedure is for, what it is **not** for,
+  who may run it, PPE, tools and consumables needed before starting.
+- `## Hazards` - the grouped signal-word boxes from Phase 2.
+- `## Troubleshooting` - a fault -> likely cause -> remedy grid table. There is no
+  manufacturer to call; this section is pure bus-factor insurance.
+- `## Revision history` - grid table: revision, date, change, prepared, approved.
+
+Also add to the template the "why" habit: rationale in `NOTE` boxes. 82079
+discourages rationale inside steps, but for a one-off instrument the reasoning
+("V13 stays closed on the getter route because ...") is exactly the knowledge that
+is otherwise lost.
+
+**Done when:** `check_md.py md` is clean with the new keys required, and every SOP
+carries all four sections.
+
+---
+
+## Phase 5 - content sweep
+
+Highest real safety value, near-zero visibility. Do it, but after the phases above.
+
+Per SOP, in numeric order:
+
+1. **Fix the bold mangling.** SOP-004 and others carry import artefacts such as
+   `**Confirm the system has been baked ...** **completed.**` - bold runs split at
+   the original PDF's line breaks. Add a `check_md.py` warning for adjacent bold
+   runs (`\*\*[^*]+\*\*\s+\*\*`) to find them all, then repair by hand.
+2. **One step, one action.** SOP-004 step 8 packs a route choice and five valve
+   operations into a single numbered step. Split.
+3. **Kill the hedging.** Every "approximately", "or lower if", "one day or more"
+   becomes a number with a tolerance: `2.0 +/- 0.2 bar`, `>= 24 h`,
+   `T(A) = -90 degC`. Nobody can look these up anywhere else, so a vague value is
+   a permanently lost value.
+4. **Figure numbering and cross-references.** `![caption](fig.png)` currently
+   yields a caption only. Add `Figure <step>-<n>` numbering, and reference the
+   figure from the step text. While there, rename the stale figure files
+   (`Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig1.png` ->
+   `SOP_007_fig01.png`) to match the current naming scheme.
+5. **Fill the troubleshooting tables** added in Phase 4.
+
+---
+
+## Phase 6 - SOP-103
+
+SOP-103 (TPC Voltages On/Off) is a placeholder carrying a DRAFT warning, listed in
+a released manual. A safety officer who finds a draft high-voltage procedure in an
+otherwise controlled manual will discount everything in Phases 1-5.
+
+Either finish it with the detector experts, or remove it from `md/` and from the
+register in `XAMS_Operations_Manual_Index.md`. Both are acceptable; leaving it is
+not.
+
+---
+
+## Phase 7 - make it reusable (optional, high leverage)
+
+Nobody else at Nikhef does this, which is most of the point. The toolchain is
+already generic - the only XAMS-specific parts are the content and the green in
+`sop_style.py`.
+
+- Move the XAMS palette and the Nikhef/XAMS strings into a small
+  `tools/house_style.py` that a different group can swap.
+- Ship `tools/TEMPLATE.md`, `tools/PROMPT.md`, `check_md.py`, `build.py` and
+  `docs/DOCUMENTATION_STANDARD.md` as a "controlled-SOP starter kit".
+- One README section on adopting it for another setup.
+
+"Here is a documented SOP system any group can adopt" is a far larger win than
+"my manual is tidy", and costs almost nothing on top of Phases 1-4.
+
+---
+
+## Order and effort
+
+| Phase | Content | Rough effort | Value |
+| --- | --- | --- | --- |
+| 1 | `docs/DOCUMENTATION_STANDARD.md` | 1 h | the hand-over artefact |
+| 2 | signal words, triangle, hazard sections | 1 day | safety + most visible |
+| 3 | footer, page x of y, metadata, outline, ToC | half day | cheap credibility |
+| 4 | frontmatter, cover, required sections | half day tooling + half day migration | governance |
+| 5 | content sweep | 1-2 days | highest real safety value |
+| 6 | SOP-103 | depends on the experts | protects everything above |
+| 7 | reusable starter kit | half day | reputation multiplier |
+
+Phases 2-4 are mostly tooling, so every document upgrades at once. Phase 5 is the
+only one that scales with the number of SOPs.
