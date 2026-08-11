@@ -12,7 +12,7 @@ principles of NEN-EN-IEC/IEEE 82079-1:2020, *Preparation of information for use
 | 2 | signal words and safety messages | **done** - 11 August 2026; hazard wording needs operator review |
 | 2b | SOP-000 general hazard sheet | **done** - 11 August 2026; same review caveat |
 | 3 | document control furniture | **done** - 11 August 2026 |
-| 4 | frontmatter, template, required sections | not started |
+| 4 | frontmatter, template, required sections | **done** - 11 August 2026; reviewers and approvers still unnamed |
 | 5 | content sweep | not started |
 | 6 | SOP-103 | **drafted** - 11 August 2026; blocked on expert setpoints and approval |
 | 7 | reusable starter kit | not started |
@@ -43,7 +43,7 @@ than a blanket claim that cannot be evidenced.
 | Clause | Adopted as |
 | --- | --- |
 | 6.4 safety messages | DANGER / WARNING / CAUTION / NOTICE hierarchy, safety-alert triangle, hazard -> consequence -> avoidance wording, placement *before* the guarded step |
-| 5.3 target audience | required-competence and PPE statement on page 1 of every SOP |
+| 5.3 target audience | required-competence statement per SOP; PPE per activity on the general hazard sheet |
 | 6.2 identification | `doc_id`, revision, issue date, supersedes, prepared/reviewed/approved by |
 | 6.2 / 7.2 | running footer `doc_id - Rev - Page x of y`, PDF metadata, PDF outline |
 | 6.7 troubleshooting | fault -> cause -> remedy table per SOP |
@@ -80,10 +80,9 @@ Read these before starting; they shape several design choices.
   breaks that regex - update it in the same commit.
 - `tools/pdf_to_md.py` was a one-shot migration tool and is deliberately not
   maintained. Its `ALERT_FOR` map will go stale; leave it, do not extend it.
-- Adding keys to `REQUIRED_META` ([tools/check_md.py:20](tools/check_md.py#L20))
-  fails all 13 sources at once and `build.py` refuses to run on errors. Every new
-  key therefore lands as a **warning** first and is promoted to an error only
-  after the sources are migrated.
+- Adding keys to `REQUIRED_META` fails every source at once and `build.py` refuses
+  to run on errors. Migrate the sources in the same change, or land the key in
+  `RECOMMENDED_META` first, where it only warns.
 
 ## Working method
 
@@ -365,19 +364,22 @@ Small, mechanical, and disproportionately convincing.
 - **PDF outline.** Subclass `BaseDocTemplate` with an `afterFlowable` hook that
   calls `canvas.addOutlineEntry` for every `section` and `step` paragraph, so the
   bookmark pane mirrors the procedure structure.
-- **Per-document table of contents** for the long SOPs (004, 006, 007 - all over
-  200 source lines). Generated from the `section`/`step` blocks, emitted after the
-  metadata table, suppressed for short documents.
 
 **Done when:** every page of every PDF is self-identifying, and the outline pane
 shows the full step list.
 
 ### Outcome
 
-All five items delivered. Every page of all 14 documents carries
-`SOP-nnn | Rev. X | Title` on the left and `Page x of y` on the right; outlines run
-from 5 to 27 entries; SOP-004, SOP-006 and SOP-007 have a contents list with dot
-leaders and page numbers.
+Every page of all 14 documents carries `<doc_id> | Rev. X | Title` on the left and
+`Page x of y` on the right, and the outlines run from 5 to 29 entries.
+
+**The contents list was built and then removed** (11 August 2026, on review). It
+appeared only on the three documents of 12 steps or more, and the inconsistency
+across the manual was not worth what it bought: the PDF outline already gives
+navigation, and the procedures are short enough to page through. Removing it also
+took `multiBuild`, `TableOfContents`, the `S_TOC` styles and the `beforeDocument`
+key reset back out - the renderer is a plain single-pass `build()` again, run twice
+only for the page count.
 
 **The `NumberedCanvas` recipe named in the plan is wrong, and was not used.**
 Buffering pages and stamping the footer at save time does produce `Page x of y`,
@@ -392,28 +394,35 @@ is drawn on the canvas outside the text frame, so it cannot change pagination
 between the two passes. Cost is one extra render per document, which is not
 measurable at this size.
 
-**Second trap, also silent-ish.** `multiBuild` re-runs the whole story until the
-contents list stops changing, and the bookmark key is part of each contents entry.
-The `_outline_seq` counter has to be reset in `beforeDocument()`, or the keys
-differ on every pass, no two passes compare equal, and the build dies with
-`Index entries not resolved after 10 passes`. It failed exactly this way first.
+**Even page counts** were added on 11 August 2026, once it was decided to print the
+manual double-sided and laminate it. `render()` rounds the measured page count up
+to an even number and the second pass appends the padding page, which sits after a
+`PageBreak` with one line on it, so it adds exactly one page and cannot disturb the
+pagination the first pass measured. The padding page keeps the running footer -
+`Page 4 of 4` on a blank page is the point, not an oversight - and says *"This page
+is intentionally blank"* so it does not read as a printing fault. Six documents are
+padded; the other eight were already even.
 
-**Threshold for the contents list** is 12 steps (`TOC_MIN_STEPS` in
-`sop_style.py`), which selects SOP-004, SOP-006 and SOP-007. Eight was tried first
-and pulled in five more documents of three or four pages, where a contents list
-costs a page and saves nobody anything.
+**Second trap, worth recording even though the contents list is gone.**
+`multiBuild` re-runs the whole story until the contents stop changing, and the
+bookmark key is part of each contents entry. The `_outline_seq` counter has to be
+reset in `beforeDocument()`, or the keys differ on every pass, no two passes
+compare equal, and the build dies with `Index entries not resolved after 10
+passes`. It failed exactly this way first. Anyone reintroducing a contents list
+will hit it again.
 
 **Files changed:** `doc_id` and a reordered `footer` property in `sop_doc.py`;
-`S_TOC`, `S_TOC_HEAD` and `TOC_MIN_STEPS` in `sop_style.py`; `_footer_painter`,
-`SopDocTemplate`, `_plain`, `_contents`, `_render_once` and a rewritten `render` in
-`md_to_pdf.py`; the page-number regex in `build.py`.
+`_footer_painter`, `SopDocTemplate`, `_plain`, `_render_once` and a rewritten
+`render` in `md_to_pdf.py`; the page-number regex in `build.py`.
 
 `doc_id` falls back to `sop:` until Phase 4 introduces the real key, so the footer
 reads `SOP-004` today and `XAMS-SOP-004` afterwards with no further change.
 
 ---
 
-## Phase 4 - frontmatter, template and required sections
+## Phase 4 - frontmatter, template and required sections - DONE
+
+*Completed 11 August 2026.*
 
 ### 4.1 Frontmatter
 
@@ -490,6 +499,59 @@ The avoidance lines written in Phase 2 still name PPE inline ("wear cryogenic
 gloves and a face shield"). Leave them: at the point of the hazard that is the
 useful place to say it, and SOP-000 is the authority on where the equipment is.
 
+### Outcome
+
+**Frontmatter.** All 14 sources now carry `doc_id`, `issue_date`, `supersedes`,
+`prepared_by`, `reviewed_by`, `approved_by` and `audience`. Identifiers are
+`XAMS-SOP-nnn` (`XAMS-OPS-INDEX` for the index), because `SOP-004` alone is not
+unique outside this group and the manual is meant to leave it.
+
+`date:` was **dropped** rather than kept alongside `issue_date:`. Two date fields
+in flat frontmatter is a drift waiting to happen, and ISO `YYYY-MM-DD` is the
+better form for a controlled document. `issue_date` is what the cover and the
+control grid print.
+
+The staged rollout in the plan - warnings first, then promote - was not needed:
+all 14 sources were migrated by script in one pass, so the keys went straight into
+`REQUIRED_META`. `supersedes`, `reviewed_by` and `approved_by` are in a new
+`RECOMMENDED_META` and warn rather than fail, because **a document with no
+approver is a draft and saying so is the point**, not an error to be silenced.
+
+**Cover and back page.** `META_LAYOUT` and `_meta_table` are gone. Page 1 carries
+one centred line - `XAMS-SOP-101 · Rev. A · Issued 2026-08-10 · Nikhef - XAMS ·
+Trained XAMS operator authorised for detector high voltage` - and the eight
+administrative fields moved to a `Document control` grid on the last page.
+
+The grid is **generated from the frontmatter**, not written in the sources: when
+the renderer meets a `## Document control` section it emits the grid straight
+after the bar, and if a document has no such section it appends one. So the
+sources carry only the revision-history table, and the administrative fields
+cannot drift from the frontmatter they restate.
+
+**Sections.** All 12 procedures gained `## Scope and competence` (purpose, not
+for, competence, before you start) and `## Document control` with a revision
+history. `check_md.py` warns when a procedure lacks either, or lacks
+`## Troubleshooting`; SOP-000 and the index are exempt as they are not procedures.
+
+**Troubleshooting tables are not written yet.** The section is required and every
+procedure warns for it, which is deliberate: the content needs real fault
+knowledge and belongs to Phase 5, and a warning per document is a visible to-do
+list rather than a silent gap.
+
+**Files changed:** `S_IDENT`, `CONTROL_COLS` in `sop_style.py`; `CONTROL_LAYOUT`,
+`_ident_line`, `_control_grid` and the story assembly in `md_to_pdf.py`;
+`REQUIRED_META`, `RECOMMENDED_META`, `REQUIRED_SECTIONS` and `EXEMPT_STEMS` in
+`check_md.py`; `TEMPLATE.md` and `PROMPT.md`; all 14 sources.
+
+`check_md.py md` reports no errors. The only warnings are the missing reviewers
+and approvers, and the missing troubleshooting tables - both real, both tracked.
+
+> **Reviewers and approvers are the open item.** Every document now has a visible
+> empty `Approved by` field on its back page. That is honest, and it is also the
+> thing a safety officer will point at first. Deciding who reviews and who
+> approves the XAMS SOPs is a people question, not a tooling one, and nothing
+> further in this plan can close it.
+
 Also add to the template the "why" habit: rationale in `NOTE` boxes. 82079
 discourages rationale inside steps, but for a one-off instrument the reasoning
 ("V13 stays closed on the getter route because ...") is exactly the knowledge that
@@ -516,11 +578,19 @@ Per SOP, in numeric order:
    becomes a number with a tolerance: `2.0 +/- 0.2 bar`, `>= 24 h`,
    `T(A) = -90 degC`. Nobody can look these up anywhere else, so a vague value is
    a permanently lost value.
-4. **Figure numbering and cross-references.** `![caption](fig.png)` currently
-   yields a caption only. Add `Figure <step>-<n>` numbering, and reference the
-   figure from the step text. While there, rename the stale figure files
-   (`Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig1.png` ->
+4. **Figure numbering and cross-references.** Add `Figure <step>-<n>` numbering and
+   reference the figure from the step text. While there, rename the stale figure
+   files (`Emergency_Xenon_Recuperation_SOP_007_Rev_B_fig1.png` ->
    `SOP_007_fig01.png`) to match the current naming scheme.
+
+   *Captions were fixed ahead of this phase, on 11 August 2026.* Every figure was
+   imported as `![](path)` with an **empty** caption, and the caption text sat in a
+   separate bold paragraph after it - sometimes one paragraph covering two or three
+   figures, and in one case a two-by-two markdown table holding four captions at
+   once. The text therefore drifted away from its figure as the page filled. All 16
+   captions are now in the image's own caption slot, so the renderer's
+   `KeepTogether` binds each one under its own figure, and the stray paragraphs and
+   the caption table are gone. The renderer never needed changing.
 5. **Fill the troubleshooting tables** added in Phase 4.
 
 ---
@@ -599,7 +669,7 @@ already generic - the only XAMS-specific parts are the content and the green in
 | --- | --- | --- | --- |
 | 1 | `docs/DOCUMENTATION_STANDARD.md` | 1 h | the hand-over artefact |
 | 2 | signal words, triangle, hazard sections | 1 day | safety + most visible |
-| 3 | footer, page x of y, metadata, outline, ToC | half day | cheap credibility |
+| 3 | footer, page x of y, metadata, outline | half day | cheap credibility |
 | 4 | frontmatter, cover, required sections | half day tooling + half day migration | governance |
 | 5 | content sweep | 1-2 days | highest real safety value |
 | 6 | SOP-103 | depends on the experts | protects everything above |

@@ -60,13 +60,13 @@ and why.
 | --- | --- | --- |
 | 6.4 safety messages | The DANGER / WARNING / CAUTION / NOTICE signal-word hierarchy of ISO 3864-2 / ANSI Z535.6, with the safety-alert triangle on the three injury classes and no triangle on NOTICE. Each message states hazard and source, consequence, and how to avoid it, and is placed before the step it guards. | callout boxes in every SOP; vocabulary enforced by `tools/check_md.py` |
 | 6.4 grouped safety information | The hazards common to the whole installation - oxygen deficiency from xenon and nitrogen, cryogenic burn, stored energy in the gas system, detector high voltage - are stated once on a general hazard sheet, together with PPE, the ODH alarm response and the emergency contacts. Each procedure names those hazards in a one-line pointer and adds only the hazards specific to itself. 82079-1 permits information supplied once for a set of documents where it is referenced and available. | `SOP-000 General Hazards`; `## Hazards specific to this procedure` in each SOP |
-| 5.3 target audience and competence | Each SOP states who may run it, what competence is required, and what personal protective equipment is needed. | `## Scope and competence`; `audience:` and `ppe:` in the frontmatter |
+| 5.3 target audience and competence | Each SOP states who may run it and what competence is required. PPE is not repeated per procedure: the general hazard sheet states it per activity. | `## Scope and competence`; `audience:` in the frontmatter |
 | 6.3 intended use and limits | Each SOP states what it is for and, explicitly, what it is not for. | `## Scope and competence` |
-| 6.2 identification | Document identifier, revision, issue date, superseded revision, and the three separate roles of preparer, reviewer and approver. | frontmatter; cover block of the PDF |
-| 7.2 findability and legibility | Running footer carrying document identifier, revision and `Page x of y`; PDF metadata and outline; a table of contents in the longer procedures. | `tools/md_to_pdf.py` |
+| 6.2 identification | Document identifier, revision, issue date, superseded revision, and the three separate roles of preparer, reviewer and approver. One identification line on page 1; the administrative fields on the back page, generated from the frontmatter so they cannot drift. | frontmatter; `## Document control` |
+| 7.2 findability and legibility | Running footer carrying document identifier, revision and `Page x of y`; PDF metadata; a PDF outline mirroring the sections and steps. | `tools/md_to_pdf.py` |
 | 6.7 fault clearance | A fault - likely cause - remedy table in each SOP. There is no manufacturer to call. | `## Troubleshooting` |
 | 4 verifiability | Setpoints are given as numbers with tolerances, not as approximations, so that a criterion can be checked rather than judged. | throughout |
-| 5.6 revision control | A revision history in each document; superseded PDFs retained in `old/`; full change history in git. | `## Revision history` |
+| 5.6 revision control | A revision history in each document; superseded PDFs retained in `old/`; full change history in git. | `## Document control` |
 
 ### 3.2 Deliberately not adopted
 
@@ -92,7 +92,7 @@ never edited by hand.
    `approved_by:` with the date. A procedure without an approver is a draft and
    must say so in `status:`.
 4. **Bump.** Raise `revision:`, set `issue_date:`, and record the previous revision
-   in `supersedes:`. Add a line to the document's `## Revision history` table.
+   in `supersedes:`. Add a line to the revision-history table in `## Document control`.
 5. **Validate and build.**
 
        tools/.venv/bin/python tools/check_md.py md --fix
@@ -105,6 +105,30 @@ never edited by hand.
 Printed copies are uncontrolled. The footer on every page carries the document
 identifier, the revision and `Page x of y` so that a printout can be checked
 against the current revision and against itself.
+
+### 4.1 Printed and laminated copies
+
+The manual is printed double-sided and laminated for use at the apparatus. Every
+document is rendered to an even page count for that reason; where the content ends
+on an odd page the last page carries the line *"This page is intentionally
+blank"*, so a blank back is not mistaken for a printing fault.
+
+The build also writes `XAMS_Operations_Manual_Complete.pdf`, the whole manual in
+one file in reading order - index, general hazards, SOP-001 to SOP-008, the
+detector procedures, then the P&ID. Because every document is even, each one still
+begins on a right-hand page in the combined file. Print from that file; printing
+the individual PDFs one job at a time is what puts a procedure out of order.
+
+A laminated copy outlives the revision it was made from, and it looks
+authoritative long after it has been superseded. Therefore:
+
+- Keep a note of who holds laminated sets and where they are kept.
+- When a revision is issued, **physically destroy** the superseded laminated
+  copies. Replacing them "when convenient" is how a superseded procedure stays in
+  service.
+- Check the revision in the footer before working from any laminated copy.
+- SOP-000 is printed single-sided, because it is posted in the laboratory and both
+  sides would not be visible.
 
 ## 5. Reporting an error in a procedure
 
