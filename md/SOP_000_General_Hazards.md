@@ -62,10 +62,10 @@ status: Initial release
 | --- | --- |
 | Any work on the gas system | Safety glasses |
 | Handling LN2, dewars, transfer hoses or cold surfaces | Cryogenic gloves, face shield, apron, closed shoes |
-| Xenon recovery and filling | As for LN2 handling, plus a personal O~2~ monitor |
+| Xenon recovery and filling | As for LN2 handling, plus an O~2~ monitor |
 | Work on detector high voltage | Safety glasses; no loose metal jewellery or watches |
 
-PPE and personal O~2~ monitors are kept at TBD. Do not start an activity if the
+PPE are kept in the main cabinet in the lab. Do not start an activity if the
 required PPE is missing - report it instead.
 
 ## 3. If an ODH alarm sounds
