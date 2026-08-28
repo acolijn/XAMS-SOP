@@ -85,10 +85,24 @@ class SopDocTemplate(BaseDocTemplate):
         self.canv.addOutlineEntry(text, key, level=level, closed=False)
 
 
-def _ident_line(doc):
+SOP_ID_RE = re.compile(r"^SOP-\d+$", re.I)
+
+
+def _eyebrow(doc):
+    """The SOP number over the title, letterspaced so it reads as a label."""
+    sop = doc.meta.get("sop", "").strip()
+    # only a real SOP number earns the eyebrow; the index keeps its identifier
+    # in the line below the title
+    if not SOP_ID_RE.match(sop):
+        return None
+    return Paragraph(inline("\u2009".join(sop.upper())), st.S_EYEBROW)
+
+
+def _ident_line(doc, skip_doc_id=False):
     """The one line of identification the operator needs on page 1."""
     meta = doc.meta
-    parts = [doc.doc_id, meta.get("revision", "")]
+    parts = [] if skip_doc_id else [doc.doc_id]
+    parts.append(meta.get("revision", ""))
     issued = meta.get("issue_date", "")
     if issued:
         parts.append(f"Issued {issued}")
@@ -382,13 +396,16 @@ def _flowables(block, base_dir, width=st.CONTENT_WIDTH, nested=False):
 
 
 def build_story(doc, base_dir, blank_page=False):
-    story = [
-        Paragraph(inline(doc.meta.get("title", "")).upper(), st.S_TITLE),
-    ]
+    story = []
+    eyebrow = _eyebrow(doc)
+    if eyebrow:
+        story.append(eyebrow)
+    story.append(Paragraph(inline(doc.meta.get("title", "")).upper(), st.S_TITLE))
     subtitle = doc.meta.get("subtitle")
     if subtitle:
         story.append(Paragraph(inline(subtitle), st.S_SUBTITLE))
-    story.append(_ident_line(doc))
+    # with the number set over the title the identifier need not repeat below it
+    story.append(_ident_line(doc, skip_doc_id=eyebrow is not None))
 
     seen_control = False
     for block in doc.blocks:

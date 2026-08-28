@@ -111,6 +111,12 @@ SIGNAL_KINDS = tuple(k for k, v in BOX_KINDS.items() if v["signal"])
 INJURY_KINDS = tuple(k for k, v in BOX_KINDS.items() if v["triangle"])
 
 # --- paragraph styles ------------------------------------------------------
+# The document identifier as an eyebrow over the title: on a stack of printed
+# SOPs the number is what the operator looks for, and the title only confirms it.
+S_EYEBROW = ParagraphStyle(
+    "eyebrow", fontName="Helvetica-Bold", fontSize=13, leading=16,
+    textColor=GREEN, alignment=1, spaceAfter=3,
+)
 S_TITLE = ParagraphStyle(
     "title", fontName="Helvetica-Bold", fontSize=22, leading=26,
     textColor=GREEN, alignment=1, spaceAfter=11,
