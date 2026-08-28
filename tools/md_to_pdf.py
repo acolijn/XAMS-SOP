@@ -156,9 +156,15 @@ def _section(block):
 def _row(block):
     kind = block["kind"]
     spec = st.row_style(kind)
+    body_style = st.body_style(kind)
+    paras = [p for p in block["text"].split("\n\n") if p.strip()]
+    body = []
+    for n, text in enumerate(paras):
+        if n:
+            body.append(Spacer(1, 6))
+        body.append(Paragraph(inline(text), body_style))
     tbl = Table(
-        [[Paragraph(kind, st.label_style(kind)),
-          Paragraph(inline(block["text"]), st.body_style(kind))]],
+        [[Paragraph(kind, st.label_style(kind)), body]],
         colWidths=st.ROW_COLS,
     )
     tbl.setStyle(TableStyle([

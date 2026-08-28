@@ -73,7 +73,7 @@ Run these procedures in the order listed.
 | 007 | B | Emergency Xenon Recuperation | Night-time emergency response |
 | 008 | A | Main LN2 Supply Dewar Refill | Schedule and prepare the main LN2 dewar for refill |
 | 101 | A | PMT Power On and Off | Safely power the photomultiplier tube on and off |
-| 102 | A | SiPM Bias Power On and Off | Safely power the SiPM readout and bias supply |
+| 102 | B | SiPM Bias Power On and Off | Safely power the SiPM readout and bias supply |
 | 103 | A | XAMS TPC Electrode High-Voltage Operation | Apply and remove high voltage from the XAMS TPC electrodes in the correct sequence |
 | 104 | B | PMT Gain Calibration | LED gain calibration of the top and bottom PMTs |
 

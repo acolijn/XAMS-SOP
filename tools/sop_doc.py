@@ -311,8 +311,18 @@ def _parse_quote(quoted):
 
     row = QUOTE_ROW_RE.match(first)
     if row:
-        text = " ".join([row.group(2)] + [q.strip() for q in quoted[1:]])
-        return {"type": "row", "kind": row.group(1), "text": re.sub(r"\s+", " ", text).strip()}
+        # a bare ">" inside the row starts a new paragraph in the same cell
+        paras, buf = [], [row.group(2)]
+        for q in quoted[1:]:
+            if q.strip():
+                buf.append(q.strip())
+            elif buf:
+                paras.append(" ".join(buf))
+                buf = []
+        if buf:
+            paras.append(" ".join(buf))
+        text = "\n\n".join(re.sub(r"\s+", " ", p).strip() for p in paras if p.strip())
+        return {"type": "row", "kind": row.group(1), "text": text.strip()}
 
     inner = parse("\n".join(quoted))
     return {"type": "box", "kind": "info", "blocks": inner.blocks}

@@ -3,16 +3,16 @@ sop: SOP-102
 doc_id: XAMS-SOP-102
 title: SiPM Bias Power On and Off
 subtitle: Safely power the SiPM readout and bias supply
-revision: Rev. A
-issue_date: 2026-08-10
-supersedes: N/A
+revision: Rev. B
+issue_date: 2026-08-28
+supersedes: Rev. A
 author: Auke-Pieter Colijn
 prepared_by: Auke-Pieter Colijn
 reviewed_by: Anna Hurhina
 approved_by: Auke-Pieter Colijn
 audience: Trained XAMS operator authorised for detector high voltage
 location: Nikhef - XAMS
-status: Initial release
+status: Updated the SiPM testing step
 ---
 
 > [!NOTE]
@@ -52,6 +52,8 @@ status: Initial release
 > **ACTION** — Set the multimeter to diode mode. Connect the COM terminal to the
 > expected SiPM cathode and the VΩmA terminal to the expected SiPM anode. Verify
 > the forward voltage of each connected SiPM.
+>
+> On the CF40 flange in XAMS the cathodes should be B1 and B2, and the anodes should be S1 and S2, respectively.
 
 > **VERIFY** — The measured forward voltage is between 0.55 V and 0.70 V,
 > depending on the SiPM model.
@@ -84,8 +86,10 @@ status: Initial release
 ### 4. Apply the SiPM bias voltage
 
 > **ACTION** — Configure the SiPM bias supply with a current limit of 20 mA
-> maximum. Increase the bias voltage at a rate not exceeding 5 V/s until
-> 49 V is reached.
+> maximum.
+>
+> Increase the bias voltage at a rate not exceeding 5 V/s until V0 is reached.
+> At room temperature V0 = 49 V; at LXe temperature V0 = 45 V.
 
 > **VERIFY** — The bias voltage increases smoothly and the current remains below
 > the configured limit.
@@ -96,7 +100,7 @@ status: Initial release
 
 ### 5. Determine the breakdown voltage
 
-> **ACTION** — Above 49 V, increase the bias voltage at no more than 0.5 V/s
+> **ACTION** — Above V0, increase the bias voltage at no more than 0.5 V/s
 > while monitoring the SiPM output on an oscilloscope. Identify the breakdown
 > voltage as the point where the single-photoelectron peaks become just
 > distinguishable.
@@ -172,3 +176,4 @@ status: Initial release
 | Revision | Issued | Change |
 | --- | --- | --- |
 | Rev. A | 2026-08-10 | First issue. |
+| Rev. B | 2026-08-28 | Updated the SiPM testing step; bias target given as V0. |
