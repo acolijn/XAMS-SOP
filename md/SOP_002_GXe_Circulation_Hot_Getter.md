@@ -3,9 +3,9 @@ sop: SOP-002
 doc_id: XAMS-SOP-002
 title: GXe Circulation Through Hot Getter
 subtitle: Purify xenon before cooling
-revision: Rev. C
-issue_date: 2026-08-07
-supersedes: Rev. B
+revision: Rev. D
+issue_date: 2026-09-01
+supersedes: Rev. C
 author: Auke-Pieter Colijn
 prepared_by: Auke-Pieter Colijn
 reviewed_by: Bart Sarlemijn
@@ -74,15 +74,18 @@ status: Updated release
 
 ### 3. Configure the circulation loop
 
-> **ACTION** — **Set V8 fully OPEN and keep V7 fully CLOSED before pump start. Configure
-> the** **approved detector-to-pump-to-getter-to-detector circulation path, including
-> the** **pump buffer volume. Keep filling and recovery paths isolated.**
+> **ACTION** — Prepare the valves according to teh table below. In the table only the relevant valves for the GXe circulation loop are mentioned. 
 
 > **VERIFY** — The complete circulation loop is configured and storage bottles remain
 > isolated.
 
 > **STOP** — **Use the approved current valve map at the gas board. Do not infer the
 > route from** **obsolete pump procedures.**
+
+| Valve state | Required state |
+| --- | --- |
+| V8, V9, V10, V11, V12, V26 | OPEN |
+| V7, V13| CLOSED |
 
 ### 4. Start the recirculation pump
 
@@ -96,16 +99,16 @@ status: Updated release
 
 ### 5. Start the getter and establish flow
 
-> **ACTION** — **Switch ON the getter and allow it to reach normal hot operating status.
-> Then slowly** **open V7; V7 may be opened fully if stable. Regulate the circulation
-> flow by** **gradually closing bypass valve V8 until approximately 17 g/min is
-> reached.**
+> **ACTION** — Switch ON the getter and allow it to reach normal hot operating status.
+> Then slowly open V7; V7 may be opened fully if stable. Regulate the circulation
+> flow by gradually closing bypass valve V8 until approximately 17 g/min is
+> reached.
 
 > **VERIFY** — Getter indicates normal hot operating status. Flow is stable near 17
 > g/min and detector pressure/temperatures remain stable.
 
-> **STOP** — **If the getter alarms, flow becomes unstable, or detector pressure
-> changes** **unexpectedly, reduce flow and stop the pump if necessary.**
+> **STOP** — If the getter alarms, flow becomes unstable, or detector pressure
+> changes unexpectedly, reduce flow and stop the pump if necessary.
 
 ## C. Purify for at least one week
 
@@ -153,5 +156,6 @@ status: Updated release
 | Revision | Issued | Change |
 | --- | --- | --- |
 | Rev. C | 2026-08-07 | Content updated; see the source history for details. |
+| Rev. D | 2026-09-01 | Updated after starting the GXe circulation. |
 
 Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.

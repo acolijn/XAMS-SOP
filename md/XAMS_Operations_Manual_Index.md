@@ -64,8 +64,8 @@ Run these procedures in the order listed.
 | SOP | Rev. | Procedure | Purpose |
 | --- | --- | --- | --- |
 | 000 | A | General Hazards | Hazards common to all XAMS operations - read before any procedure |
-| 001 | D | GXe Filling | Initial gas fill before purification |
-| 002 | C | GXe Circulation Through Hot Getter | Purify xenon before cooling |
+| 001 | E | GXe Filling | Initial gas fill before purification |
+| 002 | D | GXe Circulation Through Hot Getter | Purify xenon before cooling |
 | 003 | D | Cooling Preparation and PTR Start | Prepare cooling after GXe purification |
 | 004 | E | LXe Filling | Fill the detector with liquid xenon |
 | 005 | A | Normal LXe Operation | Normal operation after LXe filling |

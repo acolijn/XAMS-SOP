@@ -3,9 +3,9 @@ sop: SOP-001
 doc_id: XAMS-SOP-001
 title: GXe Filling
 subtitle: Initial gas fill before purification
-revision: Rev. D
-issue_date: 2026-08-05
-supersedes: Rev. C
+revision: Rev. E
+issue_date: 2026-09-01
+supersedes: Rev. D
 author: Auke-Pieter Colijn
 prepared_by: Auke-Pieter Colijn
 reviewed_by: Bart Sarlemijn
@@ -47,7 +47,7 @@ status: Updated release
 > **ACTION** — **Fully pump out the detector volume and all connected pipes, including
 > the pipe** **between pressure regulator V17 and high-pressure valves V5/V6.**
 
-> **VERIFY** — Perform an RGA scan before filling. Required pressure: **< 1 x 10**^-6^
+> **VERIFY** — Perform an RGA scan before filling. Required pressure: **< 1 x 10**^-5^
 > **mbar**. Record the detector pressure and RGA result in LogIt.
 
 > **STOP** — **Do not start filling if the required vacuum or RGA condition is not
@@ -68,9 +68,14 @@ status: Updated release
 > kg or mB = ...** **kg. Confirm the recirculation pump is OFF. Ensure the
 > recirculation-pump buffer** **volume is filled with xenon to 1.0 bar.**
 
+
+
+### 4. Prepare valves
+
+> **ACTION** - Prepare valves to state indicated in table
+
 > **VERIFY** — The buffer volume may be filled once and then left isolated at 1.0 bar
-> for later use. Confirm all system valves are initially closed. Do not fully tighten
-> V8. Remove the V14 knob so it cannot be opened accidentally.
+> for later use. Do not fully tighten V8. Remove the V14 knob so it cannot be opened accidentally.
 
 > **STOP** — **V8 is a needle valve and can be damaged by overtightening.**
 
@@ -78,8 +83,11 @@ status: Updated release
 | --- | --- |
 | V1-V14 | CLOSED |
 | V14 knob | REMOVED |
+| V15, V16 | Do not touch |
 | V17 regulator | FULLY CLOSED - turn counter-clockwise, towards you |
 | V18/V19 bottle valve | CLOSED |
+| V22, V23, V24, V25 | Do not touch - V22 likely closed |
+| V26 | OPEN |
 | Recirculation pump | OFF |
 | Pump buffer volume | 1.0 bar GXe; isolated |
 
@@ -111,7 +119,7 @@ status: Updated release
 
 ### 6. Open the pipe path up to V7
 
-> **ACTION** — **Open V8, then V13, then V9. Leave V7 closed.**
+> **ACTION** — **Open V8, then V11, V12, V13, then V9. Leave V7 closed.**
 
 > **VERIFY** — No detector-pressure change should be visible yet.
 
@@ -197,5 +205,6 @@ status: Updated release
 | Revision | Issued | Change |
 | --- | --- | --- |
 | Rev. D | 2026-08-05 | Content updated; see the source history for details. |
+| Rev. E | 2026-09-01 | Updated procedure after following fill procedure. |
 
 Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.
