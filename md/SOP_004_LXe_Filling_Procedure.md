@@ -53,9 +53,9 @@ status: Updated release
 ### 1. Confirm prerequisites
 
 > **ACTION** — **Confirm the system has been baked and that SOP-001 has been
-> completed.** **Confirm SOP-002 has provided at least 7 effective days of GXe
-> circulation** **through the hot getter. Confirm SOP-003 cooling preparation has been**
-> **completed.**
+> completed. Confirm SOP-002 has provided at least 7 effective days of GXe
+> circulation through the hot getter. Confirm SOP-003 cooling preparation has been
+> completed.**
 
 > **VERIFY** — Detector contains purified xenon gas, cooling systems are ready, and
 > required permissions have been obtained.
@@ -79,15 +79,15 @@ status: Updated release
 ### 3. Make emergency cooling operational
 
 > **ACTION** — **Switch on power supply E030-1 for the solenoid valve. Open the liquid
-> valve on** **the emergency dewar. Briefly test the solenoid valve and confirm
-> nitrogen** **exhaust at the roof outlet. Confirm the emergency-cooling pressure
-> switch** **setting.**
+> valve on the emergency dewar. Briefly test the solenoid valve and confirm
+> nitrogen exhaust at the roof outlet. Confirm the emergency-cooling pressure
+> switch setting.**
 
 > **VERIFY** — A click is heard when power is applied, nitrogen exhaust is observed
 > during the brief test, and sufficient LN2 is available.
 
 > **STOP** — **Do not proceed without functional emergency cooling. Minimise LN2 loss
-> during** **the test.**
+> during the test.**
 
 ### 4. Pre-cool the TPC with gas
 

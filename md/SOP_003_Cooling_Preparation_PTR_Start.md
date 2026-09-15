@@ -3,9 +3,9 @@ sop: SOP-003
 doc_id: XAMS-SOP-003
 title: Cooling Preparation and PTR Start
 subtitle: Prepare cooling after GXe purification
-revision: Rev. D
-issue_date: 2026-08-07
-supersedes: Rev. C
+revision: Rev. E
+issue_date: 2026-09-15
+supersedes: Rev. D
 author: Auke-Pieter Colijn
 prepared_by: Auke-Pieter Colijn
 reviewed_by: Bart Sarlemijn
@@ -49,19 +49,9 @@ status: Updated release
 > Confirm the insulation vacuum and the direction of the heat exhaust before
 > starting the compressor.
 
-## A. Prepare emergency cooling
+## A. Pump the insulation vacuum
 
-### 1. Check emergency cooling readiness
-
-> **ACTION** — **Ensure N2 gas is present in the emergency-cooling pipe and close the
-> solenoid** **valve. Confirm sufficient liquid nitrogen is available.**
-
-> **VERIFY** — Emergency cooling consumes approximately 5-7 kg/hour. Record the
-> available amount in LogIt.
-
-## B. Pump the insulation vacuum
-
-### 2. Start roughing and turbopump
+### 1. Start roughing and turbopump
 
 > **ACTION** — **Connect the roughing pump to V16. Open V15, then V16. Start the
 > roughing pump** **and wait until insulation vacuum is below 9 x 10^-2^ mbar. Then
@@ -76,21 +66,21 @@ status: Updated release
 > **VERIFY** — Continue pumping until the insulation vacuum is in the 10^-6^ mbar
 > regime. Record the achieved value in LogIt.
 
-## C. Start the PTR
+## B. Start the PTR
 
-### 3. Check compressor readiness
+### 2. Check compressor readiness
 
-> **ACTION** — **Check whether compressor helium requires a refill. Switch ON the
-> compressor and** **verify supply pressure is within the approved operating range.**
+> **ACTION** — **Check whether helium pressure in compressor is (2.0 +- 0.05)MPa: if too low refill before continuing. Switch ON the
+> compressor and verify supply pressure is within the approved operating range.**
 
 > **VERIFY** — Point compressor heat exhaust away from the emergency LN2 dewar.
 
 > **STOP** — **If compressor pressure or operation is abnormal, switch it OFF and
-> contact an** **experienced operator.**
+> contact an experienced operator.**
 
-### 4. Set the LakeShore controller
+### 3. Set the LakeShore controller
 
-> **ACTION** — **Set temperature setpoint to -90.00 °C. Set Heater Range to HIGH.**
+> **ACTION** — **Set temperature setpoint to -90.00 °C. Set Heater Range to HIGH. On the Lakeshore unit click SETPOINT. Then navigate to HIGH with the arrow buttons and click Enter when the appropriate setting is selected **
 
 > **VERIFY** — Displayed setpoint is -90.00 °C and Heater Range is HIGH.
 
@@ -98,7 +88,6 @@ status: Updated release
 
 > [!CHECKLIST]
 > - SOP-002 purification completed and documented
-> - Emergency cooling readiness confirmed
 > - Insulation vacuum in the 10\^-6 mbar regime
 > - Turbopump running normally
 > - Compressor supply pressure within approved range
@@ -116,5 +105,6 @@ status: Updated release
 | Revision | Issued | Change |
 | --- | --- | --- |
 | Rev. D | 2026-08-07 | Content updated; see the source history for details. |
+| Rev. E | 2026-09-15 | Content updated; no longer check LN2 cooling here + minor changes |
 
 Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.
