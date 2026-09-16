@@ -70,7 +70,7 @@ status: Updated release
 
 ### 2. Check compressor readiness
 
-> **ACTION** — **Check whether helium pressure in compressor is (2.0 +- 0.05)MPa: if too low refill before continuing. Switch ON the
+> **ACTION** — **Check whether helium pressure in compressor is (2.0 ± 0.05) MPa: if too low refill before continuing. Switch ON the
 > compressor and verify supply pressure is within the approved operating range.**
 
 > **VERIFY** — Point compressor heat exhaust away from the emergency LN2 dewar.
