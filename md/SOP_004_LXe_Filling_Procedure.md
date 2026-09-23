@@ -3,13 +3,13 @@ sop: SOP-004
 doc_id: XAMS-SOP-004
 title: LXe Filling
 subtitle: Fill the detector with liquid xenon
-revision: Rev. E
-issue_date: 2026-08-10
-supersedes: Rev. D
+revision: Rev. F
+issue_date: 2026-09-23
+supersedes: Rev. E
 author: Auke-Pieter Colijn
 prepared_by: Auke-Pieter Colijn
 reviewed_by: Bart Sarlemijn
-approved_by: Auke-PIeter Colijn
+approved_by: Auke-Pieter Colijn
 audience: Trained XAMS operator
 location: Nikhef - XAMS
 status: Updated release
@@ -23,7 +23,7 @@ status: Updated release
 
 |  |  |
 | --- | --- |
-| **Purpose** | Fill the cooled detector with liquid xenon, by the direct route or through the hot getter. |
+| **Purpose** | Fill the cooled detector with liquid xenon through the hot getter. |
 | **Not for** | Normal running once the detector is full, which is SOP-005, and any recovery, which is SOP-006. |
 | **Competence** | Trained XAMS operator, briefed on cryogenics and oxygen-deficiency hazards. Do not run this procedure alone. |
 | **Before you start** | SOP-002 and SOP-003 complete; emergency cooling operational; alarms, remote access and shifter coverage confirmed; all detector voltages OFF. |
@@ -43,10 +43,9 @@ status: Updated release
 > the overflow transition, and do not stand over the cryostat while filling.
 
 > [!NOTICE]
-> Mixing the direct and hot-getter filling routes, or filling with detector voltages
-> on, damages the getter and the detector electronics.
-> Switch off all detector voltages before filling, and record the chosen route in
-> LogIt before opening V7.
+> Filling with detector voltages on damages the detector electronics.
+> Switch off all detector voltages before filling, and record the valve configuration
+> in LogIt before opening V7.
 
 ## A. Preconditions and preparation
 
@@ -66,9 +65,7 @@ status: Updated release
 ### 2. Verify alarms, remote access, and computer readiness
 
 > **ACTION** — **Confirm alarm systems and emergency shifter coverage are operational.
-> Check** **the Alcatel USB dongle internet connection by loading an internet page.
-> Confirm** **the SIM is active. Prevent automatic Windows updates or restarts during**
-> **unattended operation.**
+> Prevent automatic Windows updates or restarts during unattended operation.**
 
 > **VERIFY** — Remote connection works, alarms are active, and the Slow Control computer
 > will not restart unexpectedly.
@@ -76,7 +73,20 @@ status: Updated release
 > **STOP** — **Do not continue if alarms, remote access, or Slow Control availability
 > are** **uncertain.**
 
-### 3. Make emergency cooling operational
+### 3. Pre-cool the TPC with gas
+
+> **ACTION** — **Set LakeShore T(A) to -90 °C. Set Heater Range to HIGH. Run recirculation during
+> the gas cool-down to maximise heat transfer. Allow approximately one day or more.**
+
+> **VERIFY** — Heater Range is HIGH. TPC pressure and temperature are below the intended
+> final operating point, providing thermal margin for filling.
+
+> **STOP** — **Do not begin liquid filling until the detector is sufficiently cold and
+> stable.**
+
+## B. Fill with liquid xenon
+
+### 4. Make emergency cooling operational
 
 > **ACTION** — **Switch on power supply E030-1 for the solenoid valve. Open the liquid
 > valve on the emergency dewar. Briefly test the solenoid valve and confirm
@@ -89,91 +99,71 @@ status: Updated release
 > **STOP** — **Do not proceed without functional emergency cooling. Minimise LN2 loss
 > during the test.**
 
-### 4. Pre-cool the TPC with gas
+### 5. Prepare the gas system
 
-> **ACTION** — **Set LakeShore T(A) to approximately -90 °C, or lower if liquid droplets
-> are** **intentionally required. Set Heater Range to HIGH. Run recirculation during
-> the** **gas cool-down to maximise heat transfer. Allow approximately one day or
-> more.**
+> **ACTION** — **Switch off all detector voltages. Switch off the recirculation pump. Close all gas-board valves,
+> including pressure regulator V17 by turning it counter-clockwise. Record the configuration in LogIt.**
 
-> **VERIFY** — Heater Range is HIGH. TPC pressure and temperature are below the intended
-> final operating point, providing thermal margin for filling.
-
-> **STOP** — **Do not begin liquid filling until the detector is sufficiently cold and
-> stable.**
-
-## B. Optional first data
-
-### 5. Take optional pre-fill data
-
-> **ACTION** — **Optionally take a PMT calibration and gas-phase scintillation
-> measurements** **before filling. No electric fields are required for these
-> measurements; keep** **detector high voltages off unless a separately approved
-> measurement procedure** **explicitly requires them.**
-
-> **VERIFY** — Any required pre-fill calibration or reference data have been saved and
-> documented.
-
-## C. Fill with liquid xenon
-
-### 6. Prepare the gas system
-
-> **ACTION** — **Switch off all detector voltages. For the standard direct filling
-> route, switch off** **the getter but maintain flow through it for at least 15 minutes
-> to cool it, then** **switch off the recirculation pump. Close all gas-board valves,
-> including pressure** **regulator V17 by turning it counter-clockwise. Record the
-> configuration in LogIt.**
-
-> **VERIFY** — All detector voltages are OFF. For direct filling, getter is cool and
+> **VERIFY** — All detector voltages are OFF. Getter is ON and
 > recirculation pump is OFF. All valves and V17 are closed.
 
 > **STOP** — **Do not change the filling configuration while detector voltages are on.**
 
-### 7. Prepare bottle and flow monitoring
+### 6. Prepare bottle and flow monitoring
 
 > **ACTION** — **Record the storage-bottle weight. Reset integrated flow in Slow Control
-> and** **confirm integration has started. Open the xenon bottle main valve. Open V6
-> for** **bottle B or V5 for bottle A.**
+> and confirm integration has started. Open the xenon bottle main valve. Open V5 (V6) for bottle A (bottle B).**
 
 > **VERIFY** — Bottle identity and initial mass are in LogIt; integrated flow is active;
-> high-pressure side responds normally.
+> high-pressure side responds normally: P101 should read 50-70bar.
 
-### 8. Choose and establish the filling path
+### 7. Establish the filling path
 
-> **ACTION** — **Set V17 so the low-pressure side is approximately 2 bar. Choose one
-> approved** **route:** **Direct route: open V8, V9, and V13.** **Hot-getter route: keep
-> V13 closed and open V11 and V12 so xenon is filled** **through the hot getter. Confirm
-> the getter is at its approved hot operating** **condition before opening this route.**
-> **Then open needle valve V7 slowly while continuously observing flow and** **detector
-> pressure.**
+> **ACTION** — **Fill through the hot getter. Open V8, V9, V11, V12. Switch ON the hot getter.**
 
-> **VERIFY** — The selected route is explicitly recorded in LogIt. Flow starts gradually
-> and detector pressure responds smoothly. For the hot-getter route, getter status
-> remains normal.
+> **VERIFY** — Double-check the valve states against the table below. Record the
+> configuration in LogIt.
 
-> **STOP** — **Never mix the direct and hot-getter valve configurations. If route
-> identity is** **uncertain, close V7 and reconstruct the valve state before
-> continuing.**
+> **STOP** — **If any reading does not make sense, close the bottle main valve and
+> V5/V6 and investigate.**
+
+| Valve state | Required state |
+| --- | --- |
+| Bottle main valve (V18 or V19) | OPEN - selected bottle only |
+| V5 or V6 | OPEN - selected bottle only |
+| V8, V9, V11, V12 | OPEN |
+| V10, V13 | CLOSED |
+| V26 | OPEN - always open; not operated from the gas panel |
+| V7 | CLOSED - opened in step 8 |
+| V17 regulator | CLOSED - opened in step 8 |
+| All other valves | CLOSED |
+| Hot getter | ON |
+| Recirculation pump | OFF |
+
+### 8. Fill
+
+> **ACTION** — **Open pressure regulator V17 slowly while watching P102, so that P102
+> does not overshoot, until it reads about 2.0-2.5 bar. Open V7
+> to establish flow to the detector.**
+
+> **VERIFY** — Flow is established. PMAIN stays below 1.9 bar.
+
+> **STOP** — **Close V7 if PMAIN exceeds 1.9 bar.**
 
 ### 9. Use all available cooling power
 
-> **ACTION** — **Lower the LakeShore setpoint sufficiently that the heating band
-> switches off.** **Keep Heater Range HIGH. Continue filling while maintaining stable
-> pressure and** **temperature.**
+> **ACTION** — **Keep Heater Range HIGH. Continue filling while maintaining stable pressure and temperature.**
 
-> **VERIFY** — Heating power is at or near zero and cooling capacity is available for
-> condensation.
+> **VERIFY** — Heating power is at or near zero and cooling capacity is available for condensation. If heating power >10% you can increase the flow by slightly opening V7.
 
-> **STOP** — **Someone must remain present throughout filling. Keep alarms enabled. Do
-> not** **leave an active fill unattended.**
+> **STOP** — **Someone must remain present throughout filling. Keep alarms enabled. Do not leave an active fill unattended.**
 
 ## C. Fill with liquid xenon - TPC bucket overflow
 
-### 9A. Respond when LXe reaches the top of the TPC bucket
+### 10. Respond when LXe reaches the top of the TPC bucket
 
 > [!WARNING]
-> **Overpressure - liquid xenon overflowing the TPC bucket onto the still-warm
-> cryostat wall.**
+> **Overpressure - liquid xenon overflowing the TPC bucket onto the still-warm cryostat wall.**
 > Flash evaporation causes a sudden pressure rise and unstable detector pressure
 > until the cryostat bottom has cooled, and can rupture a fitting or a window.
 > Switch on emergency cooling as soon as TT203/TT204/TT205 drop, keep clear of the
@@ -181,15 +171,14 @@ status: Updated release
 
 > **ACTION** — **Continuously monitor TT203, TT204, and TT205. When their temperatures
 > drop,** **indicating that LXe has reached the top of the TPC bucket, switch ON
-> emergency** **cooling immediately.**
+> emergency cooling immediately.**
 
 > **VERIFY** — Emergency cooling is ON. Continue monitoring detector pressure and
 > TT203/TT204/TT205 closely. A temporary pressure rise or pressure instability is
 > expected while the cryostat bottom cools.
 
 > **STOP** — **Do not leave this transition unattended. If pressure rises beyond safe
-> control,** **stop the active fill and follow** SOP-007 - Emergency Xenon Recuperation
-> **.**
+> control, stop the active fill and follow SOP-007 - Emergency Xenon Recuperation.**
 
 > [!CUE]
 > **OPERATOR CUE**
@@ -203,36 +192,47 @@ status: Updated release
 
 ## D. Switching storage bottles
 
-### 10. Switch from bottle B to bottle A
+### 11. Switch to the other storage bottle
 
-> **ACTION** — **As bottle-B pressure drops, fully open V17 and V7 to recover the
-> remaining gas.** **Record both bottle weights. Close V6, V7, and V17. Close bottle-B
-> main valve.** **Open bottle-A main valve, then open V5. Record the high-pressure
-> reading. Open** **V17 and set the low-pressure side to approximately 2 bar.
-> Re-establish the** **previously selected filling route and flow with V7.**
+> **ACTION** — **Switch bottles when P101 drops below 3 bar. First fully open V17 and V7
+> to recover the remaining gas, keeping PMAIN below 1.9 bar. Record the weights of both bottles. Close V7, V17 and the
+> high-pressure valve of the empty bottle (V5 or V6), then close its main valve (V18 or
+> V19). Open the main valve of the new bottle, then its high-pressure valve. Record
+> P101. Open V17 slowly while watching P102, so that P102 does not overshoot, until it
+> reads about 2.0-2.5 bar. Confirm the step 7 filling path is
+> still open and re-establish flow with V7.**
 
-> **VERIFY** — Bottle B is isolated, bottle A is connected, low pressure is stable near
-> 2 bar, and flow has resumed smoothly through the same documented route.
+> **VERIFY** — The empty bottle is isolated and the new bottle is connected. P102 is
+> stable at 2.0-2.5 bar, PMAIN stays below 1.9 bar, and flow has resumed smoothly
+> through the hot getter. The bottle switch is recorded in LogIt.
 
-> **STOP** — **Do not open the new bottle path until the previous bottle and associated
-> valves** **are positively isolated.**
+> **STOP** — **Do not open the new bottle path until the empty bottle and its
+> high-pressure valve are positively isolated.**
+
+| Bottle | Main valve | High-pressure valve |
+| --- | --- | --- |
+| A | V18 | V5 |
+| B | V19 | V6 |
 
 ## E. Pause filling
 
-### 11. Put the system in a stable paused state
+### 12. Put the system in a stable paused state
 
 > **ACTION** — **Record bottle weight and integrated flow. Close the bottle main valve.
 > Allow** **remaining gas in the high-pressure region to enter the system. Set the**
 > **LakeShore setpoint so heating power is high enough to maintain stable** **conditions
-> and keep Heater Range HIGH. Close V7, then close all valves** **belonging to the
-> selected filling route. Close V6 if bottle B was used, or V5 if** **bottle A was used.
+> and keep Heater Range HIGH. Close V7, then close** **V8, V9, V11 and V12. Close V6 if bottle B was used, or V5 if** **bottle A was used.
 > Pause integrated flow.**
 
-> **VERIFY** — No active bottle connection remains, the selected filling path is fully
+> **VERIFY** — No active bottle connection remains, the filling path is fully
 > closed, pressure and temperature are stable, and integrated flow is paused.
 
 > **STOP** — **Do not leave the system in a partially isolated or undocumented
 > configuration.**
+
+> [!NOTE]
+> **Restarting the fill:** record the bottle weight, resume integrated flow, open the
+> bottle main valve and its high-pressure valve (V5 or V6), then continue with step 7.
 
 ## F. Final safe-state and LogIt record
 
@@ -241,12 +241,12 @@ status: Updated release
 > - All detector voltages are OFF during filling
 > - LakeShore Heater Range HIGH
 > - Bottle identity, initial/final mass, and any bottle switch recorded
-> - Every valve action, selected route, and configuration change recorded
+> - Every valve action and configuration change recorded
 > - Integrated flow recorded and reconciled with bottle mass change
 > - Detector pressure and temperature evolution recorded
 > - Alarm coverage and emergency cooling operational
 > - TPC-bucket overflow transition and emergency-cooling activation documented
-> - If paused, all valves of the selected route closed and system thermally stable
+> - If paused, V7, V8, V9, V11 and V12 closed and system thermally stable
 > - Any deviation, unexpected response, or intervention documented and handed over
 
 NEXT PROCEDURE: Continue with SOP-005 - Normal LXe Operation.
@@ -256,5 +256,6 @@ NEXT PROCEDURE: Continue with SOP-005 - Normal LXe Operation.
 | Revision | Issued | Change |
 | --- | --- | --- |
 | Rev. E | 2026-08-10 | Content updated; see the source history for details. |
+| Rev. F | 2026-09-23 | Content updated, based on actual filling operation |
 
 Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.
