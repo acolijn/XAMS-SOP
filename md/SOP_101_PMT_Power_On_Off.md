@@ -26,7 +26,7 @@ status: Draft - not approved for use
 | **Purpose** | Switch the PMT high voltage on and off in a controlled ramp with the slow control, and respond to a trip. |
 | **Not for** | Gain calibration, which is SOP-104, and TPC electrode voltages, which are SOP-103. |
 | **Competence** | Trained XAMS operator authorised for detector high voltage. |
-| **Before you start** | Detector closed and dark; all interlocks satisfied; slow control running and the /hv page reachable; approved PMT voltages for this run available. |
+| **Before you start** | Detector closed and dark; all interlocks satisfied; slow control running and the **Controls** page (high-voltage section) reachable; approved PMT voltages for this run available. |
 
 > [!NOTE]
 > **General hazards apply:** detector high voltage. Read SOP-000 before starting.
@@ -63,7 +63,7 @@ status: Draft - not approved for use
 
 ### 1. Check the supply
 
-> **ACTION** — Open the /hv page. Check that hv_1 is in REMOTE, that no channel shows
+> **ACTION** — Open the **Controls** page (high-voltage section). Check that hv_1 is in REMOTE, that no channel shows
 > TRIPPED and that no red VSET banner is shown.
 
 > **VERIFY** — The PMT channels show `disabled`, `enabled` or `ON 0 V` with VSET 0 V.
@@ -74,7 +74,7 @@ status: Draft - not approved for use
 ### 2. Enable and energise at zero
 
 > **ACTION** — With VSET 0 V, flip the front-panel enable switch of the PMT channel,
-> then turn it ON on /hv.
+> then turn it ON on the **Controls** page.
 
 > **VERIFY** — The channel shows `ON 0 V`.
 
@@ -130,7 +130,7 @@ status: Draft - not approved for use
 
 ### 7. Disable the channel
 
-> **ACTION** — Turn the channel OFF on /hv and, if the PMT stays off, flip the
+> **ACTION** — Turn the channel OFF on the **Controls** page and, if the PMT stays off, flip the
 > front-panel enable switch off.
 
 > **VERIFY** — The channel shows `disabled` or `enabled` with VSET 0 V and VMON 0 V.
@@ -172,12 +172,12 @@ status: Draft - not approved for use
 
 > [!CHECKLIST]
 > - PMT high voltage is 0 V and the channel is OFF with VSET 0 V.
-> - No TRIPPED latch and no red VSET on /hv.
+> - No TRIPPED latch and no red VSET on the **Controls** page.
 > - Power-on, power-off and any trip have been recorded in LogIt.
 
 ## Document control
 
 | Revision | Issued | Change |
 | --- | --- | --- |
-| Rev. B | 2026-09-26 | Operation via the slow-control /hv page; supply channels and ramp rates; rate-burst early warning; trip response at 50 V lower voltage; gain recalibration after a voltage change; troubleshooting. Draft, not yet reviewed or approved. |
+| Rev. B | 2026-09-26 | Operation via the high-voltage section of the slow-control **Controls** page; supply channels and ramp rates; rate-burst early warning; trip response at 50 V lower voltage; gain recalibration after a voltage change; troubleshooting. Draft, not yet reviewed or approved. |
 | Rev. A | 2026-08-10 | First issue. |

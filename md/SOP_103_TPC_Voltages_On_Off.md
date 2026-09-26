@@ -27,14 +27,14 @@ status: Draft - not approved for use
 | **Purpose** | Apply, change and remove high voltage on the TPC electrodes (bottom screen, cathode, gate, anode, top screen) with the slow control, and respond to a trip. |
 | **Not for** | PMT and SiPM voltages (SOP-101, SOP-102). Changing the supplies' protection settings (MAXV, ramp rate, trip current) - those are set by the detector expert only. |
 | **Competence** | Trained XAMS operator authorised for detector high voltage, working to setpoints approved by the detector expert. |
-| **Before you start** | Detector in normal LXe operation (SOP-005); slow control running and the /hv page reachable; approved setpoints for this run available. |
+| **Before you start** | Detector in normal LXe operation (SOP-005); slow control running and the **Controls** page (high-voltage section) reachable; approved setpoints for this run available. |
 
 > [!NOTE]
 > **General hazards apply:** detector high voltage. Read SOP-000 before starting.
 
 > [!NOTE]
 > **Supplies and channels.** Two CAEN DT1470ET supplies, operated from the
-> slow-control /hv page. hv_2 carries the cathode (ch 0), gate (ch 1), anode
+> high-voltage section of the slow-control **Controls** page. hv_2 carries the cathode (ch 0), gate (ch 1), anode
 > (ch 2) and the NaI detector (ch 3); hv_1 carries the PMTs (ch 0, 1) and the
 > top and bottom screens (ch 2, 3). The front-panel enable switch and the
 > LOCAL/REMOTE mode are hand operations; the software sets VSET and switches a
@@ -78,7 +78,7 @@ status: Draft - not approved for use
 
 ### 2. Verify the high-voltage supplies
 
-> **ACTION** — Open the /hv page. Check that both supplies are in REMOTE, that no
+> **ACTION** — Open the **Controls** page (high-voltage section). Check that both supplies are in REMOTE, that no
 > channel shows TRIPPED, and that no red VSET banner is shown (a disabled channel
 > with a non-zero setpoint).
 
@@ -220,7 +220,7 @@ expert, on the board and in the slow-control `channels.yaml` together).
 >
 > | | |
 > | --- | --- |
-> | **Indication** | /hv shows a red banner and TRIPPED on a channel, or VMON collapses to 0 V while the channel still reads ON |
+> | **Indication** | The **Controls** page shows a red banner and TRIPPED on a channel, or VMON collapses to 0 V while the channel still reads ON |
 > | **Immediate response** | Stop every ramp. Do not clear the trip yet. The slow control has already set VSET 0 V and switched the channel OFF |
 
 > **ACTION** — Leave the other electrodes where they are unless the detector
@@ -235,7 +235,7 @@ expert, on the board and in the slow-control `channels.yaml` together).
 
 ### 14. Clear and recover
 
-> **ACTION** — Press **clear trip** on /hv. This sets VSET 0 V and switches OFF
+> **ACTION** — Press **clear trip** on the **Controls** page. This sets VSET 0 V and switches OFF
 > every tripped channel on that supply, and clears the board alarm; the channel
 > stays off. Turn it ON at 0 V, then raise it in steps of at most 100 V to one step
 > (at least 100 V) below the voltage at which it tripped, holding 5 min per step.
@@ -253,7 +253,7 @@ expert, on the board and in the slow-control `channels.yaml` together).
 | Fault | Likely cause | Remedy |
 | --- | --- | --- |
 | Channel TRIPPED | Discharge or over-current; for the anode, breakdown in the gas gap | Section E. Do not go back to the trip voltage the same day |
-| After clear trip, VMON does not follow the setpoint ('needs power cycle' on /hv) | DT1470ET output latched dead after a trip | Ramp every other channel of that supply to 0 V (hv_2: cathode, gate, anode, NaI), power-cycle the supply, clear the trip again, then restart from step 5 |
+| After clear trip, VMON does not follow the setpoint ('needs power cycle' on the **Controls** page) | DT1470ET output latched dead after a trip | Ramp every other channel of that supply to 0 V (hv_2: cathode, gate, anode, NaI), power-cycle the supply, clear the trip again, then restart from step 5 |
 | IMON rises slowly at constant voltage | Leakage building up, onset of a discharge | Stop ramping, step back 100 V, hold and watch; inform the detector expert if it does not settle |
 | Current spikes or PMT rate bursts without a trip | Micro-discharges | Stop, step back one step, hold 15 min |
 | Setpoint refused: outside the permitted range | Value or sign outside channels.yaml | Check the setpoint; ranges are changed only by the detector expert |
@@ -265,7 +265,7 @@ expert, on the board and in the slow-control `channels.yaml` together).
 
 > [!CHECKLIST]
 > - All electrode channels at 0 V and OFF, VSET 0 V
-> - No TRIPPED latch and no red VSET on /hv
+> - No TRIPPED latch and no red VSET on the **Controls** page
 > - Trips, their cause and the highest stable voltages recorded in LogIt
 > - Table 1 updated if the operating experience changed
 
@@ -273,5 +273,5 @@ expert, on the board and in the slow-control `channels.yaml` together).
 
 | Revision | Issued | Change |
 | --- | --- | --- |
-| Rev. B | 2026-09-26 | Operation via the slow-control /hv page; limits and operating experience (Table 1); stepwise ramping with holds; changing voltages during operation; trip response and troubleshooting. Draft, not yet reviewed or approved. |
+| Rev. B | 2026-09-26 | Operation via the high-voltage section of the slow-control **Controls** page; limits and operating experience (Table 1); stepwise ramping with holds; changing voltages during operation; trip response and troubleshooting. Draft, not yet reviewed or approved. |
 | Rev. A | 2026-08-11 | Drafted; setpoints outstanding, not yet approved for use. |
