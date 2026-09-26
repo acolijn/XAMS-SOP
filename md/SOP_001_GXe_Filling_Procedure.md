@@ -98,8 +98,8 @@ status: Updated release
 > **ACTION** — **Open the selected storage-bottle main valve: V18 for bottle A or V19
 > for bottle B.** **Then open V5 for A or V6 for B.**
 
-> **VERIFY** — Monitor P-high (PT101), P-low (PT102), and detector pressure in Slow
-> Control. P-high should rise to about **62 bar**. With V17 closed, P-low may reach
+> **VERIFY** — Monitor P101 (high-pressure side), P102 (low-pressure side) and the detector
+> pressure PMAIN in Slow Control. P101 should rise to about **62 bar**. With V17 closed, P102 may reach
 > about **1.9 bar**.
 
 > **STOP** — **If pressures behave unexpectedly, close the bottle valve and the selected
@@ -107,10 +107,10 @@ status: Updated release
 
 ### 5. Tune pressure regulator V17
 
-> **ACTION** — **Open V17 slowly in 1/4-turn increments until P-low reaches 2.3 bar.
+> **ACTION** — **Open V17 slowly in 1/4-turn increments until P102 reaches 2.3 bar.
 > Allow the** **pressure to stabilise after each adjustment.**
 
-> **VERIFY** — P-low = 2.3 bar. Keep watching Slow Control continuously.
+> **VERIFY** — P102 = 2.3 bar. Keep watching Slow Control continuously.
 
 > **STOP** — **Do not overshoot 2.3 bar. If you do, close V17 by approximately the
 > amount of the** **overshoot and allow the regulator to stabilise.**
@@ -149,7 +149,7 @@ status: Updated release
 > **ACTION** — **Close the storage-bottle main valve. Reopen V7 and allow the trapped
 > gas to enter** **the detector.**
 
-> **VERIFY** — Wait until P-high matches P-low. The detector pressure should increase by
+> **VERIFY** — Wait until P101 matches P102. The detector pressure should increase by
 > about 1 bar.
 
 > **STOP** — **Keep monitoring detector pressure. If it approaches an unsafe value or
@@ -160,7 +160,7 @@ status: Updated release
 > **ACTION** — **Fully open V17 to release the remaining gas from the regulator section
 > into the** **connected system.**
 
-> **VERIFY** — Confirm P-high, P-low, and detector pressure are approximately equal.
+> **VERIFY** — Confirm P101, P102 and PMAIN are approximately equal.
 
 > **STOP** — **Do not proceed to closure until the three pressures are consistent.**
 

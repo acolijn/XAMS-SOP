@@ -62,12 +62,12 @@ status: Updated release
 
 ### 2. Prepare detector and monitoring
 
-> **ACTION** — Restart Slow Control/monitor VI and confirm logging of PT201,
+> **ACTION** — Restart Slow Control/monitor VI and confirm logging of PMAIN,
 > TT203-TT205, TT401-TT402 and flow. Switch OFF PMT1, PMT2, anode and cathode voltages.
 > Switch OFF the getter heater, but continue circulation through the getter for at least
 > 30 minutes to cool it.
 
-> **VERIFY** — PT201 is approximately 2 bar or higher. If necessary, raise the LakeShore
+> **VERIFY** — PMAIN is approximately 2 bar or higher. If necessary, raise the LakeShore
 > setpoint to increase detector pressure before recovery.
 
 > **STOP** — Do not change the gas configuration while detector voltages are ON.
@@ -103,11 +103,11 @@ status: Updated release
 > ice accumulation becomes substantial, carefully remove/warm it with the hot-air gun as
 > practiced by experienced operators.
 
-> **VERIFY** — Bottle inlet remains able to accept xenon and PT201 does not show the
+> **VERIFY** — Bottle inlet remains able to accept xenon and PMAIN does not show the
 > rapid rise characteristic of a blockage.
 
 > **STOP** — Do not overheat bottle valves or use excessive force. If flow stops or
-> PT201 rises rapidly, close V7 and switch to the second cold bottle.
+> PMAIN rises rapidly, close V7 and switch to the second cold bottle.
 
 ## C. Start recovery
 
@@ -136,21 +136,21 @@ status: Updated release
 
 ### 8. Control pressure and temperature
 
-> **ACTION** — Tune V7 to keep PT201 stable between approximately 1.4 and 2.1 bar.
+> **ACTION** — Tune V7 to keep PMAIN stable between approximately 1.4 and 2.1 bar.
 > Monitor TT203-TT205 and TT401-TT402 continuously. Reduce flow if pressure or
-> temperature falls rapidly; increase recovery flow if PT201 rises.
+> temperature falls rapidly; increase recovery flow if PMAIN rises.
 
 > **VERIFY** — Pressure remains stable and detector temperatures do not fall sharply
 > from adiabatic expansion.
 
-> **STOP** — If PT201 rises rapidly, suspect an ice blockage. Close V7 and switch to the
+> **STOP** — If PMAIN rises rapidly, suspect an ice blockage. Close V7 and switch to the
 > second cold storage bottle.
 
 ## D. Refill LN2 or switch bottles
 
 ### 9. Refill a recovery dewar
 
-> **ACTION** — Before lowering a dewar, bring PT201 below 2 bar. Close V7, then the
+> **ACTION** — Before lowering a dewar, bring PMAIN below 2 bar. Close V7, then the
 > active V3/V4, V8 and V10. Refill to 10 cm below the rim, raise the dewar slowly and
 > wait until boiling subsides. Recheck bottle pressure below 0.9 bar, then reopen V10,
 > V8, active V3/V4 and tune V7.
@@ -160,7 +160,7 @@ status: Updated release
 
 ### 10. Switch to the second bottle
 
-> **ACTION** — Bring PT201 to about 1 bar. Close V7, active V3/V4, V8 and V10. Close the
+> **ACTION** — Bring PMAIN to about 1 bar. Close V7, active V3/V4, V8 and V10. Close the
 > full bottle valve. If frozen, warm the valve gently with the hot-air gun; do not force
 > it. Confirm the second bottle is below 0.9 bar. Open the second bottle valve, then its
 > V3/V4 route, V8 and V10. Tune V7.
@@ -169,7 +169,7 @@ status: Updated release
 > route restores flow.
 
 > **STOP** — A bottle change may increase detector pressure by about 0.6 bar. Monitor
-> PT201 continuously.
+> PMAIN continuously.
 
 ## E. Optional acceleration and emergency response
 
@@ -216,7 +216,7 @@ status: Updated release
 > valves. Keep V12 open until the getter has been evacuated, then close V12 as the final
 > getter-isolation step.
 
-> **VERIFY** — Record integrated flow, final PT201 and final valve state in LogIt.
+> **VERIFY** — Record integrated flow, final PMAIN and final valve state in LogIt.
 > Record the final storage-bottle mass the NEXT DAY, after the external ice layer has
 > thawed/melted and the weighing is reliable.
 
