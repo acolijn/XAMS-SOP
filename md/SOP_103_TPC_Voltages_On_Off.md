@@ -3,16 +3,16 @@ sop: SOP-103
 doc_id: XAMS-SOP-103
 title: XAMS TPC Electrode High-Voltage Operation
 subtitle: Apply, change and remove high voltage on the XAMS TPC electrodes, and respond to a trip
-revision: Rev. B
-issue_date: 2026-09-26
-supersedes: Rev. A
+revision: Rev. A
+issue_date: 2026-08-11
+supersedes: N/A
 author: Auke-Pieter Colijn
 prepared_by: Auke-Pieter Colijn
 reviewed_by: N/A
 approved_by: N/A
 audience: Trained XAMS operator authorised for detector high voltage
 location: Nikhef - XAMS
-status: Draft - not approved for use
+status: Draft placeholder
 ---
 
 > [!NOTE]
@@ -273,5 +273,4 @@ expert, on the board and in the slow-control `channels.yaml` together).
 
 | Revision | Issued | Change |
 | --- | --- | --- |
-| Rev. B | 2026-09-26 | Operation via the high-voltage section of the slow-control **Controls** page; limits and operating experience (Table 1); stepwise ramping with holds; changing voltages during operation; trip response and troubleshooting. Draft, not yet reviewed or approved. |
 | Rev. A | 2026-08-11 | Drafted; setpoints outstanding, not yet approved for use. |
