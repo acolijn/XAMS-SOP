@@ -54,7 +54,7 @@ Run these procedures in the order listed.
 
 | SOP | Procedure | Status |
 | --- | --- | --- |
-| SOP-101 | PMT Power On and Off | Released |
+| SOP-101 | PMT Power On and Off | DRAFT |
 | SOP-102 | SiPM Bias Power On and Off | Released |
 | SOP-103 | XAMS TPC Electrode High-Voltage Operation | DRAFT |
 | SOP-104 | PMT Gain Calibration | Released |
@@ -72,9 +72,9 @@ Run these procedures in the order listed.
 | 006 | C | Xenon Recovery | Transfer xenon from detector to storage bottles |
 | 007 | B | Emergency Xenon Recuperation | Night-time emergency response |
 | 008 | A | Main LN2 Supply Dewar Refill | Schedule and prepare the main LN2 dewar for refill |
-| 101 | A | PMT Power On and Off | Safely power the photomultiplier tubes on and off, and respond to a trip |
+| 101 | B | PMT Power On and Off | Safely power the photomultiplier tubes on and off, and respond to a trip |
 | 102 | B | SiPM Bias Power On and Off | Safely power the SiPM readout and bias supply |
-| 103 | A | XAMS TPC Electrode High-Voltage Operation | Apply, change and remove high voltage on the XAMS TPC electrodes, and respond to a trip |
+| 103 | B | XAMS TPC Electrode High-Voltage Operation | Apply, change and remove high voltage on the XAMS TPC electrodes, and respond to a trip |
 | 104 | B | PMT Gain Calibration | LED gain calibration of the top and bottom PMTs |
 
 ## 5. Before starting any SOP

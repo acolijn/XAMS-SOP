@@ -3,16 +3,16 @@ sop: SOP-101
 doc_id: XAMS-SOP-101
 title: PMT Power On and Off
 subtitle: Safely power the photomultiplier tubes on and off, and respond to a trip
-revision: Rev. A
-issue_date: 2026-08-10
-supersedes: N/A
+revision: Rev. B
+issue_date: 2026-09-26
+supersedes: Rev. A
 author: Auke-Pieter Colijn
 prepared_by: Auke-Pieter Colijn
 reviewed_by: N/A
 approved_by: N/A
 audience: Trained XAMS operator authorised for detector high voltage
 location: Nikhef - XAMS
-status: Initial release
+status: Draft - not approved for use
 ---
 
 > [!NOTE]
@@ -179,4 +179,5 @@ status: Initial release
 
 | Revision | Issued | Change |
 | --- | --- | --- |
+| Rev. B | 2026-09-26 | Operation via the high-voltage section of the slow-control **Controls** page; supply channels and ramp rates; rate-burst early warning; trip response at 50 V lower voltage; gain recalibration after a voltage change; troubleshooting. Draft, not yet reviewed or approved. |
 | Rev. A | 2026-08-10 | First issue. |
