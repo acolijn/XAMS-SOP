@@ -3,9 +3,9 @@ sop: SOP-006
 doc_id: XAMS-SOP-006
 title: Xenon Recovery
 subtitle: Transfer xenon from detector to storage bottles
-revision: Rev. C
-issue_date: 2026-08-07
-supersedes: Rev. B
+revision: Rev. D
+issue_date: 2026-09-29
+supersedes: Rev. C
 author: Auke-Pieter Colijn
 prepared_by: Auke-Pieter Colijn
 reviewed_by: Bart Sarlemijn
@@ -76,8 +76,19 @@ status: Updated release
 
 > **ACTION** — Switch OFF the recirculation pump and wait for flow to stop. Record both
 > bottle weights and the current valve configuration. Close V11 and V13. Keep V12 OPEN.
-> Close V17 counter-clockwise. Close V8, V7 and V10. Keep V9 OPEN. Confirm V3-V6 and
-> both bottle valves are CLOSED.
+> Close V17 counter-clockwise. Close V7. Open V8, V9 and V10. Confirm V3-V6 and both
+> bottle valves are CLOSED. Check the valve state against the table below.
+
+| Valve state | Required state |
+| --- | --- |
+| V11, V13 | CLOSED |
+| V12 | OPEN - getter evacuated during recovery |
+| V17 regulator | CLOSED - turn counter-clockwise |
+| V7 | CLOSED - flow-control valve, opened in step 7 |
+| V8, V9, V10 | OPEN |
+| V3, V4, V5, V6 | CLOSED |
+| Bottle main valves (V18, V19) | CLOSED |
+| Recirculation pump | OFF |
 
 > **VERIFY** — The getter remains connected through V12; xenon between V13 and V9 can
 > return through the detector volume.
@@ -240,6 +251,7 @@ status: Updated release
 
 | Revision | Issued | Change |
 | --- | --- | --- |
+| Rev. D | 2026-09-29 | Step 3: initial valve state changed (V8 and V10 OPEN, V7 CLOSED) and given as a valve-state table. |
 | Rev. C | 2026-08-07 | Content updated; see the source history for details. |
 
 Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.

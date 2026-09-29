@@ -69,7 +69,7 @@ Run these procedures in the order listed.
 | 003 | E | Cooling Preparation and PTR Start | Prepare cooling after GXe purification |
 | 004 | F | LXe Filling | Fill the detector with liquid xenon |
 | 005 | A | Normal LXe Operation | Normal operation after LXe filling |
-| 006 | C | Xenon Recovery | Transfer xenon from detector to storage bottles |
+| 006 | D | Xenon Recovery | Transfer xenon from detector to storage bottles |
 | 007 | B | Emergency Xenon Recuperation | Night-time emergency response |
 | 008 | A | Main LN2 Supply Dewar Refill | Schedule and prepare the main LN2 dewar for refill |
 | 101 | B | PMT Power On and Off | Safely power the photomultiplier tubes on and off, and respond to a trip |
