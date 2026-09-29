@@ -62,7 +62,7 @@ status: Updated release
 
 ### 2. Prepare detector and monitoring
 
-> **ACTION** — Restart Slow Control/monitor VI and confirm logging of PMAIN,
+> **ACTION** — Confirm the slow control is running and logging PMAIN,
 > TT203-TT205, TT401-TT402 and flow. Switch OFF PMT1, PMT2, anode and cathode voltages.
 > Switch OFF the getter heater, but continue circulation through the getter for at least
 > 30 minutes to cool it.
@@ -135,9 +135,21 @@ status: Updated release
 
 ### 7. Reset flow integration and open the route
 
-> **ACTION** — Reset integrated flow in the monitor VI. Open the selected storage-bottle
-> main valve. Confirm V17 is CLOSED. Open V3 for bottle A or V4 for bottle B. Open V8,
-> then V10. V12 remains OPEN; V11 and V13 remain CLOSED. Open V7 gradually.
+> **ACTION** — Reset the integrated flow on the slow-control Control page (Integrated
+> flow card; this starts a new period). Open the selected storage-bottle main valve.
+> Open V3 for bottle A or V4 for bottle B. Check the valve state against the table
+> below, then open V7 gradually.
+
+| Valve state | Required state |
+| --- | --- |
+| Bottle main valve (V18 or V19) | OPEN - selected bottle only |
+| V3 or V4 | OPEN - selected bottle only (V3 bottle A, V4 bottle B) |
+| V5, V6 | CLOSED |
+| V8, V9, V10 | OPEN - unchanged from step 3 |
+| V12 | OPEN - unchanged from step 3 |
+| V11, V13 | CLOSED |
+| V17 regulator | CLOSED |
+| V7 | Opened gradually - flow control |
 
 > **VERIFY** — Flow is visible and stable. Recovery includes the getter, pump-side
 > piping and buffer volumes connected through the selected route.
@@ -161,10 +173,16 @@ status: Updated release
 
 ### 9. Refill a recovery dewar
 
-> **ACTION** — Before lowering a dewar, bring PMAIN below 2 bar. Close V7, then the
-> active V3/V4, V8 and V10. Refill to 10 cm below the rim, raise the dewar slowly and
-> wait until boiling subsides. Recheck bottle pressure below 0.9 bar, then reopen V10,
-> V8, active V3/V4 and tune V7.
+> **ACTION** — Before lowering a dewar, bring PMAIN below 2 bar. Then work through the
+> sequence below in this order.
+
+| Order | Action |
+| --- | --- |
+| 1 | Close V10 |
+| 2 | Lower the dewar |
+| 3 | Fill with LN2 to 10 cm below the rim |
+| 4 | Raise the dewar slowly; wait until boiling subsides |
+| 5 | Open V10 |
 
 > **NOTE** — The dewar may be topped up while raised if this can be done safely; in that
 > case recovery need not be interrupted.
@@ -251,7 +269,7 @@ status: Updated release
 
 | Revision | Issued | Change |
 | --- | --- | --- |
-| Rev. D | 2026-09-29 | Step 3: initial valve state changed (V8 and V10 OPEN, V7 CLOSED) and given as a valve-state table. |
+| Rev. D | 2026-09-29 | Step 3: initial valve state changed (V8 and V10 OPEN, V7 CLOSED), valve-state table. Step 7: valve-state table, V8/V10 no longer opened there. Step 9: dewar refill by closing and reopening V10 only. Monitor VI replaced by the slow control. |
 | Rev. C | 2026-08-07 | Content updated; see the source history for details. |
 
 Superseded revisions are retained as PDFs in the old/ directory and in the version history of the markdown source.
